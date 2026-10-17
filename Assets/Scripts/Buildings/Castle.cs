@@ -6,8 +6,6 @@ using Game.Core;
 
 namespace Game.Buildings
 {
-    [SelectionBase]
-    [DisallowMultipleComponent]
     public class Castle : MonoBehaviour, IBuilding
     {
         [Title("References")]

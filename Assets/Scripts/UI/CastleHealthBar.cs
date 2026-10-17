@@ -7,7 +7,6 @@ using Game.Buildings;
 
 namespace Game.UI
 {
-    [DisallowMultipleComponent]
     public class CastleHealthBar : MonoBehaviour
     {
         [Title("References")]

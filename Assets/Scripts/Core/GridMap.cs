@@ -6,8 +6,6 @@ using Game.Buildings;
 
 namespace Game.Core
 {
-    [SelectionBase]
-    [DisallowMultipleComponent]
     public class GridMap : MonoBehaviour
     {
         [Title("Visuals & References")]

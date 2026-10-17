@@ -6,7 +6,6 @@ using Game.Core;
 namespace Game.CameraSystem
 {
     [RequireComponent(typeof(Camera))]
-    [DisallowMultipleComponent]
     public class CameraController : MonoBehaviour
     {
         [BoxGroup("References")]
