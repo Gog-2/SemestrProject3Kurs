@@ -1,19 +1,16 @@
 using System;
 using UnityEngine;
+using Game.Core;
 
 namespace Game.Buildings
 {
-    public interface IBuilding
+    public interface IBuilding : IDamageable
     {
-        int CurrentHP { get; }
-        int MaxHP { get; }
         float BreakCost { get; }
         Vector2Int Origin { get; }
         Vector2Int Size { get; }
 
-        void TakeDamage(int amount);
-
-        event Action<IBuilding> HealthChanged;
-        event Action<IBuilding> Destroyed;
+        event Action<IBuilding> BuildingHealthChanged;
+        event Action<IBuilding> BuildingDestroyed;
     }
 }

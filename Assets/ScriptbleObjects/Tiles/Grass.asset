@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7b3cb8b49fb1d9439e90fd431ba6e40, type: 3}
   m_Name: Grass
   m_EditorClassIdentifier: Assembly-CSharp::Game.Core.TerrainType
-  id: Grass
-  walkable: 1
-  moveCost: 1
-  tile: {fileID: 11400000, guid: 07a5da11c5733934f92175aad76c6c56, type: 2}
+  _id: 
+  _walkable: 1
+  _moveCost: 1
+  _tile: {fileID: 11400000, guid: 07a5da11c5733934f92175aad76c6c56, type: 2}

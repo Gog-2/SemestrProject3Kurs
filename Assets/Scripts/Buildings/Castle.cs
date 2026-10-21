@@ -6,103 +6,99 @@ using Game.Core;
 
 namespace Game.Buildings
 {
-    [SelectionBase]
-    [DisallowMultipleComponent]
     public class Castle : MonoBehaviour, IBuilding
     {
         [Title("References")]
-        [SerializeField] private GridMap gridMap;
-        [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] private GridMap _gridMap;
+        [SerializeField] private SpriteRenderer _spriteRenderer;
 
         [Title("Stats & Placement")]
-        [SerializeField, Min(1)] private int maxHP = 100;
-        [SerializeField] private Vector2Int size = new(3, 3);
-        [SerializeField] private bool placeAtMapCenter = true;
-        [SerializeField] private Vector2Int originCell;
+        [SerializeField, Min(1)] private int _maxHP = 1500;
+        [SerializeField] private Vector2Int _size = new(3, 3);
+        [SerializeField] private bool _placeAtMapCenter = true;
+        [SerializeField] private Vector2Int _originCell;
 
         [Title("Damage Animation")]
-        [SerializeField] private Color damageColor = Color.red;
-        [SerializeField] private Vector3 punchStrength = new(0.12f, 0.12f, 0f);
+        [SerializeField] private Color _damageColor = Color.red;
+        [SerializeField] private Vector3 _punchStrength = new(0.12f, 0.12f, 0f);
 
         [Title("Debug")]
         [ShowInInspector, ReadOnly]
-        public int CurrentHP => currentHP < 0 ? maxHP : currentHP;
-        public int MaxHP => maxHP;
+        public int CurrentHP => _currentHP < 0 ? _maxHP : _currentHP;
+        public int MaxHP => _maxHP;
+        public bool IsDead => CurrentHP <= 0;
         public float BreakCost => CurrentHP;
-        public Vector2Int Origin => originCell;
-        public Vector2Int Size => size;
+        public Vector2Int Origin => _originCell;
+        public Vector2Int Size => _size;
 
-        private int currentHP = -1;
-        private Color originalColor;
-        private Tweener punchTween;
-        private Tweener colorTween;
+        private int _currentHP = -1;
+        private Color _originalColor;
+        private Tweener _punchTween;
+        private Tweener _colorTween;
 
-        public event Action<IBuilding> HealthChanged;
-        public event Action<IBuilding> Destroyed;
+        public event Action<IDamageable> HealthChanged;
+        public event Action<IDamageable> Destroyed;
+        public event Action<IBuilding> BuildingHealthChanged;
+        public event Action<IBuilding> BuildingDestroyed;
         public event Action OnCastleDestroyed;
 
         private void Awake()
         {
-            if (currentHP < 0)
+            if (_currentHP < 0)
             {
-                currentHP = maxHP;
+                _currentHP = _maxHP;
             }
-            originalColor = spriteRenderer.color;
+
+            _originalColor = _spriteRenderer.color;
         }
 
         private void Start()
         {
-            if (placeAtMapCenter)
+            if (_placeAtMapCenter)
             {
-                originCell = new Vector2Int((gridMap.Width - size.x) / 2, (gridMap.Height - size.y) / 2);
+                _originCell = new Vector2Int((_gridMap.Width - _size.x) / 2, (_gridMap.Height - _size.y) / 2);
             }
 
-            // Центрирование относительно футпринта клеток (1 клетка = 1 единица)
-            transform.position = gridMap.CellToWorld(originCell.x, originCell.y) +
-                                 new Vector3((size.x - 1) * 0.5f, (size.y - 1) * 0.5f, 0f);
+            transform.position = _gridMap.CellToWorld(_originCell.x, _originCell.y) +
+                                 new Vector3((_size.x - 1) * 0.5f, (_size.y - 1) * 0.5f, 0f);
 
-            spriteRenderer.transform.localScale = new Vector3(size.x, size.y, 1f);
-
-            gridMap.TryPlace(this);
+            _gridMap.TryPlace(this);
+            _spriteRenderer.transform.localScale = new Vector3(_size.x, _size.y, 1f);
         }
 
         private void OnValidate()
         {
-            if (maxHP < 1) maxHP = 1;
-            if (size.x < 1) size.x = 1;
-            if (size.y < 1) size.y = 1;
-
-            if (placeAtMapCenter && gridMap != null)
-            {
-                originCell = new Vector2Int((gridMap.Width - size.x) / 2, (gridMap.Height - size.y) / 2);
-            }
+            if (_maxHP < 1) _maxHP = 1;
+            if (_size.x < 1) _size.x = 1;
+            if (_size.y < 1) _size.y = 1;
         }
 
         public void TakeDamage(int amount)
         {
-            if (currentHP <= 0) return;
+            if (_currentHP <= 0 || amount <= 0) return;
 
-            currentHP = Mathf.Max(0, currentHP - amount);
+            _currentHP = Mathf.Max(0, _currentHP - amount);
 
-            // Завершаем предыдущий твин масштаба перед новым, чтобы не накапливать смещение
-            punchTween?.Complete();
-            colorTween?.Kill();
-            spriteRenderer.color = originalColor;
+            _punchTween?.Complete();
+            _colorTween?.Kill();
+            _spriteRenderer.color = _originalColor;
 
-            punchTween = spriteRenderer.transform.DOPunchScale(punchStrength, 0.15f, 10, 1f)
+            _punchTween = _spriteRenderer.transform.DOPunchScale(_punchStrength, 0.15f, 10, 1f)
                 .SetLink(gameObject)
                 .SetUpdate(true);
 
-            colorTween = spriteRenderer.DOColor(damageColor, 0.075f)
+            _colorTween = _spriteRenderer.DOColor(_damageColor, 0.075f)
                 .SetLoops(2, LoopType.Yoyo)
                 .SetLink(gameObject)
                 .SetUpdate(true);
 
             HealthChanged?.Invoke(this);
+            BuildingHealthChanged?.Invoke(this);
 
-            if (currentHP == 0)
+            if (_currentHP == 0)
             {
                 Destroyed?.Invoke(this);
+                BuildingDestroyed?.Invoke(this);
                 OnCastleDestroyed?.Invoke();
             }
         }
@@ -116,14 +112,10 @@ namespace Game.Buildings
         [Button]
         public void HealFull()
         {
-            currentHP = maxHP;
+            _currentHP = _maxHP;
+            _gridMap.TryPlace(this);
             HealthChanged?.Invoke(this);
-        }
-
-        private void OnDestroy()
-        {
-            punchTween?.Kill();
-            colorTween?.Kill();
+            BuildingHealthChanged?.Invoke(this);
         }
     }
 }

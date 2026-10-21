@@ -304,11 +304,11 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8930801706674000104, guid: 58a11a9f1930c7c49be8d97806bd2666, type: 3}
-      propertyPath: gridMap
+      propertyPath: _gridMap
       value: 
       objectReference: {fileID: 2099631945}
     - target: {fileID: 8930801706674000104, guid: 58a11a9f1930c7c49be8d97806bd2666, type: 3}
-      propertyPath: initialTarget
+      propertyPath: _initialTarget
       value: 
       objectReference: {fileID: 75240532}
     m_RemovedComponents: []
@@ -324,6 +324,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 951138204050215955, guid: 29b73184436ac444eb7c0f64a572df13, type: 3}
+      propertyPath: _waveController
+      value: 
+      objectReference: {fileID: 8517314257513837281}
     - target: {fileID: 1496506878341594671, guid: 29b73184436ac444eb7c0f64a572df13, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -368,8 +372,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: HUD
       objectReference: {fileID: 0}
+    - target: {fileID: 4524329802303410894, guid: 29b73184436ac444eb7c0f64a572df13, type: 3}
+      propertyPath: _wallet
+      value: 
+      objectReference: {fileID: 8517314257513837285}
     - target: {fileID: 5196237220130154811, guid: 29b73184436ac444eb7c0f64a572df13, type: 3}
-      propertyPath: castle
+      propertyPath: _castle
       value: 
       objectReference: {fileID: 75240530}
     m_RemovedComponents: []
@@ -385,34 +393,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5126686157892537587, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
-      propertyPath: m_Size.x
-      value: 22
-      objectReference: {fileID: 0}
-    - target: {fileID: 5126686157892537587, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
-      propertyPath: m_Size.y
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 5126686157892537587, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
-      propertyPath: m_Tiles.Array.size
-      value: 330
-      objectReference: {fileID: 0}
-    - target: {fileID: 5126686157892537587, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
-      propertyPath: m_TileAssetArray.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5126686157892537587, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
-      propertyPath: m_TileColorArray.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5126686157892537587, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
-      propertyPath: m_TileMatrixArray.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5126686157892537587, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
-      propertyPath: m_TileSpriteArray.Array.size
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: 6269732206780627785, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
       propertyPath: m_Name
       value: MainGame
@@ -457,11 +437,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8585727078784634177, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
+      propertyPath: _width
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 8585727078784634177, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
+      propertyPath: _height
+      value: 64
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
+--- !u!114 &8517314257513837281 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7473352084314930866, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
+  m_PrefabInstance: {fileID: 8517314257513837279}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da8eb79f3baa2b4bbe393405d84dd77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.WaveSystem.WaveController
+--- !u!114 &8517314257513837285 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3269875367417438568, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
+  m_PrefabInstance: {fileID: 8517314257513837279}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 670c439640b98a04eaadc85a9a83fcef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Core.PlayerWallet
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

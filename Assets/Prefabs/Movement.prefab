@@ -196,18 +196,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2ab8067622c6384689e12ee550142a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.CameraSystem.CameraController
-  targetCamera: {fileID: 6510068101840523361}
-  gridMap: {fileID: 0}
-  initialTarget: {fileID: 0}
-  focusOnStart: 1
-  moveSpeed: 15
-  scaleSpeedWithZoom: 1
-  baseZoomReference: 10
-  minZoom: 3
-  maxZoom: 25
-  zoomStep: 2
-  zoomSmoothSpeed: 15
-  zoomToCursor: 1
-  useEdgeScrolling: 0
-  edgeThreshold: 20
-  clampToBounds: 1
+  _targetCamera: {fileID: 6510068101840523361}
+  _gridMap: {fileID: 0}
+  _initialTarget: {fileID: 0}
+  _focusOnStart: 1
+  _moveSpeed: 15
+  _scaleSpeedWithZoom: 1
+  _baseZoomReference: 10
+  _minZoom: 3
+  _maxZoom: 25
+  _zoomStep: 2
+  _zoomSmoothSpeed: 15
+  _zoomToCursor: 1
+  _useEdgeScrolling: 0
+  _edgeThreshold: 20
+  _clampToBounds: 1
