@@ -20,13 +20,30 @@ namespace Game.Core
         private int _coins;
         private int _diamonds;
 
+        public static PlayerWallet Instance { get; private set; }
+
         public event Action<int> CoinsChanged;
         public event Action<int> DiamondsChanged;
 
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
             _coins = _initialCoins;
             _diamonds = _initialDiamonds;
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
         }
 
         public void AddCoins(int amount)

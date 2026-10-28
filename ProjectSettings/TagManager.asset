@@ -11,12 +11,12 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Castle
+  - Building
+  - Enemy
+  - Projectile
+  - Loot
+  - Grid
   - 
   - 
   - 
@@ -40,4 +40,28 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Terrain
+    uniqueID: 1001
+    locked: 0
+  - name: Buildings
+    uniqueID: 1002
+    locked: 0
+  - name: Loot
+    uniqueID: 1003
+    locked: 0
+  - name: Enemies
+    uniqueID: 1004
+    locked: 0
+  - name: Projectiles
+    uniqueID: 1005
+    locked: 0
+  - name: Effects
+    uniqueID: 1006
+    locked: 0
+  - name: Ghost
+    uniqueID: 1007
+    locked: 0
+  - name: UI
+    uniqueID: 1008
     locked: 0

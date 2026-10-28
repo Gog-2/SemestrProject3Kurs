@@ -9,6 +9,7 @@ namespace Game.Enemies.Data
         [Title("Identity")]
         [SerializeField] private string _id = "regular_enemy";
         [SerializeField] private string _displayName = "Regular Enemy";
+        [SerializeField] private bool _isBoss = false;
 
         [Title("Health & Defense")]
         [SerializeField, Min(1)] private int _maxHP = 30;
@@ -23,11 +24,14 @@ namespace Game.Enemies.Data
         [SerializeField, Min(0.1f)] private float _attackInterval = 1.5f;
         [SerializeField, Min(0.1f)] private float _attackRange = 0.8f;
 
-        [Title("Loot")]
+        [Title("Loot & Rewards")]
+        [SerializeField, Min(1)] private int _honorReward = 10;
         [SerializeField] private LootTable _lootTable = new();
 
         public string Id => _id;
         public string DisplayName => _displayName;
+        public bool IsBoss => _isBoss;
+        public int HonorReward => _honorReward;
         public int MaxHP => _maxHP;
         public float MoveSpeed => _moveSpeed;
         public float MinSpeedRatio => _minSpeedRatio;

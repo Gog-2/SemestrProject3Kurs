@@ -163,6 +163,11 @@ namespace Game.WaveSystem
                 SetState(WaveState.WaveCompleted);
                 OnWaveCleared?.Invoke();
 
+                if (RunProgressionManager.Instance != null)
+                {
+                    RunProgressionManager.Instance.RequestUpgradeSelection();
+                }
+
                 SetState(WaveState.BuildingPhase);
                 OnBuildingPhaseStarted?.Invoke();
             }
@@ -198,6 +203,7 @@ namespace Game.WaveSystem
         {
             SetState(WaveState.GameOver);
             CancelCurrentWave();
+            GameManager.Instance?.SetState(GameState.GameOver);
             OnGameOver?.Invoke();
         }
 

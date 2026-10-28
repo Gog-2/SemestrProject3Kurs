@@ -40,6 +40,7 @@ namespace Game.Enemies
         public event Action<IDamageable> HealthChanged;
         public event Action<IDamageable> Destroyed;
         public event Action<Enemy> Died;
+        public static event Action<Enemy> GlobalEnemyDied;
 
         private EnemyData _data;
         private GridFlowfield _flowfield;
@@ -75,6 +76,12 @@ namespace Game.Enemies
 
         private void Awake()
         {
+            int enemyLayer = LayerMask.NameToLayer("Enemy");
+            if (enemyLayer != -1)
+            {
+                gameObject.layer = enemyLayer;
+            }
+
             if (_modelTransform == null)
             {
                 _modelTransform = transform;
@@ -83,6 +90,8 @@ namespace Game.Enemies
             if (_spriteRenderer != null)
             {
                 _originalColor = _spriteRenderer.color;
+                _spriteRenderer.sortingLayerName = "Enemies";
+                _spriteRenderer.sortingOrder = 10;
             }
         }
 
@@ -103,7 +112,8 @@ namespace Game.Enemies
             _currentTarget = null;
 
             _baseSpeed = _data.MoveSpeed;
-            _minSpeedRatio = Mathf.Clamp(_data.MinSpeedRatio, 0.05f, 1f);
+            float gddMinCap = _data.IsBoss ? 0.9f : 0.8f;
+            _minSpeedRatio = Mathf.Max(gddMinCap, Mathf.Clamp(_data.MinSpeedRatio, 0.05f, 1f));
             _currentSpeed = _baseSpeed;
             ClearSlows();
         }
@@ -178,8 +188,14 @@ namespace Game.Enemies
 
             if (_currentHP == 0)
             {
+                if (_data != null && RunProgressionManager.Instance != null)
+                {
+                    RunProgressionManager.Instance.AddHonor(_data.HonorReward);
+                }
+
                 Destroyed?.Invoke(this);
                 Died?.Invoke(this);
+                GlobalEnemyDied?.Invoke(this);
             }
         }
 
@@ -231,6 +247,17 @@ namespace Game.Enemies
                 _activeSlows[i].IsActive = false;
             }
             _currentSpeed = _baseSpeed;
+        }
+
+        public void ApplyKnockback(Vector2 direction, float cellDistance = 1f)
+        {
+            if (IsDead) return;
+
+            if (direction.sqrMagnitude > 0.0001f)
+            {
+                direction.Normalize();
+                transform.position += (Vector3)(direction * cellDistance);
+            }
         }
 
         private void UpdateSlows(float deltaTime)

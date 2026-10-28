@@ -110,6 +110,11 @@ namespace Game.CameraSystem
 
         private void LateUpdate()
         {
+            if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing)
+            {
+                return;
+            }
+
             float dt = Time.unscaledDeltaTime;
 
             HandleZoom(dt);

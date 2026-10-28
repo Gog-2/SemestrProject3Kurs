@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85ebb5caf6276bc4f9b5cbf2073f4a65, type: 3}
+  m_Name: Building_GoldMine
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Buildings.BuildingData
+  _id: Building_GoldMine
+  _displayName: "\u0417\u043E\u043B\u043E\u0442\u0430\u044F \u0448\u0430\u0445\u0442\u0430"
+  _description: "\u0414\u043E\u0431\u044B\u0432\u0430\u0435\u0442 \u0437\u043E\u043B\u043E\u0442\u044B\u0435
+    \u043C\u043E\u043D\u0435\u0442\u044B \u043A\u0430\u0436\u0434\u044B\u0435 \u043D\u0435\u0441\u043A\u043E\u043B\u044C\u043A\u043E
+    \u0441\u0435\u043A\u0443\u043D\u0434."
+  _icon: {fileID: -5325312635722052284, guid: d27ac4e162c94774e8b7c457fced667a, type: 3}
+  _prefab: {fileID: 0}
+  _category: 5
+  _size: {x: 1, y: 1}
+  _upgradeType: 0
+  _isDestructible: 1
+  _placedSaleRefundRatio: 0.5
+  _unplacedSaleRefundRatio: 1
+  _levels:
+  - cost: 60
+    maxHP: 50
+    damage: 0
+    attackRange: 0
+    attackInterval: 0
+    productionInterval: 10
+    productionAmount: 1
+    spawnInterval: 0
+    unitCount: 0
+    combatXpRequirement: 0
+  - cost: 100
+    maxHP: 75
+    damage: 0
+    attackRange: 0
+    attackInterval: 0
+    productionInterval: 7
+    productionAmount: 1
+    spawnInterval: 0
+    unitCount: 0
+    combatXpRequirement: 0
+  - cost: 150
+    maxHP: 100
+    damage: 0
+    attackRange: 0
+    attackInterval: 0
+    productionInterval: 5
+    productionAmount: 1
+    spawnInterval: 0
+    unitCount: 0
+    combatXpRequirement: 0
+  - cost: 220
+    maxHP: 150
+    damage: 0
+    attackRange: 0
+    attackInterval: 0
+    productionInterval: 3
+    productionAmount: 1
+    spawnInterval: 0
+    unitCount: 0
+    combatXpRequirement: 0

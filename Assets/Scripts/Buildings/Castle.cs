@@ -44,12 +44,28 @@ namespace Game.Buildings
 
         private void Awake()
         {
+            if (RunConfig.Instance != null && RunConfig.Instance.SelectedKnight != null)
+            {
+                _maxHP = RunConfig.Instance.SelectedKnight.CastleMaxHP;
+            }
+
             if (_currentHP < 0)
             {
                 _currentHP = _maxHP;
             }
 
-            _originalColor = _spriteRenderer.color;
+            int castleLayer = LayerMask.NameToLayer("Castle");
+            if (castleLayer != -1)
+            {
+                gameObject.layer = castleLayer;
+            }
+
+            if (_spriteRenderer != null)
+            {
+                _spriteRenderer.sortingLayerName = "Buildings";
+                _spriteRenderer.sortingOrder = 6;
+                _originalColor = _spriteRenderer.color;
+            }
         }
 
         private void Start()
@@ -114,6 +130,27 @@ namespace Game.Buildings
         {
             _currentHP = _maxHP;
             _gridMap.TryPlace(this);
+            HealthChanged?.Invoke(this);
+            BuildingHealthChanged?.Invoke(this);
+        }
+
+        public void IncreaseMaxHealth(int amount, bool healAmount = true)
+        {
+            if (amount <= 0) return;
+            _maxHP += amount;
+            if (healAmount)
+            {
+                _currentHP = Mathf.Min(_maxHP, _currentHP + amount);
+            }
+            HealthChanged?.Invoke(this);
+            BuildingHealthChanged?.Invoke(this);
+        }
+
+        public void HealPercent(float percent)
+        {
+            if (percent <= 0f) return;
+            int healAmount = Mathf.RoundToInt(_maxHP * percent);
+            _currentHP = Mathf.Min(_maxHP, _currentHP + healAmount);
             HealthChanged?.Invoke(this);
             BuildingHealthChanged?.Invoke(this);
         }

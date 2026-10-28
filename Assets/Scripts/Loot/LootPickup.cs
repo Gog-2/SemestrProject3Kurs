@@ -21,6 +21,21 @@ namespace Game.Loot
         private Sequence _animSequence;
         private Action<LootPickup> _onCollectedCallback;
 
+        private void Awake()
+        {
+            int lootLayer = LayerMask.NameToLayer("Loot");
+            if (lootLayer != -1)
+            {
+                gameObject.layer = lootLayer;
+            }
+
+            if (_spriteRenderer != null)
+            {
+                _spriteRenderer.sortingLayerName = "Loot";
+                _spriteRenderer.sortingOrder = 8;
+            }
+        }
+
         public void Initialize(LootType type, int value, Action<LootPickup> onCollected)
         {
             _lootType = type;
