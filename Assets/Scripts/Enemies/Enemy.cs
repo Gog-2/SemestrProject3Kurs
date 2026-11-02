@@ -42,6 +42,22 @@ namespace Game.Enemies
         public event Action<Enemy> Died;
         public static event Action<Enemy> GlobalEnemyDied;
 
+        private static readonly System.Collections.Generic.List<Enemy> s_activeEnemies = new(64);
+        public static System.Collections.Generic.IReadOnlyList<Enemy> ActiveEnemies => s_activeEnemies;
+
+        private void OnEnable()
+        {
+            if (!s_activeEnemies.Contains(this))
+            {
+                s_activeEnemies.Add(this);
+            }
+        }
+
+        private void OnDisable()
+        {
+            s_activeEnemies.Remove(this);
+        }
+
         private EnemyData _data;
         private GridFlowfield _flowfield;
         private Castle _castle;
@@ -188,10 +204,7 @@ namespace Game.Enemies
 
             if (_currentHP == 0)
             {
-                if (_data != null && RunProgressionManager.Instance != null)
-                {
-                    RunProgressionManager.Instance.AddHonor(_data.HonorReward);
-                }
+                RunProgressionManager.Instance.AddHonor(_data.HonorReward);
 
                 Destroyed?.Invoke(this);
                 Died?.Invoke(this);

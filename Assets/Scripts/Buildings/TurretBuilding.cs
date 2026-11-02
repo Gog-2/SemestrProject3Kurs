@@ -21,7 +21,7 @@ namespace Game.Buildings
             if (IsDead) return;
 
             // Do not fire if paused
-            if (GameManager.Instance != null && GameManager.Instance.IsPaused)
+            if (GameManager.Instance.IsPaused)
             {
                 return;
             }
@@ -62,10 +62,7 @@ namespace Game.Buildings
             Vector3 origin = _firePoint != null ? _firePoint.position : transform.position;
             int damage = CurrentStats.damage > 0 ? CurrentStats.damage : 10;
 
-            if (ProjectilePool.Instance != null)
-            {
-                ProjectilePool.Instance.Spawn(origin, direction, _projectileData, damage);
-            }
+            ProjectilePool.Instance.Spawn(origin, direction, _projectileData, damage);
 
             AddCombatXP(damage);
         }
@@ -83,9 +80,9 @@ namespace Game.Buildings
             float bestDistance = range * range;
             Enemy bestEnemy = null;
 
-            // Find enemies in scene
-            var enemies = FindObjectsByType<Enemy>();
-            for (int i = 0; i < enemies.Length; i++)
+            // Find enemies in scene via active registry (no FindObjectsByType)
+            var enemies = Enemy.ActiveEnemies;
+            for (int i = 0; i < enemies.Count; i++)
             {
                 Enemy e = enemies[i];
                 if (e == null || e.IsDead) continue;

@@ -4,6 +4,7 @@ using Alchemy.Inspector;
 
 namespace Game.Core
 {
+    [DefaultExecutionOrder(-50)]
     public class PlayerWallet : MonoBehaviour
     {
         [Title("Starting Currency")]

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
 using DG.Tweening;
 using Alchemy.Inspector;
 using Game.Core;
@@ -38,10 +37,8 @@ namespace Game.UI
 
         private void OnEnable()
         {
-            if (RunProgressionManager.Instance != null)
-            {
-                RunProgressionManager.Instance.UpgradeSelectionRequested += ShowSelection;
-            }
+            RunProgressionManager.Instance.UpgradeSelectionRequested += ShowSelection;
+            RegisterInput();
         }
 
         private void OnDisable()
@@ -51,23 +48,39 @@ namespace Game.UI
                 RunProgressionManager.Instance.UpgradeSelectionRequested -= ShowSelection;
             }
 
+            UnregisterInput();
             _fadeTween?.Kill();
         }
 
-        private void Update()
+        private void OnDestroy()
+        {
+            UnregisterInput();
+        }
+
+        private void RegisterInput()
+        {
+            UnregisterInput();
+            if (InputManager.Instance == null) return;
+
+            InputManager.Instance.SkipPressed += OnSkipPressed;
+        }
+
+        private void UnregisterInput()
+        {
+            if (InputManager.Instance == null) return;
+
+            InputManager.Instance.SkipPressed -= OnSkipPressed;
+        }
+
+        private void OnSkipPressed()
         {
             if (!_isOpen) return;
-
-            // Spacebar skips card selection per GDD
-            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
-            {
-                OnSkipClicked();
-            }
+            OnSkipClicked();
         }
 
         public void ShowSelection(List<UpgradeData> upgrades)
         {
-            if (_panelRoot == null || upgrades == null || upgrades.Count == 0) return;
+            if (upgrades == null || upgrades.Count == 0) return;
 
             _isOpen = true;
             _panelRoot.SetActive(true);
@@ -88,10 +101,7 @@ namespace Game.UI
                 }
             }
 
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.SetState(GameState.UpgradeSelection);
-            }
+            GameManager.Instance.SetState(GameState.UpgradeSelection);
 
             Time.timeScale = 0f;
 
@@ -109,11 +119,7 @@ namespace Game.UI
 
         private void OnUpgradeChosen(UpgradeData upgrade)
         {
-            if (RunProgressionManager.Instance != null)
-            {
-                RunProgressionManager.Instance.ApplyUpgrade(upgrade);
-            }
-
+            RunProgressionManager.Instance.ApplyUpgrade(upgrade);
             Close();
         }
 
@@ -129,10 +135,7 @@ namespace Game.UI
 
             Time.timeScale = 1f;
 
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.SetState(GameState.Playing);
-            }
+            GameManager.Instance.SetState(GameState.Playing);
 
             if (_canvasGroup != null)
             {
@@ -156,10 +159,7 @@ namespace Game.UI
         [Button]
         public void TestOpen()
         {
-            if (RunProgressionManager.Instance != null)
-            {
-                RunProgressionManager.Instance.RequestUpgradeSelection();
-            }
+            RunProgressionManager.Instance.RequestUpgradeSelection();
         }
     }
 }

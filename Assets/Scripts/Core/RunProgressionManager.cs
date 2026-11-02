@@ -7,6 +7,7 @@ using Game.Upgrades;
 
 namespace Game.Core
 {
+    [DefaultExecutionOrder(-50)]
     public class RunProgressionManager : MonoBehaviour
     {
         public static RunProgressionManager Instance { get; private set; }
@@ -58,18 +59,6 @@ namespace Game.Core
             }
 
             Instance = this;
-
-            if (_castle == null)
-            {
-                _castle = FindAnyObjectByType<Castle>();
-            }
-
-            if (_upgradeDatabase == null)
-            {
-                _upgradeDatabase = ScriptableObject.CreateInstance<UpgradeDatabase>();
-                _upgradeDatabase.PopulateWithDefaultUpgrades();
-            }
-
             RecalculateHonorThreshold();
         }
 
@@ -118,8 +107,6 @@ namespace Game.Core
 
         public void RequestUpgradeSelection()
         {
-            if (_upgradeDatabase == null) return;
-
             List<UpgradeData> choices = _upgradeDatabase.GetRandomUpgrades(3, _appliedUpgrades);
             UpgradeSelectionRequested?.Invoke(choices);
         }

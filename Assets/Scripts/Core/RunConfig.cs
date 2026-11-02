@@ -4,6 +4,7 @@ using Game.Data;
 
 namespace Game.Core
 {
+    [DefaultExecutionOrder(-150)]
     public class RunConfig : MonoBehaviour
     {
         public static RunConfig Instance { get; private set; }

@@ -14,7 +14,6 @@ namespace Game.UI.MainMenu
         [SerializeField] private List<WeaponSelectionData> _allWeapons = new();
         [SerializeField] private TMP_Text _nameText;
         [SerializeField] private TMP_Text _descriptionText;
-        [SerializeField] private Image _iconImage;
 
         [Title("Controls")]
         [SerializeField] private Button _prevButton;
@@ -59,12 +58,6 @@ namespace Game.UI.MainMenu
 
             if (_nameText != null) _nameText.text = weapon.WeaponName;
             if (_descriptionText != null) _descriptionText.text = weapon.Description;
-
-            if (_iconImage != null && weapon.Icon != null)
-            {
-                _iconImage.sprite = weapon.Icon;
-                _iconImage.gameObject.SetActive(true);
-            }
 
             bool isUnlocked = MetaSaveManager.IsWeaponUnlocked(weapon.Id);
 

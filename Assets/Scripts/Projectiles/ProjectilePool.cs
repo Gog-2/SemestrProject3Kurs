@@ -63,30 +63,12 @@ namespace Game.Projectiles
 
         private Projectile CreateProjectile()
         {
-            Projectile projectile;
-            if (_projectilePrefab != null)
+            if (_projectilePrefab == null)
             {
-                projectile = Instantiate(_projectilePrefab, transform);
-            }
-            else
-            {
-                // Fallback runtime creation if prefab not assigned
-                GameObject go = new GameObject("RuntimeProjectile");
-                go.transform.SetParent(transform);
-                var sr = go.AddComponent<SpriteRenderer>();
-                var col = go.AddComponent<CircleCollider2D>();
-                col.isTrigger = true;
-                col.radius = 0.25f;
-                var rb = go.AddComponent<Rigidbody2D>();
-                rb.bodyType = RigidbodyType2D.Kinematic;
-                rb.useFullKinematicContacts = true;
-                int projLayer = LayerMask.NameToLayer("Projectile");
-                if (projLayer != -1) go.layer = projLayer;
-                sr.sortingLayerName = "Projectiles";
-                sr.sortingOrder = 15;
-                projectile = go.AddComponent<Projectile>();
+                throw new System.InvalidOperationException("ProjectilePool requires _projectilePrefab to be assigned.");
             }
 
+            Projectile projectile = Instantiate(_projectilePrefab, transform);
             projectile.gameObject.SetActive(false);
             return projectile;
         }

@@ -57,22 +57,9 @@ namespace Game.UI
             }
         }
 
-        private void Start()
-        {
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.PauseToggled -= OnPauseToggled;
-                GameManager.Instance.PauseToggled += OnPauseToggled;
-            }
-        }
-
         private void OnEnable()
         {
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.PauseToggled -= OnPauseToggled;
-                GameManager.Instance.PauseToggled += OnPauseToggled;
-            }
+            GameManager.Instance.PauseToggled += OnPauseToggled;
         }
 
         private void OnDisable()
@@ -136,30 +123,17 @@ namespace Game.UI
 
         private void OnResumeClicked()
         {
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.ResumeGame();
-            }
-            else
-            {
-                SetVisible(false);
-            }
+            GameManager.Instance.ResumeGame();
         }
 
         private void OnRestartClicked()
         {
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.RestartCurrentScene();
-            }
+            GameManager.Instance.RestartCurrentScene();
         }
 
         private void OnMainMenuClicked()
         {
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.LoadMainMenu();
-            }
+            GameManager.Instance.LoadMainMenu();
         }
     }
 }

@@ -110,20 +110,19 @@ namespace Game.UI.BuildingUI
 
         private void Start()
         {
-            if (BuildingManager.Instance != null)
-            {
-                BuildingManager.Instance.SelectedBuildingChanged -= OnBuildingSelected;
-                BuildingManager.Instance.SelectedBuildingChanged += OnBuildingSelected;
-            }
+            Subscribe();
         }
 
         private void OnEnable()
         {
-            if (BuildingManager.Instance != null)
-            {
-                BuildingManager.Instance.SelectedBuildingChanged -= OnBuildingSelected;
-                BuildingManager.Instance.SelectedBuildingChanged += OnBuildingSelected;
-            }
+            Subscribe();
+        }
+
+        private void Subscribe()
+        {
+            if (BuildingManager.Instance == null) return;
+            BuildingManager.Instance.SelectedBuildingChanged -= OnBuildingSelected;
+            BuildingManager.Instance.SelectedBuildingChanged += OnBuildingSelected;
         }
 
         private void OnDisable()
@@ -268,7 +267,7 @@ namespace Game.UI.BuildingUI
 
         private void OnDestroyClicked()
         {
-            if (_currentBuilding != null && BuildingManager.Instance != null)
+            if (_currentBuilding != null)
             {
                 BuildingManager.Instance.SellBuilding(_currentBuilding);
             }
@@ -276,7 +275,7 @@ namespace Game.UI.BuildingUI
 
         private void OnMoveClicked()
         {
-            if (_currentBuilding != null && BuildingManager.Instance != null)
+            if (_currentBuilding != null)
             {
                 BuildingManager.Instance.StartMoving(_currentBuilding);
             }
@@ -284,7 +283,7 @@ namespace Game.UI.BuildingUI
 
         private void OnUpgradeClicked()
         {
-            if (_currentBuilding != null && BuildingManager.Instance != null)
+            if (_currentBuilding != null)
             {
                 BuildingManager.Instance.UpgradeBuilding(_currentBuilding);
                 RefreshInfo();

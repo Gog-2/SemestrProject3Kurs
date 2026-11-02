@@ -338,7 +338,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4281588223
   m_fontColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -351,7 +351,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -764,7 +764,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4281588223
   m_fontColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -777,7 +777,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -1033,7 +1033,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -1286,10 +1286,10 @@ RectTransform:
   - {fileID: 899018972}
   m_Father: {fileID: 6003181228387756205}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 50}
-  m_SizeDelta: {x: 480, y: 80}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 359.9054, y: 67.567566}
+  m_SizeDelta: {x: 690.8108, y: 115.1351}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &347909341
 MonoBehaviour:
@@ -1452,7 +1452,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -1688,7 +1688,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -2221,7 +2221,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -2377,7 +2377,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -2709,111 +2709,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 587900804}
   m_CullTransparentMesh: 1
---- !u!1 &619394800
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 619394802}
-  - component: {fileID: 619394801}
-  m_Layer: 0
-  m_Name: Global Light 2D
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &619394801
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 619394800}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ComponentVersion: 4
-  m_LightType: 4
-  m_BlendStyleIndex: 0
-  m_Light2DProvider:
-    rid: -2
-  m_SelectionSources:
-    rid: 5368706704872833240
-  m_FalloffIntensity: 0.5
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
-  m_LightVolumeIntensity: 1
-  m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 00000000
-  m_LightCookieSprite: {fileID: 0}
-  m_DeprecatedPointLightCookieSprite: {fileID: 0}
-  m_LightOrder: 0
-  m_AlphaBlendOnOverlap: 0
-  m_OverlapOperation: 0
-  m_NormalMapDistance: 3
-  m_NormalMapQuality: 2
-  m_UseNormalMap: 0
-  m_ShadowsEnabled: 0
-  m_ShadowIntensity: 0.75
-  m_ShadowSoftness: 0
-  m_ShadowSoftnessFalloffIntensity: 0.5
-  m_ShadowVolumeIntensityEnabled: 0
-  m_ShadowVolumeIntensity: 0.75
-  m_LocalBounds:
-    m_Center: {x: 0, y: -0.00000011920929, z: 0}
-    m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
-  m_PointLightInnerAngle: 360
-  m_PointLightOuterAngle: 360
-  m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 1
-  m_ShapeLightParametricSides: 5
-  m_ShapeLightParametricAngleOffset: 0
-  m_ShapeLightParametricRadius: 1
-  m_ShapeLightFalloffSize: 0.5
-  m_ShapeLightFalloffOffset: {x: 0, y: 0}
-  m_ShapePath:
-  - {x: -0.5, y: -0.5, z: 0}
-  - {x: 0.5, y: -0.5, z: 0}
-  - {x: 0.5, y: 0.5, z: 0}
-  - {x: -0.5, y: 0.5, z: 0}
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 5368706704872833240
-      type: {class: Light2DProviderSources, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.2D.Runtime}
-      data:
-        m_SelectedHashCode: 4
-        m_SelectedSource:
-          rid: -2
-        m_Provider2DCache:
-          rid: 5368706704872833272
-    - rid: 5368706704872833272
-      type: {class: 'Provider2DCache`1[[UnityEngine.Rendering.Universal.Light2DProvider, Unity.RenderPipelines.Universal.2D.Runtime]]', ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.2D.Runtime}
-      data:
-        m_Cache: []
---- !u!4 &619394802
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 619394800}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &629324301
 GameObject:
   m_ObjectHideFlags: 0
@@ -2880,7 +2775,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278512639
   m_fontColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -2893,7 +2788,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -3399,10 +3294,10 @@ RectTransform:
   - {fileID: 890373876}
   m_Father: {fileID: 347909340}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 80, y: 70}
+  m_SizeDelta: {x: 110.6814, y: 96.8462}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &709657472
 MonoBehaviour:
@@ -3416,12 +3311,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ab14214e94039b49bbfe0eb44a0eca8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.UI.BuildingUI.BuildingSlotButton
-  _iconImage: {fileID: 0}
   _hotkeyText: {fileID: 818261655}
   _costText: {fileID: 890373877}
   _nameText: {fileID: 1854614493}
   _background: {fileID: 709657473}
-  _lockOverlay: {fileID: 0}
   _availableColor: {r: 0.2, g: 0.35, b: 0.5, a: 1}
   _insufficientCoinsColor: {r: 0.4, g: 0.2, b: 0.2, a: 0.8}
 --- !u!114 &709657473
@@ -4308,7 +4201,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278512639
   m_fontColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -4321,7 +4214,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -4458,7 +4351,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -4576,7 +4469,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -4774,6 +4667,74 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1001 &855084389
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6902287193809089313, guid: 6f99e7dd951e71a40969b09d3fae987e, type: 3}
+      propertyPath: m_Name
+      value: BuildingGhost
+      objectReference: {fileID: 0}
+    - target: {fileID: 9199510797441251447, guid: 6f99e7dd951e71a40969b09d3fae987e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9199510797441251447, guid: 6f99e7dd951e71a40969b09d3fae987e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9199510797441251447, guid: 6f99e7dd951e71a40969b09d3fae987e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9199510797441251447, guid: 6f99e7dd951e71a40969b09d3fae987e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9199510797441251447, guid: 6f99e7dd951e71a40969b09d3fae987e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9199510797441251447, guid: 6f99e7dd951e71a40969b09d3fae987e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9199510797441251447, guid: 6f99e7dd951e71a40969b09d3fae987e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9199510797441251447, guid: 6f99e7dd951e71a40969b09d3fae987e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9199510797441251447, guid: 6f99e7dd951e71a40969b09d3fae987e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9199510797441251447, guid: 6f99e7dd951e71a40969b09d3fae987e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6f99e7dd951e71a40969b09d3fae987e, type: 3}
+--- !u!114 &855084390 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5189515530997947670, guid: 6f99e7dd951e71a40969b09d3fae987e, type: 3}
+  m_PrefabInstance: {fileID: 855084389}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea2fc5a6fdead9149b5097d7ab8264de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Buildings.BuildingGhostView
 --- !u!1 &883843969
 GameObject:
   m_ObjectHideFlags: 0
@@ -4977,7 +4938,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4281588223
   m_fontColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -4990,7 +4951,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -5084,10 +5045,10 @@ RectTransform:
   - {fileID: 1081614318}
   m_Father: {fileID: 347909340}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 80, y: 70}
+  m_SizeDelta: {x: 110.6814, y: 96.8462}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &899018973
 MonoBehaviour:
@@ -5101,12 +5062,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ab14214e94039b49bbfe0eb44a0eca8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.UI.BuildingUI.BuildingSlotButton
-  _iconImage: {fileID: 0}
   _hotkeyText: {fileID: 1603285017}
   _costText: {fileID: 1081614319}
   _nameText: {fileID: 818770405}
   _background: {fileID: 899018974}
-  _lockOverlay: {fileID: 0}
   _availableColor: {r: 0.2, g: 0.35, b: 0.5, a: 1}
   _insufficientCoinsColor: {r: 0.4, g: 0.2, b: 0.2, a: 0.8}
 --- !u!114 &899018974
@@ -5363,7 +5322,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -5477,7 +5436,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.UI.UpgradeCardUI
   _titleText: {fileID: 791793284}
   _descriptionText: {fileID: 1230976184}
-  _iconImage: {fileID: 0}
   _rarityText: {fileID: 1217459746}
   _rarityBackground: {fileID: 190763096}
   _selectButton: {fileID: 1059029592}
@@ -5951,7 +5909,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29f935ec2f6e6d44cab6a6c65ca3d9a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Projectiles.ProjectilePool
-  _projectilePrefab: {fileID: 0}
+  _projectilePrefab: {fileID: 6149038903572547216, guid: a3ae7a4da095fc5499f667d48c7dab3c, type: 3}
   _defaultCapacity: 30
   _maxPoolSize: 150
 --- !u!114 &1059899311
@@ -5979,7 +5937,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Core.RunProgressionManager
   _castle: {fileID: 75240530}
-  _upgradeDatabase: {fileID: 0}
+  _upgradeDatabase: {fileID: 11400000, guid: 92201469f02fab3448fe7a70654a53b2, type: 2}
 --- !u!114 &1059899313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6022,10 +5980,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17a0202946e971c4597071c8c85eec8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Buildings.BuildingManager
-  _gridMap: {fileID: 0}
-  _ghostView: {fileID: 0}
-  _wallet: {fileID: 0}
-  _mainCamera: {fileID: 0}
+  _gridMap: {fileID: 2099631945}
+  _ghostView: {fileID: 855084390}
+  _wallet: {fileID: 8517314257513837285}
+  _mainCamera: {fileID: 3628190760565267360}
   _contextMenuUI: {fileID: 812149281}
   _slots:
   - {fileID: 11400000, guid: d96c98ae0dc59f74e9df195c507ff3f1, type: 2}
@@ -6098,7 +6056,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4281588223
   m_fontColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -6111,7 +6069,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -6245,6 +6203,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1085962094}
   m_CullTransparentMesh: 1
+--- !u!1 &1130518309
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1130518311}
+  - component: {fileID: 1130518310}
+  m_Layer: 0
+  m_Name: '[RunConfig]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1130518310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130518309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2411f1091dca6474d8cc0256792f03aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Core.RunConfig
+  _selectedKnight: {fileID: 11400000, guid: 24b648d758caadf43bf903b86da8ddd4, type: 2}
+  _selectedArena: {fileID: 11400000, guid: 153b48a920e94de458906da4a8ae1522, type: 2}
+  _selectedWeapon: {fileID: 11400000, guid: 8bbad9c1ba2171d43a5a8fba0bf6857e, type: 2}
+--- !u!4 &1130518311
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130518309}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1207151146
 GameObject:
   m_ObjectHideFlags: 0
@@ -6580,7 +6585,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -6831,10 +6836,10 @@ RectTransform:
   - {fileID: 89349237}
   m_Father: {fileID: 347909340}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 80, y: 70}
+  m_SizeDelta: {x: 110.6814, y: 96.8462}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1257940608
 MonoBehaviour:
@@ -6848,12 +6853,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ab14214e94039b49bbfe0eb44a0eca8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.UI.BuildingUI.BuildingSlotButton
-  _iconImage: {fileID: 0}
   _hotkeyText: {fileID: 2097380710}
   _costText: {fileID: 89349238}
   _nameText: {fileID: 1306653705}
   _background: {fileID: 1257940609}
-  _lockOverlay: {fileID: 0}
   _availableColor: {r: 0.2, g: 0.35, b: 0.5, a: 1}
   _insufficientCoinsColor: {r: 0.4, g: 0.2, b: 0.2, a: 0.8}
 --- !u!114 &1257940609
@@ -6973,7 +6976,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -7152,6 +7155,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1342645081}
   m_CullTransparentMesh: 1
+--- !u!1 &1426267837
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1426267839}
+  - component: {fileID: 1426267838}
+  m_Layer: 0
+  m_Name: '[InputManager]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1426267838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426267837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29fb4ee42496b5a408e5ae7c48ba4e09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Core.InputManager
+  _tapThresholdPixels: 20
+  _maxTapDuration: 0.35
+  _pinchSensitivity: 0.01
+--- !u!4 &1426267839
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426267837}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1428088745
 GameObject:
   m_ObjectHideFlags: 0
@@ -7339,7 +7389,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4281588223
   m_fontColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -7352,7 +7402,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -7521,6 +7571,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1449257733}
   m_CullTransparentMesh: 1
+--- !u!1 &1514511306
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1514511307}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1514511307
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514511306}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 75240532}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1525327017
 GameObject:
   m_ObjectHideFlags: 0
@@ -7836,7 +7917,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.UI.UpgradeCardUI
   _titleText: {fileID: 911081445}
   _descriptionText: {fileID: 675234110}
-  _iconImage: {fileID: 0}
   _rarityText: {fileID: 759118770}
   _rarityBackground: {fileID: 255767059}
   _selectButton: {fileID: 1428088747}
@@ -7948,7 +8028,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278512639
   m_fontColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -7961,7 +8041,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -8258,10 +8338,10 @@ RectTransform:
   - {fileID: 265043291}
   m_Father: {fileID: 347909340}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 80, y: 70}
+  m_SizeDelta: {x: 110.6814, y: 96.8462}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1805355698
 MonoBehaviour:
@@ -8275,12 +8355,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ab14214e94039b49bbfe0eb44a0eca8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.UI.BuildingUI.BuildingSlotButton
-  _iconImage: {fileID: 0}
   _hotkeyText: {fileID: 629324303}
   _costText: {fileID: 265043292}
   _nameText: {fileID: 950930061}
   _background: {fileID: 1805355699}
-  _lockOverlay: {fileID: 0}
   _availableColor: {r: 0.2, g: 0.35, b: 0.5, a: 1}
   _insufficientCoinsColor: {r: 0.4, g: 0.2, b: 0.2, a: 0.8}
 --- !u!114 &1805355699
@@ -8478,10 +8556,10 @@ RectTransform:
   - {fileID: 1440084906}
   m_Father: {fileID: 347909340}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 80, y: 70}
+  m_SizeDelta: {x: 110.6814, y: 96.8462}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1846428170
 MonoBehaviour:
@@ -8495,12 +8573,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ab14214e94039b49bbfe0eb44a0eca8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.UI.BuildingUI.BuildingSlotButton
-  _iconImage: {fileID: 0}
   _hotkeyText: {fileID: 1910031133}
   _costText: {fileID: 1440084907}
   _nameText: {fileID: 399930586}
   _background: {fileID: 1846428171}
-  _lockOverlay: {fileID: 0}
   _availableColor: {r: 0.2, g: 0.35, b: 0.5, a: 1}
   _insufficientCoinsColor: {r: 0.4, g: 0.2, b: 0.2, a: 0.8}
 --- !u!114 &1846428171
@@ -8620,7 +8696,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -8744,7 +8820,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278512639
   m_fontColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -8757,7 +8833,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -8867,12 +8943,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.UI.WeaponAimUI
   _weapon: {fileID: 8517314257513837282}
-  _mainCamera: {fileID: 0}
+  _mainCamera: {fileID: 3628190760565267360}
   _aimLine: {fileID: 0}
   _aimReticle: {fileID: 0}
-  _cooldownFillImage: {fileID: 0}
+  _aimColor: {r: 1, g: 0.85, b: 0.2, a: 0.9}
+  _reticleRadius: 0.45
+  _reticleSegments: 48
   _cooldownText: {fileID: 268668348}
-  _readyIndicator: {fileID: 0}
 --- !u!114 &1953412103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9566,7 +9643,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.UI.UpgradeCardUI
   _titleText: {fileID: 648424753}
   _descriptionText: {fileID: 710131060}
-  _iconImage: {fileID: 0}
   _rarityText: {fileID: 701404391}
   _rarityBackground: {fileID: 1085962096}
   _selectButton: {fileID: 1342645083}
@@ -9920,7 +9996,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278512639
   m_fontColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -9933,7 +10009,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -10309,6 +10385,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 58a11a9f1930c7c49be8d97806bd2666, type: 3}
+--- !u!20 &3628190760565267360 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 6510068101840523361, guid: 58a11a9f1930c7c49be8d97806bd2666, type: 3}
+  m_PrefabInstance: {fileID: 3628190760565267359}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6003181228387756204
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10463,7 +10544,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7168135446475697647, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1514511307}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2805517330166322928, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
       insertIndex: -1
@@ -10497,11 +10581,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cfe1dae7faccce4aa8236170b9fd627, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Weapons.HeavyBallista
-  _castle: {fileID: 0}
+  _castle: {fileID: 75240530}
   _currentLevel: 1
   _cooldownTimer: 0
-  _data: {fileID: 0}
-  _firePoint: {fileID: 0}
+  _data: {fileID: 11400000, guid: 2234209aafea9eb4c9bb85e4a18ccac5, type: 2}
+  _firePoint: {fileID: 1514511307}
 --- !u!114 &8517314257513837285 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3269875367417438568, guid: 312bad6da03751c4a8784f178f3e08d1, type: 3}
@@ -10517,8 +10601,10 @@ MonoBehaviour:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 619394802}
   - {fileID: 8517314257513837279}
   - {fileID: 6003181228387756204}
   - {fileID: 3628190760565267359}
   - {fileID: 1059899314}
+  - {fileID: 1426267839}
+  - {fileID: 855084389}
+  - {fileID: 1130518311}

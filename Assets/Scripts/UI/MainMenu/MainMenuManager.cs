@@ -32,14 +32,6 @@ namespace Game.UI.MainMenu
 
         private void Awake()
         {
-            // Ensure RunConfig exists
-            if (RunConfig.Instance == null)
-            {
-                var runConfigGo = new GameObject("RunConfig");
-                runConfigGo.AddComponent<RunConfig>();
-            }
-
-            // Bind buttons
             if (_playButton != null) _playButton.onClick.AddListener(OpenKnightSelection);
             if (_shopButton != null) _shopButton.onClick.AddListener(OpenShop);
             if (_quitButton != null) _quitButton.onClick.AddListener(OnQuitClicked);

@@ -111,6 +111,166 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": true,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""PointerPosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""228cfd05-b1a7-4d7a-a4e9-114cb5daff83"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""PrimaryAction"",
+                    ""type"": ""Button"",
+                    ""id"": ""038fbfe4-ae6d-472d-8b0d-587265bf8ff8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""SecondaryAction"",
+                    ""type"": ""Button"",
+                    ""id"": ""52857e4e-0331-419a-97a7-5ca2a1290333"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""Cancel"",
+                    ""type"": ""Button"",
+                    ""id"": ""233d98fb-ae9e-47f2-95f0-6a9eb786a599"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""80ff8c3a-0e9e-4b46-a4f7-e4359050d2bb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""SelectSlot1"",
+                    ""type"": ""Button"",
+                    ""id"": ""0185e49c-a19e-436f-87d2-7c3905cfd111"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""SelectSlot2"",
+                    ""type"": ""Button"",
+                    ""id"": ""0285e49c-a19e-436f-87d2-7c3905cfd222"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""SelectSlot3"",
+                    ""type"": ""Button"",
+                    ""id"": ""0385e49c-a19e-436f-87d2-7c3905cfd333"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""SelectSlot4"",
+                    ""type"": ""Button"",
+                    ""id"": ""0485e49c-a19e-436f-87d2-7c3905cfd444"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""SelectSlot5"",
+                    ""type"": ""Button"",
+                    ""id"": ""0585e49c-a19e-436f-87d2-7c3905cfd555"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""Sell"",
+                    ""type"": ""Button"",
+                    ""id"": ""0685e49c-a19e-436f-87d2-7c3905cfd666"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""MoveBuilding"",
+                    ""type"": ""Button"",
+                    ""id"": ""0785e49c-a19e-436f-87d2-7c3905cfd777"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""Upgrade"",
+                    ""type"": ""Button"",
+                    ""id"": ""0885e49c-a19e-436f-87d2-7c3905cfd888"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""ToggleAim"",
+                    ""type"": ""Button"",
+                    ""id"": ""0985e49c-a19e-436f-87d2-7c3905cfd999"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""Skip"",
+                    ""type"": ""Button"",
+                    ""id"": ""1085e49c-a19e-436f-87d2-7c3905cfdaaa"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""ShiftModifier"",
+                    ""type"": ""Button"",
+                    ""id"": ""1185e49c-a19e-436f-87d2-7c3905cfdbbb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -170,6 +330,72 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
+                    ""name"": ""Arrows"",
+                    ""id"": ""8c919d42-ef15-4ba8-9a67-27b233a7e0a2"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""672462db-b09e-4e42-9f37-0cfd694cb9b0"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""766ef581-ea91-4509-906d-495116715f3e"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""908d003d-8869-42b8-a733-1ec098bb97db"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""5d24660e-87dc-4015-8fbe-8167bca9c817"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2376f92a-fa63-4d4d-a2f0-108ecfefad7c"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
                     ""name"": ""1D Axis"",
                     ""id"": ""e5a8568a-7d56-401c-be13-240f5e61ec11"",
                     ""path"": ""1DAxis"",
@@ -201,6 +427,237 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
                     ""action"": ""Scroll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""673fbb36-963a-446a-85ba-75e119ea5fa7"",
+                    ""path"": ""<Pointer>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PointerPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c13e590f-07ec-44f2-95f2-491959828551"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PrimaryAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4b684cb3-7f8f-4ba3-a751-2db475fb1737"",
+                    ""path"": ""<Touchscreen>/primaryTouch/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PrimaryAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d13e590f-07ec-44f2-95f2-491959828552"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PrimaryAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e13e590f-07ec-44f2-95f2-491959828553"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SecondaryAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f13e590f-07ec-44f2-95f2-491959828554"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SecondaryAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a13e590f-07ec-44f2-95f2-491959828555"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b13e590f-07ec-44f2-95f2-491959828556"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c13e590f-07ec-44f2-95f2-491959828557"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d13e590f-07ec-44f2-95f2-491959828558"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""013e590f-07ec-44f2-95f2-491959828559"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectSlot1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""113e590f-07ec-44f2-95f2-491959828560"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectSlot2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""213e590f-07ec-44f2-95f2-491959828561"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectSlot3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""313e590f-07ec-44f2-95f2-491959828562"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectSlot4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""413e590f-07ec-44f2-95f2-491959828563"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectSlot5"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""513e590f-07ec-44f2-95f2-491959828564"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sell"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""613e590f-07ec-44f2-95f2-491959828565"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MoveBuilding"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""713e590f-07ec-44f2-95f2-491959828566"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Upgrade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""813e590f-07ec-44f2-95f2-491959828567"",
+                    ""path"": ""<Keyboard>/v"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleAim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""913e590f-07ec-44f2-95f2-491959828568"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a13e590f-07ec-44f2-95f2-491959828569"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShiftModifier"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -211,6 +668,22 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Scroll = m_Player.FindAction("Scroll", throwIfNotFound: true);
+        m_Player_PointerPosition = m_Player.FindAction("PointerPosition", throwIfNotFound: true);
+        m_Player_PrimaryAction = m_Player.FindAction("PrimaryAction", throwIfNotFound: true);
+        m_Player_SecondaryAction = m_Player.FindAction("SecondaryAction", throwIfNotFound: true);
+        m_Player_Cancel = m_Player.FindAction("Cancel", throwIfNotFound: true);
+        m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
+        m_Player_SelectSlot1 = m_Player.FindAction("SelectSlot1", throwIfNotFound: true);
+        m_Player_SelectSlot2 = m_Player.FindAction("SelectSlot2", throwIfNotFound: true);
+        m_Player_SelectSlot3 = m_Player.FindAction("SelectSlot3", throwIfNotFound: true);
+        m_Player_SelectSlot4 = m_Player.FindAction("SelectSlot4", throwIfNotFound: true);
+        m_Player_SelectSlot5 = m_Player.FindAction("SelectSlot5", throwIfNotFound: true);
+        m_Player_Sell = m_Player.FindAction("Sell", throwIfNotFound: true);
+        m_Player_MoveBuilding = m_Player.FindAction("MoveBuilding", throwIfNotFound: true);
+        m_Player_Upgrade = m_Player.FindAction("Upgrade", throwIfNotFound: true);
+        m_Player_ToggleAim = m_Player.FindAction("ToggleAim", throwIfNotFound: true);
+        m_Player_Skip = m_Player.FindAction("Skip", throwIfNotFound: true);
+        m_Player_ShiftModifier = m_Player.FindAction("ShiftModifier", throwIfNotFound: true);
     }
 
     ~@Sheme()
@@ -293,6 +766,22 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Scroll;
+    private readonly InputAction m_Player_PointerPosition;
+    private readonly InputAction m_Player_PrimaryAction;
+    private readonly InputAction m_Player_SecondaryAction;
+    private readonly InputAction m_Player_Cancel;
+    private readonly InputAction m_Player_Pause;
+    private readonly InputAction m_Player_SelectSlot1;
+    private readonly InputAction m_Player_SelectSlot2;
+    private readonly InputAction m_Player_SelectSlot3;
+    private readonly InputAction m_Player_SelectSlot4;
+    private readonly InputAction m_Player_SelectSlot5;
+    private readonly InputAction m_Player_Sell;
+    private readonly InputAction m_Player_MoveBuilding;
+    private readonly InputAction m_Player_Upgrade;
+    private readonly InputAction m_Player_ToggleAim;
+    private readonly InputAction m_Player_Skip;
+    private readonly InputAction m_Player_ShiftModifier;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -312,6 +801,70 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Scroll".
         /// </summary>
         public InputAction @Scroll => m_Wrapper.m_Player_Scroll;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/PointerPosition".
+        /// </summary>
+        public InputAction @PointerPosition => m_Wrapper.m_Player_PointerPosition;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/PrimaryAction".
+        /// </summary>
+        public InputAction @PrimaryAction => m_Wrapper.m_Player_PrimaryAction;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SecondaryAction".
+        /// </summary>
+        public InputAction @SecondaryAction => m_Wrapper.m_Player_SecondaryAction;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Cancel".
+        /// </summary>
+        public InputAction @Cancel => m_Wrapper.m_Player_Cancel;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Pause".
+        /// </summary>
+        public InputAction @Pause => m_Wrapper.m_Player_Pause;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SelectSlot1".
+        /// </summary>
+        public InputAction @SelectSlot1 => m_Wrapper.m_Player_SelectSlot1;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SelectSlot2".
+        /// </summary>
+        public InputAction @SelectSlot2 => m_Wrapper.m_Player_SelectSlot2;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SelectSlot3".
+        /// </summary>
+        public InputAction @SelectSlot3 => m_Wrapper.m_Player_SelectSlot3;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SelectSlot4".
+        /// </summary>
+        public InputAction @SelectSlot4 => m_Wrapper.m_Player_SelectSlot4;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SelectSlot5".
+        /// </summary>
+        public InputAction @SelectSlot5 => m_Wrapper.m_Player_SelectSlot5;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Sell".
+        /// </summary>
+        public InputAction @Sell => m_Wrapper.m_Player_Sell;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/MoveBuilding".
+        /// </summary>
+        public InputAction @MoveBuilding => m_Wrapper.m_Player_MoveBuilding;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Upgrade".
+        /// </summary>
+        public InputAction @Upgrade => m_Wrapper.m_Player_Upgrade;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ToggleAim".
+        /// </summary>
+        public InputAction @ToggleAim => m_Wrapper.m_Player_ToggleAim;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Skip".
+        /// </summary>
+        public InputAction @Skip => m_Wrapper.m_Player_Skip;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ShiftModifier".
+        /// </summary>
+        public InputAction @ShiftModifier => m_Wrapper.m_Player_ShiftModifier;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -344,6 +897,54 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
             @Scroll.started += instance.OnScroll;
             @Scroll.performed += instance.OnScroll;
             @Scroll.canceled += instance.OnScroll;
+            @PointerPosition.started += instance.OnPointerPosition;
+            @PointerPosition.performed += instance.OnPointerPosition;
+            @PointerPosition.canceled += instance.OnPointerPosition;
+            @PrimaryAction.started += instance.OnPrimaryAction;
+            @PrimaryAction.performed += instance.OnPrimaryAction;
+            @PrimaryAction.canceled += instance.OnPrimaryAction;
+            @SecondaryAction.started += instance.OnSecondaryAction;
+            @SecondaryAction.performed += instance.OnSecondaryAction;
+            @SecondaryAction.canceled += instance.OnSecondaryAction;
+            @Cancel.started += instance.OnCancel;
+            @Cancel.performed += instance.OnCancel;
+            @Cancel.canceled += instance.OnCancel;
+            @Pause.started += instance.OnPause;
+            @Pause.performed += instance.OnPause;
+            @Pause.canceled += instance.OnPause;
+            @SelectSlot1.started += instance.OnSelectSlot1;
+            @SelectSlot1.performed += instance.OnSelectSlot1;
+            @SelectSlot1.canceled += instance.OnSelectSlot1;
+            @SelectSlot2.started += instance.OnSelectSlot2;
+            @SelectSlot2.performed += instance.OnSelectSlot2;
+            @SelectSlot2.canceled += instance.OnSelectSlot2;
+            @SelectSlot3.started += instance.OnSelectSlot3;
+            @SelectSlot3.performed += instance.OnSelectSlot3;
+            @SelectSlot3.canceled += instance.OnSelectSlot3;
+            @SelectSlot4.started += instance.OnSelectSlot4;
+            @SelectSlot4.performed += instance.OnSelectSlot4;
+            @SelectSlot4.canceled += instance.OnSelectSlot4;
+            @SelectSlot5.started += instance.OnSelectSlot5;
+            @SelectSlot5.performed += instance.OnSelectSlot5;
+            @SelectSlot5.canceled += instance.OnSelectSlot5;
+            @Sell.started += instance.OnSell;
+            @Sell.performed += instance.OnSell;
+            @Sell.canceled += instance.OnSell;
+            @MoveBuilding.started += instance.OnMoveBuilding;
+            @MoveBuilding.performed += instance.OnMoveBuilding;
+            @MoveBuilding.canceled += instance.OnMoveBuilding;
+            @Upgrade.started += instance.OnUpgrade;
+            @Upgrade.performed += instance.OnUpgrade;
+            @Upgrade.canceled += instance.OnUpgrade;
+            @ToggleAim.started += instance.OnToggleAim;
+            @ToggleAim.performed += instance.OnToggleAim;
+            @ToggleAim.canceled += instance.OnToggleAim;
+            @Skip.started += instance.OnSkip;
+            @Skip.performed += instance.OnSkip;
+            @Skip.canceled += instance.OnSkip;
+            @ShiftModifier.started += instance.OnShiftModifier;
+            @ShiftModifier.performed += instance.OnShiftModifier;
+            @ShiftModifier.canceled += instance.OnShiftModifier;
         }
 
         /// <summary>
@@ -361,6 +962,54 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
             @Scroll.started -= instance.OnScroll;
             @Scroll.performed -= instance.OnScroll;
             @Scroll.canceled -= instance.OnScroll;
+            @PointerPosition.started -= instance.OnPointerPosition;
+            @PointerPosition.performed -= instance.OnPointerPosition;
+            @PointerPosition.canceled -= instance.OnPointerPosition;
+            @PrimaryAction.started -= instance.OnPrimaryAction;
+            @PrimaryAction.performed -= instance.OnPrimaryAction;
+            @PrimaryAction.canceled -= instance.OnPrimaryAction;
+            @SecondaryAction.started -= instance.OnSecondaryAction;
+            @SecondaryAction.performed -= instance.OnSecondaryAction;
+            @SecondaryAction.canceled -= instance.OnSecondaryAction;
+            @Cancel.started -= instance.OnCancel;
+            @Cancel.performed -= instance.OnCancel;
+            @Cancel.canceled -= instance.OnCancel;
+            @Pause.started -= instance.OnPause;
+            @Pause.performed -= instance.OnPause;
+            @Pause.canceled -= instance.OnPause;
+            @SelectSlot1.started -= instance.OnSelectSlot1;
+            @SelectSlot1.performed -= instance.OnSelectSlot1;
+            @SelectSlot1.canceled -= instance.OnSelectSlot1;
+            @SelectSlot2.started -= instance.OnSelectSlot2;
+            @SelectSlot2.performed -= instance.OnSelectSlot2;
+            @SelectSlot2.canceled -= instance.OnSelectSlot2;
+            @SelectSlot3.started -= instance.OnSelectSlot3;
+            @SelectSlot3.performed -= instance.OnSelectSlot3;
+            @SelectSlot3.canceled -= instance.OnSelectSlot3;
+            @SelectSlot4.started -= instance.OnSelectSlot4;
+            @SelectSlot4.performed -= instance.OnSelectSlot4;
+            @SelectSlot4.canceled -= instance.OnSelectSlot4;
+            @SelectSlot5.started -= instance.OnSelectSlot5;
+            @SelectSlot5.performed -= instance.OnSelectSlot5;
+            @SelectSlot5.canceled -= instance.OnSelectSlot5;
+            @Sell.started -= instance.OnSell;
+            @Sell.performed -= instance.OnSell;
+            @Sell.canceled -= instance.OnSell;
+            @MoveBuilding.started -= instance.OnMoveBuilding;
+            @MoveBuilding.performed -= instance.OnMoveBuilding;
+            @MoveBuilding.canceled -= instance.OnMoveBuilding;
+            @Upgrade.started -= instance.OnUpgrade;
+            @Upgrade.performed -= instance.OnUpgrade;
+            @Upgrade.canceled -= instance.OnUpgrade;
+            @ToggleAim.started -= instance.OnToggleAim;
+            @ToggleAim.performed -= instance.OnToggleAim;
+            @ToggleAim.canceled -= instance.OnToggleAim;
+            @Skip.started -= instance.OnSkip;
+            @Skip.performed -= instance.OnSkip;
+            @Skip.canceled -= instance.OnSkip;
+            @ShiftModifier.started -= instance.OnShiftModifier;
+            @ShiftModifier.performed -= instance.OnShiftModifier;
+            @ShiftModifier.canceled -= instance.OnShiftModifier;
         }
 
         /// <summary>
@@ -415,5 +1064,117 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnScroll(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "PointerPosition" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPointerPosition(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "PrimaryAction" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPrimaryAction(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SecondaryAction" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSecondaryAction(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Cancel" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCancel(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Pause" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPause(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectSlot1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectSlot1(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectSlot2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectSlot2(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectSlot3" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectSlot3(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectSlot4" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectSlot4(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectSlot5" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectSlot5(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Sell" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSell(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MoveBuilding" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMoveBuilding(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Upgrade" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnUpgrade(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ToggleAim" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToggleAim(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Skip" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSkip(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ShiftModifier" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShiftModifier(InputAction.CallbackContext context);
     }
 }

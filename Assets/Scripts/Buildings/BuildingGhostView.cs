@@ -16,17 +16,16 @@ namespace Game.Buildings
 
         private void Awake()
         {
-            if (_spriteRenderer == null)
+            if (_spriteRenderer != null)
             {
-                _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-                if (_spriteRenderer == null)
-                {
-                    _spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
-                }
+                _spriteRenderer.sortingLayerName = "Ghost";
+                _spriteRenderer.sortingOrder = 25;
+            }
+            else
+            {
+                Debug.LogError("BuildingGhostView: _spriteRenderer is not assigned.", this);
             }
 
-            _spriteRenderer.sortingLayerName = "Ghost";
-            _spriteRenderer.sortingOrder = 25;
             gameObject.SetActive(false);
         }
 

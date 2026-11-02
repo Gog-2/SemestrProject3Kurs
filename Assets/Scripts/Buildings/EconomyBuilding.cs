@@ -23,7 +23,7 @@ namespace Game.Buildings
         {
             if (IsDead) return;
 
-            if (GameManager.Instance != null && GameManager.Instance.IsPaused)
+            if (GameManager.Instance.IsPaused)
             {
                 return;
             }
@@ -42,13 +42,13 @@ namespace Game.Buildings
 
             if (_producesDiamonds)
             {
-                PlayerWallet.Instance?.AddDiamonds(amount);
-                RunStatistics.Instance?.AddDiamondsEarned(amount);
+                PlayerWallet.Instance.AddDiamonds(amount);
+                RunStatistics.Instance.AddDiamondsEarned(amount);
             }
             else
             {
-                PlayerWallet.Instance?.AddCoins(amount);
-                RunStatistics.Instance?.AddCoinsEarned(amount);
+                PlayerWallet.Instance.AddCoins(amount);
+                RunStatistics.Instance.AddCoinsEarned(amount);
             }
 
             // Punch animation on production
@@ -65,7 +65,7 @@ namespace Game.Buildings
             float baseInterval = CurrentStats.productionInterval > 0 ? CurrentStats.productionInterval : 10f;
 
             // Economic bonus from progression cards
-            if (RunProgressionManager.Instance != null && !_producesDiamonds)
+            if (!_producesDiamonds)
             {
                 baseInterval = Mathf.Max(1f, baseInterval * (1f - (RunProgressionManager.Instance.ExtraDiamondDropChance > 0 ? 0f : 0f)));
             }

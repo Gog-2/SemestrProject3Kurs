@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76ebddd847785aa4ea113053657105de, type: 3}
+  m_Name: Projectile_BallistaBolt
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Projectiles.ProjectileData
+  _damage: 15
+  _speed: 15
+  _pierceCount: 999
+  _knockbackCells: 1
+  _maxLifetime: 5
+  _sprite: {fileID: 0}
+  _color: {r: 1, g: 1, b: 1, a: 1}
+  _scale: {x: 1, y: 1}

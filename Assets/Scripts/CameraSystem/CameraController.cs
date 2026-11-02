@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Alchemy.Inspector;
 using Game.Core;
 
@@ -34,19 +33,22 @@ namespace Game.CameraSystem
 
         [BoxGroup("Debug")]
         [ShowInInspector, ReadOnly]
-        public float CurrentZoom => _targetCamera.orthographicSize;
+        public float CurrentZoom => _targetCamera != null ? _targetCamera.orthographicSize : 0f;
 
-        private Sheme _input;
-        private InputAction _moveAction;
-        private InputAction _scrollAction;
         private float _targetZoom;
 
         private void Awake()
         {
-            _input = new Sheme();
-            _moveAction = _input.Player.Move;
-            _scrollAction = _input.Player.Scroll;
-            _targetZoom = _targetCamera.orthographicSize;
+            if (_targetCamera == null)
+            {
+                _targetCamera = GetComponent<Camera>();
+                if (_targetCamera == null)
+                {
+                    _targetCamera = Camera.main;
+                }
+            }
+
+            _targetZoom = _targetCamera != null ? _targetCamera.orthographicSize : 10f;
         }
 
         private void Start()
@@ -87,17 +89,16 @@ namespace Game.CameraSystem
 
         private void OnEnable()
         {
-            _input.Enable();
+            if (InputManager.Instance == null) return;
+            InputManager.Instance.TouchPanDelta += OnTouchPanDelta;
         }
 
         private void OnDisable()
         {
-            _input.Disable();
-        }
-
-        private void OnDestroy()
-        {
-            _input?.Dispose();
+            if (InputManager.Instance != null)
+            {
+                InputManager.Instance.TouchPanDelta -= OnTouchPanDelta;
+            }
         }
 
         private void OnValidate()
@@ -110,7 +111,7 @@ namespace Game.CameraSystem
 
         private void LateUpdate()
         {
-            if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing)
+            if (GameManager.Instance.CurrentState != GameState.Playing)
             {
                 return;
             }
@@ -128,16 +129,16 @@ namespace Game.CameraSystem
 
         private void HandleMovement(float dt)
         {
-            Vector2 inputDir = _moveAction.ReadValue<Vector2>();
+            Vector2 inputDir = InputManager.Instance.MoveInput;
 
-            if (_useEdgeScrolling && Application.isFocused && Mouse.current != null)
+            if (_useEdgeScrolling && Application.isFocused && !InputManager.Instance.HasActiveTouch)
             {
-                Vector2 mousePos = Mouse.current.position.ReadValue();
-                if (mousePos.x <= _edgeThreshold) inputDir.x -= 1f;
-                else if (mousePos.x >= Screen.width - _edgeThreshold) inputDir.x += 1f;
+                Vector2 pointerPos = InputManager.Instance.PointerScreenPosition;
+                if (pointerPos.x <= _edgeThreshold) inputDir.x -= 1f;
+                else if (pointerPos.x >= Screen.width - _edgeThreshold) inputDir.x += 1f;
 
-                if (mousePos.y <= _edgeThreshold) inputDir.y -= 1f;
-                else if (mousePos.y >= Screen.height - _edgeThreshold) inputDir.y += 1f;
+                if (pointerPos.y <= _edgeThreshold) inputDir.y -= 1f;
+                else if (pointerPos.y >= Screen.height - _edgeThreshold) inputDir.y += 1f;
             }
 
             if (inputDir.sqrMagnitude > 0.0001f)
@@ -150,10 +151,32 @@ namespace Game.CameraSystem
             }
         }
 
+        private void OnTouchPanDelta(Vector2 screenDelta)
+        {
+            if (GameManager.Instance.CurrentState != GameState.Playing)
+            {
+                return;
+            }
+
+            if (_targetCamera == null) return;
+
+            // Convert screen delta to world delta
+            Vector3 worldPosBefore = _targetCamera.ScreenToWorldPoint(new Vector3(0f, 0f, -_targetCamera.transform.position.z));
+            Vector3 worldPosAfter = _targetCamera.ScreenToWorldPoint(new Vector3(screenDelta.x, screenDelta.y, -_targetCamera.transform.position.z));
+            Vector3 worldDelta = worldPosAfter - worldPosBefore;
+
+            transform.position -= new Vector3(worldDelta.x, worldDelta.y, 0f);
+
+            if (_clampToBounds)
+            {
+                ClampPositionToBounds();
+            }
+        }
+
         private void HandleZoom(float dt)
         {
-            float scroll = _scrollAction.ReadValue<float>();
-            if (Mathf.Abs(scroll) > 0.01f)
+            float scroll = InputManager.Instance.ZoomDelta;
+            if (Mathf.Abs(scroll) > 0.001f)
             {
                 _targetZoom += scroll * _zoomStep;
                 _targetZoom = Mathf.Clamp(_targetZoom, _minZoom, _maxZoom);
@@ -163,16 +186,17 @@ namespace Game.CameraSystem
             {
                 Vector3 mouseWorldBefore = Vector3.zero;
                 Vector2 mousePos = Vector2.zero;
+                bool canZoomToCursor = _zoomToCursor && !InputManager.Instance.HasActiveTouch;
 
-                if (_zoomToCursor && Mouse.current != null)
+                if (canZoomToCursor)
                 {
-                    mousePos = Mouse.current.position.ReadValue();
+                    mousePos = InputManager.Instance.PointerScreenPosition;
                     mouseWorldBefore = _targetCamera.ScreenToWorldPoint(mousePos);
                 }
 
                 _targetCamera.orthographicSize = Mathf.Lerp(_targetCamera.orthographicSize, _targetZoom, _zoomSmoothSpeed * dt);
 
-                if (_zoomToCursor && Mouse.current != null)
+                if (canZoomToCursor)
                 {
                     Vector3 mouseWorldAfter = _targetCamera.ScreenToWorldPoint(mousePos);
                     Vector3 diff = mouseWorldBefore - mouseWorldAfter;
@@ -183,6 +207,8 @@ namespace Game.CameraSystem
 
         private void ClampPositionToBounds()
         {
+            if (_gridMap == null || _targetCamera == null) return;
+
             Bounds bounds = _gridMap.Bounds;
             float camVertExtent = _targetCamera.orthographicSize;
             float camHorzExtent = camVertExtent * _targetCamera.aspect;

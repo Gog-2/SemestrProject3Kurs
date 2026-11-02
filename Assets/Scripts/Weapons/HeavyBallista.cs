@@ -25,6 +25,8 @@ namespace Game.Weapons
 
         public BallistaLevelStats CurrentStats => _data != null ? _data.GetStats(_currentLevel) : default;
 
+        public override Vector3 AimOrigin => _firePoint != null ? _firePoint.position : base.AimOrigin;
+
         public override bool TryFire(Vector3 targetWorldPosition)
         {
             if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return false;
@@ -53,14 +55,7 @@ namespace Game.Weapons
 
             ProjectileData projData = _data != null ? _data.ProjectileData : null;
 
-            if (ProjectilePool.Instance != null)
-            {
-                ProjectilePool.Instance.Spawn(origin, direction, projData, stats.damage);
-            }
-            else
-            {
-                Debug.LogWarning("[HeavyBallista] ProjectilePool.Instance is null! Spawning fallback.");
-            }
+            ProjectilePool.Instance.Spawn(origin, direction, projData, stats.damage);
 
             TriggerFired();
             return true;

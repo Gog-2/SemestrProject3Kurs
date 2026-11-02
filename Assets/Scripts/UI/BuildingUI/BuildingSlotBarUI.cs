@@ -17,7 +17,7 @@ namespace Game.UI.BuildingUI
             RefreshSlots();
         }
 
-        private void Start()
+        private void OnEnable()
         {
             if (BuildingManager.Instance != null)
             {
@@ -28,21 +28,6 @@ namespace Game.UI.BuildingUI
             if (PlayerWallet.Instance != null)
             {
                 PlayerWallet.Instance.CoinsChanged -= OnCoinsChanged;
-                PlayerWallet.Instance.CoinsChanged += OnCoinsChanged;
-            }
-
-            RefreshSlots();
-        }
-
-        private void OnEnable()
-        {
-            if (BuildingManager.Instance != null)
-            {
-                BuildingManager.Instance.SlotsChanged += RefreshSlots;
-            }
-
-            if (PlayerWallet.Instance != null)
-            {
                 PlayerWallet.Instance.CoinsChanged += OnCoinsChanged;
             }
 
@@ -65,7 +50,6 @@ namespace Game.UI.BuildingUI
         public void RefreshSlots()
         {
             if (BuildingManager.Instance == null) return;
-
             IReadOnlyList<BuildingData> slots = BuildingManager.Instance.Slots;
 
             for (int i = 0; i < _slotButtons.Length; i++)

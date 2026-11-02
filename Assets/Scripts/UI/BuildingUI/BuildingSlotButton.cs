@@ -12,12 +12,10 @@ namespace Game.UI.BuildingUI
     public class BuildingSlotButton : MonoBehaviour, IPointerClickHandler
     {
         [Title("UI Elements")]
-        [SerializeField] private Image _iconImage;
         [SerializeField] private TMP_Text _hotkeyText;
         [SerializeField] private TMP_Text _costText;
         [SerializeField] private TMP_Text _nameText;
         [SerializeField] private Image _background;
-        [SerializeField] private GameObject _lockOverlay;
 
         [Title("Colors")]
         [SerializeField] private Color _availableColor = new(0.2f, 0.35f, 0.5f, 1f);
@@ -32,16 +30,12 @@ namespace Game.UI.BuildingUI
             Image background,
             TMP_Text hotkeyText,
             TMP_Text nameText,
-            TMP_Text costText,
-            Image iconImage = null,
-            GameObject lockOverlay = null)
+            TMP_Text costText)
         {
             _background = background;
             _hotkeyText = hotkeyText;
             _nameText = nameText;
             _costText = costText;
-            _iconImage = iconImage;
-            _lockOverlay = lockOverlay;
         }
 
         public void Setup(
@@ -62,29 +56,12 @@ namespace Game.UI.BuildingUI
 
             if (_data == null)
             {
-                if (_lockOverlay != null) _lockOverlay.SetActive(true);
-                if (_iconImage != null) _iconImage.gameObject.SetActive(false);
                 if (_costText != null) _costText.text = "-";
                 if (_nameText != null) _nameText.text = "Пусто";
                 return;
             }
 
-            if (_lockOverlay != null) _lockOverlay.SetActive(false);
-
             if (_nameText != null) _nameText.text = _data.DisplayName;
-
-            if (_iconImage != null)
-            {
-                if (_data.Icon != null)
-                {
-                    _iconImage.sprite = _data.Icon;
-                    _iconImage.gameObject.SetActive(true);
-                }
-                else
-                {
-                    _iconImage.gameObject.SetActive(false);
-                }
-            }
 
             UpdateCostDisplay();
         }
@@ -99,7 +76,7 @@ namespace Game.UI.BuildingUI
                 _costText.text = $"{cost} м.";
             }
 
-            bool hasCoins = PlayerWallet.Instance == null || PlayerWallet.Instance.Coins >= cost;
+            bool hasCoins = PlayerWallet.Instance.Coins >= cost;
             if (_background != null)
             {
                 _background.color = hasCoins ? _availableColor : _insufficientCoinsColor;

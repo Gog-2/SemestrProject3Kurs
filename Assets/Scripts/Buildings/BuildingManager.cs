@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Alchemy.Inspector;
 using Game.Core;
 using Game.UI.BuildingUI;
 
 namespace Game.Buildings
 {
+    [DefaultExecutionOrder(-50)]
     public class BuildingManager : MonoBehaviour
     {
         public static BuildingManager Instance { get; private set; }
@@ -59,44 +59,26 @@ namespace Game.Buildings
             }
 
             Instance = this;
-
-            if (_gridMap == null) _gridMap = FindAnyObjectByType<GridMap>();
-            if (_wallet == null) _wallet = FindAnyObjectByType<PlayerWallet>();
-            if (_mainCamera == null) _mainCamera = Camera.main;
-
-            if (_ghostView == null)
-            {
-                _ghostView = FindAnyObjectByType<BuildingGhostView>();
-                if (_ghostView == null)
-                {
-                    GameObject ghostGo = new GameObject("BuildingGhost", typeof(BuildingGhostView));
-                    _ghostView = ghostGo.GetComponent<BuildingGhostView>();
-                }
-            }
-
-            if (_contextMenuUI == null)
-            {
-                _contextMenuUI = FindAnyObjectByType<BuildingContextMenuUI>(FindObjectsInactive.Include);
-            }
         }
 
         private void Start()
         {
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.StateChanged -= OnGameStateChanged;
-                GameManager.Instance.StateChanged += OnGameStateChanged;
-            }
+            SubscribeToGameState();
+            RegisterInput();
             SlotsChanged?.Invoke();
         }
 
         private void OnEnable()
         {
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.StateChanged -= OnGameStateChanged;
-                GameManager.Instance.StateChanged += OnGameStateChanged;
-            }
+            SubscribeToGameState();
+            RegisterInput();
+        }
+
+        private void SubscribeToGameState()
+        {
+            if (GameManager.Instance == null) return;
+            GameManager.Instance.StateChanged -= OnGameStateChanged;
+            GameManager.Instance.StateChanged += OnGameStateChanged;
         }
 
         private void OnDisable()
@@ -105,6 +87,51 @@ namespace Game.Buildings
             {
                 GameManager.Instance.StateChanged -= OnGameStateChanged;
             }
+
+            UnregisterInput();
+        }
+
+        private void OnDestroy()
+        {
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.StateChanged -= OnGameStateChanged;
+            }
+
+            UnregisterInput();
+
+            if (Instance == this)
+            {
+                Instance = null;
+            }
+        }
+
+        private void RegisterInput()
+        {
+            UnregisterInput();
+
+            if (InputManager.Instance == null) return;
+
+            InputManager.Instance.PrimaryClicked += OnPrimaryClicked;
+            InputManager.Instance.SecondaryClicked += OnSecondaryClicked;
+            InputManager.Instance.CancelPressed += OnCancelPressed;
+            InputManager.Instance.SlotSelected += SelectSlot;
+            InputManager.Instance.SellPressed += OnSellPressed;
+            InputManager.Instance.MoveBuildingPressed += OnMoveBuildingPressed;
+            InputManager.Instance.UpgradePressed += OnUpgradePressed;
+        }
+
+        private void UnregisterInput()
+        {
+            if (InputManager.Instance == null) return;
+
+            InputManager.Instance.PrimaryClicked -= OnPrimaryClicked;
+            InputManager.Instance.SecondaryClicked -= OnSecondaryClicked;
+            InputManager.Instance.CancelPressed -= OnCancelPressed;
+            InputManager.Instance.SlotSelected -= SelectSlot;
+            InputManager.Instance.SellPressed -= OnSellPressed;
+            InputManager.Instance.MoveBuildingPressed -= OnMoveBuildingPressed;
+            InputManager.Instance.UpgradePressed -= OnUpgradePressed;
         }
 
         private void OnGameStateChanged(GameState state)
@@ -125,131 +152,130 @@ namespace Game.Buildings
             SlotsChanged?.Invoke();
         }
 
-        private void OnDestroy()
-        {
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.StateChanged -= OnGameStateChanged;
-            }
-
-            if (Instance == this)
-            {
-                Instance = null;
-            }
-        }
-
         private void Update()
         {
             // Do not process building interactions if game is paused or ended
-            if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing)
+            if (GameManager.Instance.CurrentState != GameState.Playing)
             {
                 return;
             }
 
-            HandleHotkeys();
-            HandleMouseInteraction();
+            UpdateGhostHover();
         }
 
-        private void HandleHotkeys()
+        private void UpdateGhostHover()
         {
-            if (Keyboard.current == null) return;
+            if (_currentMode != ActionMode.Placing && _currentMode != ActionMode.Moving) return;
 
-            // Slots 1 to 5
-            if (Keyboard.current.digit1Key.wasPressedThisFrame) SelectSlot(0);
-            else if (Keyboard.current.digit2Key.wasPressedThisFrame) SelectSlot(1);
-            else if (Keyboard.current.digit3Key.wasPressedThisFrame) SelectSlot(2);
-            else if (Keyboard.current.digit4Key.wasPressedThisFrame) SelectSlot(3);
-            else if (Keyboard.current.digit5Key.wasPressedThisFrame) SelectSlot(4);
-
-            // Context actions when a building is selected
-            if (_currentMode == ActionMode.Selected && _selectedBuilding != null)
-            {
-                if (Keyboard.current.qKey.wasPressedThisFrame)
-                {
-                    SellBuilding(_selectedBuilding);
-                }
-                else if (Keyboard.current.fKey.wasPressedThisFrame)
-                {
-                    StartMoving(_selectedBuilding);
-                }
-                else if (Keyboard.current.cKey.wasPressedThisFrame)
-                {
-                    UpgradeBuilding(_selectedBuilding);
-                }
-            }
-
-            // Cancel action
-            if (Keyboard.current.escapeKey.wasPressedThisFrame)
-            {
-                CancelAction();
-            }
-        }
-
-        private void HandleMouseInteraction()
-        {
-            if (_mainCamera == null || _gridMap == null || Mouse.current == null) return;
-
-            Vector3 mouseWorld = GetMouseWorldPosition();
-            Vector3Int cellPos = _gridMap.WorldToCell(mouseWorld);
+            Vector3 pointerWorld = InputManager.Instance.GetPointerWorldPosition(_mainCamera);
+            Vector3Int cellPos = _gridMap.WorldToCell(pointerWorld);
             Vector2Int hoverCell = new Vector2Int(cellPos.x, cellPos.y);
 
-            // Update Ghost View
             if (_currentMode == ActionMode.Placing && _placingData != null)
             {
                 bool canPlace = CanPlaceBuilding(_placingData, hoverCell, out _);
                 _ghostView.UpdatePosition(hoverCell, canPlace);
-
-                if (Mouse.current.leftButton.wasPressedThisFrame)
-                {
-                    TryExecutePlacement(hoverCell);
-                }
-                else if (Mouse.current.rightButton.wasPressedThisFrame)
-                {
-                    CancelAction();
-                }
             }
             else if (_currentMode == ActionMode.Moving && _movingBuilding != null)
             {
                 bool canPlace = _gridMap.CanPlace(hoverCell, _movingBuilding.Size);
                 _ghostView.UpdatePosition(hoverCell, canPlace);
+            }
+        }
 
-                if (Mouse.current.leftButton.wasPressedThisFrame)
-                {
-                    TryExecuteMove(hoverCell);
-                }
-                else if (Mouse.current.rightButton.wasPressedThisFrame)
-                {
-                    CancelAction();
-                }
+        private void OnPrimaryClicked(Vector2 screenPosition)
+        {
+            if (GameManager.Instance.CurrentState != GameState.Playing) return;
+
+            if (InputManager.Instance.IsPointerOverUI(screenPosition)) return;
+
+            Vector3 pointerWorld = InputManager.Instance.GetPointerWorldPosition(_mainCamera);
+            Vector3Int cellPos = _gridMap.WorldToCell(pointerWorld);
+            Vector2Int hoverCell = new Vector2Int(cellPos.x, cellPos.y);
+
+            if (_currentMode == ActionMode.Placing && _placingData != null)
+            {
+                TryExecutePlacement(hoverCell);
+            }
+            else if (_currentMode == ActionMode.Moving && _movingBuilding != null)
+            {
+                TryExecuteMove(hoverCell);
             }
             else if (_currentMode == ActionMode.None || _currentMode == ActionMode.Selected)
             {
-                if (Mouse.current.leftButton.wasPressedThisFrame)
+                IBuilding occupant = _gridMap.GetOccupant(hoverCell.x, hoverCell.y);
+                if (occupant is Building building && !(occupant is Castle))
                 {
-                    IBuilding occupant = _gridMap.GetOccupant(hoverCell.x, hoverCell.y);
-                    if (occupant is Building building && !(occupant is Castle))
-                    {
-                        SelectBuilding(building);
-                    }
-                    else if (occupant == null)
-                    {
-                        DeselectBuilding();
-                    }
+                    SelectBuilding(building);
                 }
-                else if (Mouse.current.rightButton.wasPressedThisFrame)
+                else if (occupant == null)
                 {
                     DeselectBuilding();
                 }
             }
         }
 
+        private void OnSecondaryClicked()
+        {
+            if (GameManager.Instance.CurrentState != GameState.Playing) return;
+
+            if (_currentMode == ActionMode.Placing || _currentMode == ActionMode.Moving)
+            {
+                CancelAction();
+            }
+            else if (_currentMode == ActionMode.Selected)
+            {
+                DeselectBuilding();
+            }
+        }
+
+        private void OnCancelPressed()
+        {
+            if (GameManager.Instance.CurrentState != GameState.Playing) return;
+            CancelAction();
+        }
+
+        private void OnSellPressed()
+        {
+            if (GameManager.Instance.CurrentState != GameState.Playing) return;
+            if (_currentMode == ActionMode.Selected && _selectedBuilding != null)
+            {
+                SellBuilding(_selectedBuilding);
+            }
+        }
+
+        private void OnMoveBuildingPressed()
+        {
+            if (GameManager.Instance.CurrentState != GameState.Playing) return;
+            if (_currentMode == ActionMode.Selected && _selectedBuilding != null)
+            {
+                StartMoving(_selectedBuilding);
+            }
+        }
+
+        private void OnUpgradePressed()
+        {
+            if (GameManager.Instance.CurrentState != GameState.Playing) return;
+            if (_currentMode == ActionMode.Selected && _selectedBuilding != null)
+            {
+                UpgradeBuilding(_selectedBuilding);
+            }
+        }
+
         public void SelectSlot(int slotIndex)
         {
-            if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
+            if (GameManager.Instance.CurrentState != GameState.Playing) return;
             if (slotIndex < 0 || slotIndex >= _slots.Count) return;
 
             BuildingData data = _slots[slotIndex];
             if (data == null) return;
+
+            // Toggle off if already placing this building
+            if (_currentMode == ActionMode.Placing && _placingData == data)
+            {
+                CancelAction();
+                return;
+            }
 
             StartPlacing(data);
         }
@@ -270,13 +296,14 @@ namespace Game.Buildings
             cost = 0;
             if (data == null || _gridMap == null) return false;
 
-            int level = GetStartingLevel(data);
-            cost = data.GetStats(level).cost;
+            cost = data.GetStats(1).cost;
 
-            bool terrainValid = _gridMap.CanPlace(cell, data.Size);
-            bool hasCoins = _wallet == null || _wallet.Coins >= cost;
+            if (_wallet != null && _wallet.Coins < cost)
+            {
+                return false;
+            }
 
-            return terrainValid && hasCoins;
+            return _gridMap.CanPlace(cell, data.Size);
         }
 
         private void TryExecutePlacement(Vector2Int cell)
@@ -286,56 +313,26 @@ namespace Game.Buildings
                 return;
             }
 
-            if (_wallet != null && !_wallet.TrySpendCoins(cost))
+            if (_placingData.Prefab == null)
             {
+                Debug.LogError($"BuildingData '{_placingData.name}' has no prefab assigned.", _placingData);
                 return;
+            }
+
+            if (_wallet != null)
+            {
+                _wallet.TrySpendCoins(cost);
             }
 
             int startingLevel = GetStartingLevel(_placingData);
 
-            Building buildingInstance;
-            if (_placingData.Prefab != null)
-            {
-                buildingInstance = Instantiate(_placingData.Prefab);
-            }
-            else
-            {
-                // Fallback runtime building creation if prefab not yet assigned
-                GameObject go = new GameObject(_placingData.DisplayName);
-                int bLayer = LayerMask.NameToLayer("Building");
-                if (bLayer != -1) go.layer = bLayer;
-                var sr = go.AddComponent<SpriteRenderer>();
-                sr.sortingLayerName = "Buildings";
-                sr.sortingOrder = 5;
-
-                if (_placingData.Icon != null)
-                {
-                    sr.sprite = _placingData.Icon;
-                }
-
-                if (_placingData.Category == BuildingCategory.Control)
-                {
-                    buildingInstance = go.AddComponent<WallBuilding>();
-                }
-                else if (_placingData.Category == BuildingCategory.Siege)
-                {
-                    buildingInstance = go.AddComponent<TurretBuilding>();
-                }
-                else if (_placingData.Category == BuildingCategory.Economy)
-                {
-                    buildingInstance = go.AddComponent<EconomyBuilding>();
-                }
-                else
-                {
-                    buildingInstance = go.AddComponent<Building>();
-                }
-            }
-
+            Building buildingInstance = Instantiate(_placingData.Prefab);
             buildingInstance.Initialize(_placingData, _gridMap, cell, startingLevel);
             _gridMap.TryPlace(buildingInstance);
 
             // If Shift is not held, exit placement mode
-            if (Keyboard.current == null || !Keyboard.current.shiftKey.isPressed)
+            bool isShift = InputManager.Instance.IsShiftHeld;
+            if (!isShift)
             {
                 CancelAction();
             }
@@ -343,26 +340,23 @@ namespace Game.Buildings
 
         public void StartMoving(Building building)
         {
-            if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
+            if (GameManager.Instance.CurrentState != GameState.Playing) return;
             if (building == null) return;
 
             _movingBuilding = building;
             _movingOriginalCell = building.Origin;
+            SetMode(ActionMode.Moving);
 
             _gridMap.Remove(_movingBuilding);
+            _movingBuilding.gameObject.SetActive(false);
 
-            SetMode(ActionMode.Moving);
             _ghostView.Show(_movingBuilding.Data, _gridMap);
+            _contextMenuUI?.OnBuildingSelected(null);
+            SelectedBuildingChanged?.Invoke(null);
         }
 
         private void TryExecuteMove(Vector2Int cell)
         {
-            if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing)
-            {
-                CancelAction();
-                return;
-            }
-
             if (_movingBuilding == null) return;
 
             if (!_gridMap.CanPlace(cell, _movingBuilding.Size))
@@ -370,6 +364,7 @@ namespace Game.Buildings
                 return;
             }
 
+            _movingBuilding.gameObject.SetActive(true);
             _movingBuilding.SetOrigin(cell);
             _gridMap.TryPlace(_movingBuilding);
 
@@ -379,11 +374,11 @@ namespace Game.Buildings
 
         public void SelectBuilding(Building building)
         {
-            if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
+            if (GameManager.Instance.CurrentState != GameState.Playing) return;
             if (_selectedBuilding == building) return;
 
             _selectedBuilding = building;
-            SetMode(ActionMode.Selected);
+            SetMode(_selectedBuilding != null ? ActionMode.Selected : ActionMode.None);
             _contextMenuUI?.OnBuildingSelected(_selectedBuilding);
             SelectedBuildingChanged?.Invoke(_selectedBuilding);
         }
@@ -401,23 +396,24 @@ namespace Game.Buildings
 
         public void SellBuilding(Building building)
         {
-            if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
+            if (GameManager.Instance.CurrentState != GameState.Playing) return;
             if (building == null) return;
 
             BuildingData data = building.Data;
-            int refund = 0;
-
+            int totalCost = 0;
             if (data != null)
             {
-                int totalCost = 0;
+                totalCost = data.GetStats(1).cost;
+                // Add upgrade costs if applicable
                 for (int lvl = 1; lvl <= building.CurrentLevel; lvl++)
                 {
-                    totalCost += data.GetStats(lvl).cost;
+                    BuildingLevelStats stats = data.GetStats(lvl);
+                    totalCost += stats.cost;
                 }
-                refund = Mathf.RoundToInt(totalCost * data.PlacedSaleRefundRatio);
             }
 
-            if (refund > 0 && _wallet != null)
+            int refund = Mathf.RoundToInt(totalCost * 0.5f);
+            if (_wallet != null && refund > 0)
             {
                 _wallet.AddCoins(refund);
             }
@@ -426,9 +422,24 @@ namespace Game.Buildings
             building.DestroyBuilding();
         }
 
+        public void SellUnplacedBlueprint(int slotIndex)
+        {
+            if (slotIndex < 0 || slotIndex >= _slots.Count) return;
+            BuildingData data = _slots[slotIndex];
+            if (data == null) return;
+
+            int refund = Mathf.RoundToInt(data.GetStats(1).cost * data.UnplacedSaleRefundRatio);
+            if (_wallet != null && refund > 0)
+            {
+                _wallet.AddCoins(refund);
+            }
+            _slots.RemoveAt(slotIndex);
+            SlotsChanged?.Invoke();
+        }
+
         public void UpgradeBuilding(Building building)
         {
-            if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
+            if (GameManager.Instance.CurrentState != GameState.Playing) return;
             if (building == null) return;
 
             if (!building.CanUpgrade(out int cost)) return;
@@ -441,47 +452,39 @@ namespace Game.Buildings
 
             building.Upgrade();
 
-            // Global upgrade handling for Siege and Control
+            // Handle global upgrade sync
             if (building.Data != null && building.Data.UpgradeType == BuildingUpgradeType.Global)
             {
                 string id = building.Data.Id;
                 _globalLevels[id] = building.CurrentLevel;
-
-                // Sync all existing buildings of this type
-                var allBuildings = FindObjectsByType<Building>();
-                for (int i = 0; i < allBuildings.Length; i++)
-                {
-                    if (allBuildings[i] != building && allBuildings[i].Data != null && allBuildings[i].Data.Id == id)
-                    {
-                        allBuildings[i].SetLevel(building.CurrentLevel);
-                    }
-                }
             }
 
+            // Refresh menu display
+            _contextMenuUI?.OnBuildingSelected(_selectedBuilding);
             SelectedBuildingChanged?.Invoke(_selectedBuilding);
         }
 
-        public void SellUnplacedBlueprint(int slotIndex)
+        public void UpgradeSlot(int slotIndex)
         {
-            if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
             if (slotIndex < 0 || slotIndex >= _slots.Count) return;
 
             BuildingData data = _slots[slotIndex];
-            if (data == null) return;
+            if (data == null || data.UpgradeType != BuildingUpgradeType.Global) return;
 
-            int refund = Mathf.RoundToInt(data.GetStats(1).cost * data.UnplacedSaleRefundRatio);
-            if (refund > 0 && _wallet != null)
-            {
-                _wallet.AddCoins(refund);
-            }
+            int currentLvl = GetStartingLevel(data);
+            if (currentLvl >= 4) return;
+            BuildingLevelStats nextStats = data.GetStats(currentLvl + 1);
 
-            _slots.RemoveAt(slotIndex);
-            SlotsChanged?.Invoke();
+            if (_wallet != null && !_wallet.TrySpendCoins(nextStats.cost)) return;
+
+            _globalLevels[data.Id] = currentLvl + 1;
         }
 
         public void AddSlot(BuildingData data)
         {
-            if (data == null || _slots.Count >= _maxSlots) return;
+            if (data == null) return;
+            if (_slots.Count >= _maxSlots) return;
+
             _slots.Add(data);
             SlotsChanged?.Invoke();
         }
@@ -490,7 +493,7 @@ namespace Game.Buildings
         {
             if (_currentMode == ActionMode.Moving && _movingBuilding != null)
             {
-                // Restore to original cell
+                _movingBuilding.gameObject.SetActive(true);
                 _movingBuilding.SetOrigin(_movingOriginalCell);
                 _gridMap.TryPlace(_movingBuilding);
                 _movingBuilding = null;
@@ -498,8 +501,8 @@ namespace Game.Buildings
 
             _placingData = null;
             _ghostView.Hide();
-            DeselectBuilding();
             SetMode(ActionMode.None);
+            DeselectBuilding();
         }
 
         private int GetStartingLevel(BuildingData data)
@@ -520,12 +523,7 @@ namespace Game.Buildings
 
         private Vector3 GetMouseWorldPosition()
         {
-            if (_mainCamera == null || Mouse.current == null) return Vector3.zero;
-
-            Vector2 mouseScreen = Mouse.current.position.ReadValue();
-            Vector3 worldPos = _mainCamera.ScreenToWorldPoint(new Vector3(mouseScreen.x, mouseScreen.y, -_mainCamera.transform.position.z));
-            worldPos.z = 0f;
-            return worldPos;
+            return InputManager.Instance.GetPointerWorldPosition(_mainCamera);
         }
     }
 }

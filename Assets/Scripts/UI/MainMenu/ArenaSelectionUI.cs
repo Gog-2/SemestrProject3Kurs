@@ -14,7 +14,6 @@ namespace Game.UI.MainMenu
         [SerializeField] private List<ArenaData> _allArenas = new();
         [SerializeField] private TMP_Text _nameText;
         [SerializeField] private TMP_Text _descriptionText;
-        [SerializeField] private Image _previewImage;
 
         [Title("Controls")]
         [SerializeField] private Button _prevButton;
@@ -59,12 +58,6 @@ namespace Game.UI.MainMenu
 
             if (_nameText != null) _nameText.text = arena.ArenaName;
             if (_descriptionText != null) _descriptionText.text = arena.Description;
-
-            if (_previewImage != null && arena.Preview != null)
-            {
-                _previewImage.sprite = arena.Preview;
-                _previewImage.gameObject.SetActive(true);
-            }
 
             bool isUnlocked = MetaSaveManager.IsArenaUnlocked(arena.Id);
 

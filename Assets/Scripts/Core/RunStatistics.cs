@@ -65,7 +65,7 @@ namespace Game.Core
 
         private void Update()
         {
-            if (GameManager.Instance == null || GameManager.Instance.CurrentState == GameState.Playing)
+            if (GameManager.Instance.CurrentState == GameState.Playing)
             {
                 _totalTime += Time.deltaTime;
             }

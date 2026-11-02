@@ -61,22 +61,9 @@ namespace Game.UI
             }
         }
 
-        private void Start()
-        {
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.StateChanged -= OnGameStateChanged;
-                GameManager.Instance.StateChanged += OnGameStateChanged;
-            }
-        }
-
         private void OnEnable()
         {
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.StateChanged -= OnGameStateChanged;
-                GameManager.Instance.StateChanged += OnGameStateChanged;
-            }
+            GameManager.Instance.StateChanged += OnGameStateChanged;
         }
 
         private void OnDisable()
@@ -146,18 +133,12 @@ namespace Game.UI
 
         private void OnRestartClicked()
         {
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.RestartCurrentScene();
-            }
+            GameManager.Instance.RestartCurrentScene();
         }
 
         private void OnMainMenuClicked()
         {
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.LoadMainMenu();
-            }
+            GameManager.Instance.LoadMainMenu();
         }
 
         [Button]

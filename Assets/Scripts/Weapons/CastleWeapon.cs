@@ -18,6 +18,7 @@ namespace Game.Weapons
         public abstract float MaxCooldown { get; }
         public bool IsReady => _cooldownTimer <= 0f;
         public bool IsAiming { get; protected set; }
+        public virtual Vector3 AimOrigin => transform.position;
 
         public event Action<float, float> CooldownChanged; // current, max
         public event Action<bool> AimingToggled;
@@ -29,10 +30,6 @@ namespace Game.Weapons
             if (_castle == null)
             {
                 _castle = GetComponentInParent<Castle>();
-                if (_castle == null)
-                {
-                    _castle = FindAnyObjectByType<Castle>();
-                }
             }
         }
 
@@ -72,6 +69,7 @@ namespace Game.Weapons
         public virtual void StartAiming()
         {
             if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
+            if (!IsReady) return;
 
             IsAiming = true;
             AimingToggled?.Invoke(true);

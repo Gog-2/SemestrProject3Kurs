@@ -13,7 +13,6 @@ namespace Game.UI
         [Title("UI Elements")]
         [SerializeField] private TMP_Text _titleText;
         [SerializeField] private TMP_Text _descriptionText;
-        [SerializeField] private Image _iconImage;
         [SerializeField] private TMP_Text _rarityText;
         [SerializeField] private Image _rarityBackground;
         [SerializeField] private Button _selectButton;
@@ -50,19 +49,6 @@ namespace Game.UI
 
             if (_titleText != null) _titleText.text = _data.Title;
             if (_descriptionText != null) _descriptionText.text = _data.Description;
-
-            if (_iconImage != null)
-            {
-                if (_data.Icon != null)
-                {
-                    _iconImage.sprite = _data.Icon;
-                    _iconImage.gameObject.SetActive(true);
-                }
-                else
-                {
-                    _iconImage.gameObject.SetActive(false);
-                }
-            }
 
             Color rarityColor = GetRarityColor(_data.Rarity);
 

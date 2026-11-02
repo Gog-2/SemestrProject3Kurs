@@ -17,7 +17,6 @@ namespace Game.UI.MainMenu
         [SerializeField] private TMP_Text _quoteText;
         [SerializeField] private TMP_Text _statsText;
         [SerializeField] private TMP_Text _skillsText;
-        [SerializeField] private Image _portraitImage;
 
         [Title("Controls")]
         [SerializeField] private Button _prevButton;
@@ -74,12 +73,6 @@ namespace Game.UI.MainMenu
                 string bld = knight.StartingBuildings != null ? string.Join(", ", knight.StartingBuildings) : "-";
                 string skl = knight.StartingSkills != null ? string.Join("\n- ", knight.StartingSkills) : "-";
                 _skillsText.text = $"Стартовые постройки: {bld}\nНавыки:\n- {skl}";
-            }
-
-            if (_portraitImage != null && knight.Portrait != null)
-            {
-                _portraitImage.sprite = knight.Portrait;
-                _portraitImage.gameObject.SetActive(true);
             }
 
             bool isUnlocked = MetaSaveManager.IsKnightUnlocked(knight.Id);

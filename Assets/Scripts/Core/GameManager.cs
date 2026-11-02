@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Alchemy.Inspector;
 using Game.UI;
@@ -42,20 +41,27 @@ namespace Game.Core
 
             Instance = this;
             Time.timeScale = 1f;
+        }
 
-            if (_pauseUI == null)
-            {
-                _pauseUI = FindAnyObjectByType<PauseUI>(FindObjectsInactive.Include);
-            }
+        private void Start()
+        {
+            RegisterInput();
+        }
 
-            if (_gameOverUI == null)
-            {
-                _gameOverUI = FindAnyObjectByType<GameOverUI>(FindObjectsInactive.Include);
-            }
+        private void OnEnable()
+        {
+            RegisterInput();
+        }
+
+        private void OnDisable()
+        {
+            UnregisterInput();
         }
 
         private void OnDestroy()
         {
+            UnregisterInput();
+
             if (Instance == this)
             {
                 Time.timeScale = 1f;
@@ -63,14 +69,24 @@ namespace Game.Core
             }
         }
 
-        private void Update()
+        private void RegisterInput()
         {
-            if (_allowPauseKey && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            UnregisterInput();
+            if (InputManager.Instance == null) return;
+            InputManager.Instance.PausePressed += OnPausePressed;
+        }
+
+        private void UnregisterInput()
+        {
+            if (InputManager.Instance == null) return;
+            InputManager.Instance.PausePressed -= OnPausePressed;
+        }
+
+        private void OnPausePressed()
+        {
+            if (_allowPauseKey && CanTogglePause)
             {
-                if (CanTogglePause)
-                {
-                    TogglePause();
-                }
+                TogglePause();
             }
         }
 

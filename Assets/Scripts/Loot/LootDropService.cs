@@ -81,16 +81,16 @@ namespace Game.Loot
         {
             if (pickup.Type == LootType.Coin)
             {
-                int bonus = RunProgressionManager.Instance != null ? RunProgressionManager.Instance.BonusCoinsPerKill : 0;
+                int bonus = RunProgressionManager.Instance.BonusCoinsPerKill;
                 int totalCoins = pickup.Amount + bonus;
                 _wallet.AddCoins(totalCoins);
-                RunStatistics.Instance?.AddCoinsEarned(totalCoins);
+                RunStatistics.Instance.AddCoinsEarned(totalCoins);
                 _coinPool.Release(pickup);
             }
             else if (pickup.Type == LootType.Diamond)
             {
                 _wallet.AddDiamonds(pickup.Amount);
-                RunStatistics.Instance?.AddDiamondsEarned(pickup.Amount);
+                RunStatistics.Instance.AddDiamondsEarned(pickup.Amount);
                 _diamondPool.Release(pickup);
             }
         }
