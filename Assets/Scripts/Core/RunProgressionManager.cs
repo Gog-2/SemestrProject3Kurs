@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Alchemy.Inspector;
@@ -15,6 +15,8 @@ namespace Game.Core
         [Title("References")]
         [SerializeField] private Castle _castle;
         [SerializeField] private UpgradeDatabase _upgradeDatabase;
+
+        private Castle CastleInstance => _castle != null ? _castle : (_castle = Castle.Instance ?? FindAnyObjectByType<Castle>());
 
         [Title("Progression State")]
         [ShowInInspector, ReadOnly] private int _currentLevel = 1;
@@ -59,6 +61,10 @@ namespace Game.Core
             }
 
             Instance = this;
+            if (_castle == null)
+            {
+                _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
+            }
             RecalculateHonorThreshold();
         }
 
@@ -90,9 +96,10 @@ namespace Game.Core
                 }
 
                 // Increase castle health per level
-                if (_castle != null)
+                Castle targetCastle = CastleInstance;
+                if (targetCastle != null)
                 {
-                    _castle.IncreaseMaxHealth(100, healAmount: true);
+                    targetCastle.IncreaseMaxHealth(100, healAmount: true);
                 }
 
                 LevelUp?.Invoke(_currentLevel);
@@ -120,24 +127,24 @@ namespace Game.Core
             switch (upgrade.EffectType)
             {
                 case UpgradeEffectType.CastleMaxHealthPercent:
-                    if (_castle != null)
+                    if (CastleInstance != null)
                     {
-                        int hpBonus = Mathf.RoundToInt(_castle.MaxHP * upgrade.Value);
-                        _castle.IncreaseMaxHealth(hpBonus, healAmount: true);
+                        int hpBonus = Mathf.RoundToInt(CastleInstance.MaxHP * upgrade.Value);
+                        CastleInstance.IncreaseMaxHealth(hpBonus, healAmount: true);
                     }
                     break;
 
                 case UpgradeEffectType.CastleMaxHealthFlat:
-                    if (_castle != null)
+                    if (CastleInstance != null)
                     {
-                        _castle.IncreaseMaxHealth(Mathf.RoundToInt(upgrade.Value), healAmount: true);
+                        CastleInstance.IncreaseMaxHealth(Mathf.RoundToInt(upgrade.Value), healAmount: true);
                     }
                     break;
 
                 case UpgradeEffectType.CastleHealPercent:
-                    if (_castle != null)
+                    if (CastleInstance != null)
                     {
-                        _castle.HealPercent(upgrade.Value);
+                        CastleInstance.HealPercent(upgrade.Value);
                     }
                     break;
 

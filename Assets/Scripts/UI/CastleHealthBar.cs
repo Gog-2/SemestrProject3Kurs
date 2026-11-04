@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
@@ -32,29 +32,60 @@ namespace Game.UI
 
         private void Awake()
         {
-            _originalFillColor = _fillImage.color;
+            if (_fillImage != null) _originalFillColor = _fillImage.color;
+            if (_castle == null)
+            {
+                _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
+            }
         }
 
         private void OnEnable()
         {
-            _castle.HealthChanged += OnHealthChanged;
-            UpdateVisualsInstant();
+            if (_castle == null)
+            {
+                _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
+            }
+
+            if (_castle != null)
+            {
+                _castle.HealthChanged -= OnHealthChanged;
+                _castle.HealthChanged += OnHealthChanged;
+                UpdateVisualsInstant();
+            }
+        }
+
+        private void Start()
+        {
+            if (_castle == null)
+            {
+                _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
+                if (_castle != null)
+                {
+                    _castle.HealthChanged -= OnHealthChanged;
+                    _castle.HealthChanged += OnHealthChanged;
+                    UpdateVisualsInstant();
+                }
+            }
         }
 
         private void OnDisable()
         {
-            _castle.HealthChanged -= OnHealthChanged;
+            if (_castle != null)
+            {
+                _castle.HealthChanged -= OnHealthChanged;
+            }
             KillActiveTweens();
         }
 
         private void UpdateVisualsInstant()
         {
+            if (_castle == null) return;
             _currentDisplayedHP = _castle.CurrentHP;
-            float initialFill = (float)_castle.CurrentHP / _castle.MaxHP;
+            float initialFill = _castle.MaxHP > 0 ? (float)_castle.CurrentHP / _castle.MaxHP : 0f;
 
-            _fillImage.fillAmount = initialFill;
-            _damageTrailImage.fillAmount = initialFill;
-            _hpText.text = $"{_currentDisplayedHP} / {_castle.MaxHP}";
+            if (_fillImage != null) _fillImage.fillAmount = initialFill;
+            if (_damageTrailImage != null) _damageTrailImage.fillAmount = initialFill;
+            if (_hpText != null) _hpText.text = $"{_currentDisplayedHP} / {_castle.MaxHP}";
         }
 
         private void OnHealthChanged(IDamageable damageable)

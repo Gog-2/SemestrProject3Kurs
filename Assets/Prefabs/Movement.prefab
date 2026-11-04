@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7666957257890905073}
-  - component: {fileID: 1238071037379808858}
   m_Layer: 0
   m_Name: Movement
   m_TagString: Untagged
@@ -33,19 +32,6 @@ Transform:
   - {fileID: 218538872325173783}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1238071037379808858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3003919518996128879}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f517a64d7c9c64b32922a42317242caf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Alchemy::Alchemy.Hierarchy.HierarchyHeader
-  hierarchyObjectMode: 0
 --- !u!1 &6560048548302008006
 GameObject:
   m_ObjectHideFlags: 0

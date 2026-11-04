@@ -36,12 +36,27 @@ namespace Game.UI
                 _mainCamera = Camera.main;
             }
 
-            Debug.Assert(_weapon != null, "[WeaponAimUI] _weapon is not assigned!", this);
-            Debug.Assert(_cooldownText != null, "[WeaponAimUI] _cooldownText is not assigned!", this);
+            if (_weapon == null)
+            {
+                _weapon = FindAnyObjectByType<CastleWeapon>();
+            }
         }
 
         private void Start()
         {
+            if (_weapon == null)
+            {
+                _weapon = FindAnyObjectByType<CastleWeapon>();
+            }
+
+            if (_weapon != null)
+            {
+                _weapon.CooldownChanged -= OnCooldownChanged;
+                _weapon.CooldownChanged += OnCooldownChanged;
+                _weapon.AimingToggled -= SetAimVisuals;
+                _weapon.AimingToggled += SetAimVisuals;
+            }
+
             EnsureAimVisuals();
             SetAimVisuals(false);
             RegisterInput();
@@ -55,9 +70,16 @@ namespace Game.UI
                 GameManager.Instance.StateChanged += OnGameStateChanged;
             }
 
+            if (_weapon == null)
+            {
+                _weapon = FindAnyObjectByType<CastleWeapon>();
+            }
+
             if (_weapon != null)
             {
+                _weapon.CooldownChanged -= OnCooldownChanged;
                 _weapon.CooldownChanged += OnCooldownChanged;
+                _weapon.AimingToggled -= SetAimVisuals;
                 _weapon.AimingToggled += SetAimVisuals;
             }
 

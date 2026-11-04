@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using Alchemy.Inspector;
 using Game.Core;
@@ -44,12 +44,22 @@ namespace Game.Pathfinding
 
         public bool IsInitialized => _flowDirections != null;
 
+        private void Awake()
+        {
+            if (_gridMap == null) _gridMap = FindAnyObjectByType<GridMap>();
+            if (_castle == null) _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
+        }
+
         private void Start()
         {
+            if (_gridMap == null) _gridMap = FindAnyObjectByType<GridMap>();
+            if (_castle == null) _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
+
             InitializeBuffers();
             Recalculate();
             if (_gridMap != null)
             {
+                _gridMap.Changed -= Recalculate;
                 _gridMap.Changed += Recalculate;
             }
         }
@@ -81,6 +91,8 @@ namespace Game.Pathfinding
         [Button]
         public void Recalculate()
         {
+            if (_gridMap == null) _gridMap = FindAnyObjectByType<GridMap>();
+            if (_castle == null) _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
             if (_gridMap == null || _castle == null) return;
 
             if (_flowDirections == null || _mapWidth != _gridMap.Width || _mapHeight != _gridMap.Height)

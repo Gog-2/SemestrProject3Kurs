@@ -28,7 +28,11 @@ namespace Game.UI
 
         private void Awake()
         {
-            Debug.Assert(_waveController != null, "[WaveTimerUI] _waveController is not assigned!", this);
+            if (_waveController == null)
+            {
+                _waveController = FindAnyObjectByType<WaveController>();
+            }
+
             Debug.Assert(_timerText != null, "[WaveTimerUI] _timerText is not assigned!", this);
 
             if (_startWaveButton != null)
@@ -40,41 +44,84 @@ namespace Game.UI
 
         private void OnEnable()
         {
+            if (_waveController == null)
+            {
+                _waveController = FindAnyObjectByType<WaveController>();
+            }
+
             if (_waveController != null)
             {
+                BindWaveController(_waveController);
+            }
+
+            if (InputManager.Instance != null)
+            {
+                InputManager.Instance.SkipPressed -= OnSkipPressed;
+                InputManager.Instance.SkipPressed += OnSkipPressed;
+            }
+        }
+
+        private void Start()
+        {
+            if (_waveController == null)
+            {
+                _waveController = FindAnyObjectByType<WaveController>();
+            }
+
+            if (_waveController != null)
+            {
+                BindWaveController(_waveController);
+            }
+        }
+
+        public void BindWaveController(WaveController controller)
+        {
+            if (_waveController != null && _waveController != controller)
+            {
+                UnbindWaveController();
+            }
+
+            _waveController = controller;
+
+            if (_waveController != null)
+            {
+                _waveController.Timer.TimeChanged -= OnTimeChanged;
                 _waveController.Timer.TimeChanged += OnTimeChanged;
+                _waveController.Timer.TimerExpired -= OnTimerExpired;
                 _waveController.Timer.TimerExpired += OnTimerExpired;
+                _waveController.StateChanged -= OnStateChanged;
                 _waveController.StateChanged += OnStateChanged;
+                _waveController.BuildingPhaseTimeChanged -= OnBuildingPhaseTimeChanged;
                 _waveController.BuildingPhaseTimeChanged += OnBuildingPhaseTimeChanged;
 
                 if (_waveController.Spawner != null)
                 {
+                    _waveController.Spawner.ActiveEnemyCountChanged -= OnEnemyCountChanged;
                     _waveController.Spawner.ActiveEnemyCountChanged += OnEnemyCountChanged;
                 }
 
                 OnStateChanged(_waveController.CurrentState);
             }
+        }
 
-            if (InputManager.Instance != null)
+        private void UnbindWaveController()
+        {
+            if (_waveController == null) return;
+
+            _waveController.Timer.TimeChanged -= OnTimeChanged;
+            _waveController.Timer.TimerExpired -= OnTimerExpired;
+            _waveController.StateChanged -= OnStateChanged;
+            _waveController.BuildingPhaseTimeChanged -= OnBuildingPhaseTimeChanged;
+
+            if (_waveController.Spawner != null)
             {
-                InputManager.Instance.SkipPressed += OnSkipPressed;
+                _waveController.Spawner.ActiveEnemyCountChanged -= OnEnemyCountChanged;
             }
         }
 
         private void OnDisable()
         {
-            if (_waveController != null)
-            {
-                _waveController.Timer.TimeChanged -= OnTimeChanged;
-                _waveController.Timer.TimerExpired -= OnTimerExpired;
-                _waveController.StateChanged -= OnStateChanged;
-                _waveController.BuildingPhaseTimeChanged -= OnBuildingPhaseTimeChanged;
-
-                if (_waveController.Spawner != null)
-                {
-                    _waveController.Spawner.ActiveEnemyCountChanged -= OnEnemyCountChanged;
-                }
-            }
+            UnbindWaveController();
 
             if (InputManager.Instance != null)
             {

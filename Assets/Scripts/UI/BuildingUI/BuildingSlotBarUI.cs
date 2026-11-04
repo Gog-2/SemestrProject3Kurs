@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using Alchemy.Inspector;
 using Game.Buildings;
@@ -19,6 +19,18 @@ namespace Game.UI.BuildingUI
 
         private void OnEnable()
         {
+            Subscribe();
+            RefreshSlots();
+        }
+
+        private void Start()
+        {
+            Subscribe();
+            RefreshSlots();
+        }
+
+        private void Subscribe()
+        {
             if (BuildingManager.Instance != null)
             {
                 BuildingManager.Instance.SlotsChanged -= RefreshSlots;
@@ -30,8 +42,6 @@ namespace Game.UI.BuildingUI
                 PlayerWallet.Instance.CoinsChanged -= OnCoinsChanged;
                 PlayerWallet.Instance.CoinsChanged += OnCoinsChanged;
             }
-
-            RefreshSlots();
         }
 
         private void OnDisable()

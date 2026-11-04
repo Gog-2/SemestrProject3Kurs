@@ -37,6 +37,8 @@ namespace Game.Buildings
         private Tweener _punchTween;
         private Tweener _colorTween;
 
+        public static Castle Instance { get; private set; }
+
         public event Action<IDamageable> HealthChanged;
         public event Action<IDamageable> Destroyed;
         public event Action<IBuilding> BuildingHealthChanged;
@@ -45,6 +47,8 @@ namespace Game.Buildings
 
         private void Awake()
         {
+            Instance = this;
+
             if (RunConfig.Instance != null && RunConfig.Instance.SelectedKnight != null)
             {
                 _maxHP = RunConfig.Instance.SelectedKnight.CastleMaxHP;
@@ -233,6 +237,14 @@ namespace Game.Buildings
             _currentHP = Mathf.Min(_maxHP, _currentHP + healAmount);
             HealthChanged?.Invoke(this);
             BuildingHealthChanged?.Invoke(this);
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
         }
     }
 }

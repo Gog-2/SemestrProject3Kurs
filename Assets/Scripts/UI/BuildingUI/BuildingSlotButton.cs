@@ -78,7 +78,8 @@ namespace Game.UI.BuildingUI
             int cost = _data.GetStats(1).cost;
             _costText.text = $"{cost} м.";
 
-            bool hasCoins = PlayerWallet.Instance.Coins >= cost;
+            var wallet = PlayerWallet.Instance;
+            bool hasCoins = wallet != null && wallet.Coins >= cost;
             _background.color = hasCoins ? _availableColor : _insufficientCoinsColor;
         }
 

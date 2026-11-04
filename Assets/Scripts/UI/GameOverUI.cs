@@ -50,7 +50,20 @@ namespace Game.UI
 
         private void OnEnable()
         {
-            GameManager.Instance.StateChanged += OnGameStateChanged;
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.StateChanged -= OnGameStateChanged;
+                GameManager.Instance.StateChanged += OnGameStateChanged;
+            }
+        }
+
+        private void Start()
+        {
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.StateChanged -= OnGameStateChanged;
+                GameManager.Instance.StateChanged += OnGameStateChanged;
+            }
         }
 
         private void OnDisable()

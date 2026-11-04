@@ -45,6 +45,7 @@ namespace Game.Buildings
         public ActionMode CurrentMode => _currentMode;
         public IReadOnlyList<BuildingData> Slots => _slots;
         public Building SelectedBuilding => _selectedBuilding;
+        private PlayerWallet Wallet => _wallet != null ? _wallet : PlayerWallet.Instance;
 
         public event Action<ActionMode> ModeChanged;
         public event Action<Building> SelectedBuildingChanged;
@@ -59,10 +60,11 @@ namespace Game.Buildings
             }
 
             Instance = this;
-            Debug.Assert(_gridMap != null, "[BuildingManager] _gridMap is not assigned!", this);
-            Debug.Assert(_ghostView != null, "[BuildingManager] _ghostView is not assigned!", this);
-            Debug.Assert(_wallet != null, "[BuildingManager] _wallet is not assigned!", this);
-            Debug.Assert(_contextMenuUI != null, "[BuildingManager] _contextMenuUI is not assigned!", this);
+            if (_gridMap == null) _gridMap = FindAnyObjectByType<GridMap>();
+            if (_ghostView == null) _ghostView = FindAnyObjectByType<BuildingGhostView>();
+            if (_wallet == null) _wallet = PlayerWallet.Instance ?? FindAnyObjectByType<PlayerWallet>();
+            if (_contextMenuUI == null) _contextMenuUI = FindAnyObjectByType<BuildingContextMenuUI>();
+            if (_mainCamera == null) _mainCamera = Camera.main;
         }
 
         private void Start()
@@ -302,7 +304,8 @@ namespace Game.Buildings
 
             cost = data.GetStats(1).cost;
 
-            if (_wallet != null && _wallet.Coins < cost)
+            var wallet = Wallet;
+            if (wallet == null || wallet.Coins < cost)
             {
                 return false;
             }
@@ -323,7 +326,11 @@ namespace Game.Buildings
                 return;
             }
 
-            _wallet.TrySpendCoins(cost);
+            var wallet = Wallet;
+            if (wallet == null || !wallet.TrySpendCoins(cost))
+            {
+                return;
+            }
 
             int startingLevel = GetStartingLevel(_placingData);
 
@@ -416,7 +423,7 @@ namespace Game.Buildings
             int refund = Mathf.RoundToInt(totalCost * 0.5f);
             if (refund > 0)
             {
-                _wallet.AddCoins(refund);
+                Wallet?.AddCoins(refund);
             }
 
             DeselectBuilding();
@@ -432,7 +439,7 @@ namespace Game.Buildings
             int refund = Mathf.RoundToInt(data.GetStats(1).cost * data.UnplacedSaleRefundRatio);
             if (refund > 0)
             {
-                _wallet.AddCoins(refund);
+                Wallet?.AddCoins(refund);
             }
             _slots.RemoveAt(slotIndex);
             SlotsChanged?.Invoke();
@@ -445,7 +452,8 @@ namespace Game.Buildings
 
             if (!building.CanUpgrade(out int cost)) return;
 
-            if (!_wallet.TrySpendCoins(cost))
+            var wallet = Wallet;
+            if (wallet == null || !wallet.TrySpendCoins(cost))
             {
                 Debug.Log("[BuildingManager] Недостаточно монет для улучшения!");
                 return;

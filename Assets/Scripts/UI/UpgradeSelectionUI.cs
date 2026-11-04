@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
@@ -37,8 +37,21 @@ namespace Game.UI
 
         private void OnEnable()
         {
-            RunProgressionManager.Instance.UpgradeSelectionRequested += ShowSelection;
+            if (RunProgressionManager.Instance != null)
+            {
+                RunProgressionManager.Instance.UpgradeSelectionRequested -= ShowSelection;
+                RunProgressionManager.Instance.UpgradeSelectionRequested += ShowSelection;
+            }
             RegisterInput();
+        }
+
+        private void Start()
+        {
+            if (RunProgressionManager.Instance != null)
+            {
+                RunProgressionManager.Instance.UpgradeSelectionRequested -= ShowSelection;
+                RunProgressionManager.Instance.UpgradeSelectionRequested += ShowSelection;
+            }
         }
 
         private void OnDisable()

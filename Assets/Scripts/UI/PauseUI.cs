@@ -44,7 +44,20 @@ namespace Game.UI
 
         private void OnEnable()
         {
-            GameManager.Instance.PauseToggled += OnPauseToggled;
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.PauseToggled -= OnPauseToggled;
+                GameManager.Instance.PauseToggled += OnPauseToggled;
+            }
+        }
+
+        private void Start()
+        {
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.PauseToggled -= OnPauseToggled;
+                GameManager.Instance.PauseToggled += OnPauseToggled;
+            }
         }
 
         private void OnDisable()

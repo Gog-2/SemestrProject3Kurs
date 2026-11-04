@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using Alchemy.Inspector;
 
@@ -22,6 +22,7 @@ namespace Game.Core
         private int _diamonds;
 
         public static PlayerWallet Instance { get; private set; }
+        public bool IsInitialized { get; private set; }
 
         public event Action<int> CoinsChanged;
         public event Action<int> DiamondsChanged;
@@ -37,6 +38,19 @@ namespace Game.Core
             Instance = this;
             _coins = _initialCoins;
             _diamonds = _initialDiamonds;
+            IsInitialized = true;
+            ForceRefresh();
+        }
+
+        private void Start()
+        {
+            ForceRefresh();
+        }
+
+        public void ForceRefresh()
+        {
+            CoinsChanged?.Invoke(_coins);
+            DiamondsChanged?.Invoke(_diamonds);
         }
 
         private void OnDestroy()

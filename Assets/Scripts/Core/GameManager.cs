@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Alchemy.Inspector;
@@ -41,6 +41,9 @@ namespace Game.Core
 
             Instance = this;
             Time.timeScale = 1f;
+
+            if (_pauseUI == null) _pauseUI = FindAnyObjectByType<PauseUI>();
+            if (_gameOverUI == null) _gameOverUI = FindAnyObjectByType<GameOverUI>();
         }
 
         private void Start()

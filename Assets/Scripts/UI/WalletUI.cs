@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using TMPro;
 using DG.Tweening;
 using Alchemy.Inspector;
@@ -21,16 +21,58 @@ namespace Game.UI
 
         private void OnEnable()
         {
-            _wallet.CoinsChanged += OnCoinsChanged;
-            _wallet.DiamondsChanged += OnDiamondsChanged;
-            UpdateCoinsInstant(_wallet.Coins);
-            UpdateDiamondsInstant(_wallet.Diamonds);
+            if (_wallet == null)
+            {
+                _wallet = PlayerWallet.Instance ?? FindAnyObjectByType<PlayerWallet>();
+            }
+
+            if (_wallet != null)
+            {
+                BindWallet(_wallet);
+            }
+        }
+
+        private void Start()
+        {
+            if (_wallet == null)
+            {
+                _wallet = PlayerWallet.Instance ?? FindAnyObjectByType<PlayerWallet>();
+            }
+
+            if (_wallet != null)
+            {
+                BindWallet(_wallet);
+            }
+        }
+
+        public void BindWallet(PlayerWallet wallet)
+        {
+            if (_wallet != null && _wallet != wallet)
+            {
+                _wallet.CoinsChanged -= OnCoinsChanged;
+                _wallet.DiamondsChanged -= OnDiamondsChanged;
+            }
+
+            _wallet = wallet;
+
+            if (_wallet != null)
+            {
+                _wallet.CoinsChanged -= OnCoinsChanged;
+                _wallet.CoinsChanged += OnCoinsChanged;
+                _wallet.DiamondsChanged -= OnDiamondsChanged;
+                _wallet.DiamondsChanged += OnDiamondsChanged;
+                UpdateCoinsInstant(_wallet.Coins);
+                UpdateDiamondsInstant(_wallet.Diamonds);
+            }
         }
 
         private void OnDisable()
         {
-            _wallet.CoinsChanged -= OnCoinsChanged;
-            _wallet.DiamondsChanged -= OnDiamondsChanged;
+            if (_wallet != null)
+            {
+                _wallet.CoinsChanged -= OnCoinsChanged;
+                _wallet.DiamondsChanged -= OnDiamondsChanged;
+            }
             KillTweens();
         }
 

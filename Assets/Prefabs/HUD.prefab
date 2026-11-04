@@ -5119,7 +5119,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1496506878341594671}
-  - component: {fileID: 5968663485920498529}
   m_Layer: 0
   m_Name: HUD
   m_TagString: Untagged
@@ -5143,19 +5142,6 @@ Transform:
   - {fileID: 633067569523746874}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5968663485920498529
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4434664651640860746}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f517a64d7c9c64b32922a42317242caf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Alchemy::Alchemy.Hierarchy.HierarchyHeader
-  hierarchyObjectMode: 0
 --- !u!1 &4472284639809457211
 GameObject:
   m_ObjectHideFlags: 0

@@ -74,11 +74,32 @@ namespace Game.WaveSystem
         private void Awake()
         {
             EnsureWaveConfigsPopulated();
+            if (_castle == null)
+            {
+                _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
+            }
+            if (_spawner == null)
+            {
+                _spawner = GetComponentInChildren<EnemySpawner>() ?? FindAnyObjectByType<EnemySpawner>();
+            }
         }
 
         private void Start()
         {
-            _castle.Destroyed += OnCastleDestroyed;
+            if (_castle == null)
+            {
+                _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
+            }
+            if (_spawner == null)
+            {
+                _spawner = GetComponentInChildren<EnemySpawner>() ?? FindAnyObjectByType<EnemySpawner>();
+            }
+
+            if (_castle != null)
+            {
+                _castle.Destroyed -= OnCastleDestroyed;
+                _castle.Destroyed += OnCastleDestroyed;
+            }
 
             WaveConfig firstConfig = CurrentWaveConfig;
             if (firstConfig != null)
@@ -130,10 +151,13 @@ namespace Game.WaveSystem
         [Button]
         public void StartWave()
         {
+            if (_castle == null) _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
+            if (_spawner == null) _spawner = GetComponentInChildren<EnemySpawner>() ?? FindAnyObjectByType<EnemySpawner>();
+
             if (_currentState == WaveState.GameOver)
             {
-                _castle.HealFull();
-                _spawner.ClearAllEnemies();
+                _castle?.HealFull();
+                _spawner?.ClearAllEnemies();
                 _currentWaveIndex = 0;
                 EnsureWaveConfigsPopulated();
                 WaveConfig cfg = CurrentWaveConfig;
@@ -256,7 +280,7 @@ namespace Game.WaveSystem
 
                 SetState(WaveState.WaveClearing);
 
-                while (_spawner.ActiveEnemyCount > 0)
+                while (_spawner != null && _spawner.ActiveEnemyCount > 0)
                 {
                     await UniTask.Delay(200, cancellationToken: ct);
                     if (_currentState == WaveState.GameOver) return;
@@ -342,7 +366,7 @@ namespace Game.WaveSystem
                 int countToSpawn = Mathf.Min(batch, group.Count - spawnedCount);
                 for (int b = 0; b < countToSpawn; b++)
                 {
-                    _spawner.SpawnEnemy(group.EnemyData);
+                    _spawner?.SpawnEnemy(group.EnemyData);
                     spawnedCount++;
                 }
 

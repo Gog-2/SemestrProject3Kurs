@@ -52,6 +52,9 @@ namespace Game.Editor
             CreateEnemyAssetsAndSprites(log);
             CreateWaveConfigs(log);
 
+            // Strip dangerous Alchemy HierarchyHeaders from prefabs to prevent build-time GameObject deletion
+            StripDangerousHierarchyHeaders(log);
+
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
@@ -96,6 +99,13 @@ namespace Game.Editor
 
             var eventSystem = UnityEngine.Object.FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>();
             Check("EventSystem", eventSystem != null, eventSystem != null ? "Assigned in scene" : "MISSING");
+
+            var bootstrapper = UnityEngine.Object.FindAnyObjectByType<SceneBootstrapper>();
+            Check("SceneBootstrapper", bootstrapper != null, bootstrapper != null ? "Assigned on [GameSystems]" : "MISSING");
+
+            var headersInScene = UnityEngine.Object.FindObjectsByType<Alchemy.Hierarchy.HierarchyObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            Check("HierarchyHeader in Scene", headersInScene.Length == 0,
+                headersInScene.Length == 0 ? "Clean (no dangerous stripping components)" : $"FOUND {headersInScene.Length} HierarchyObjects! Will cause deletions in build!");
 
             var runConfig = UnityEngine.Object.FindFirstObjectByType<RunConfig>();
             Check("RunConfig", runConfig != null, runConfig != null ? "Assigned in scene" : "MISSING");
@@ -1123,6 +1133,15 @@ namespace Game.Editor
                     EditorUtility.SetDirty(gm);
                     log.AppendLine("Wired GameManager on [GameSystems]");
                 }
+
+                // SceneBootstrapper
+                var bootstrapper = gameSystemsGo.GetComponent<SceneBootstrapper>();
+                if (bootstrapper == null)
+                {
+                    bootstrapper = gameSystemsGo.AddComponent<SceneBootstrapper>();
+                    log.AppendLine("Added SceneBootstrapper on [GameSystems]");
+                }
+                EditorUtility.SetDirty(gameSystemsGo);
             }
 
             // Wire HeavyBallista
@@ -1373,6 +1392,48 @@ namespace Game.Editor
 
             EditorSceneManager.SaveScene(scene);
             log.AppendLine("Saved MainMenu.unity");
+        }
+
+        [MenuItem("Tools/Strip Dangerous HierarchyHeaders")]
+        public static void StripDangerousHierarchyHeadersMenu()
+        {
+            var log = new System.Text.StringBuilder();
+            StripDangerousHierarchyHeaders(log);
+            Debug.Log(log.ToString());
+        }
+
+        public static void StripDangerousHierarchyHeaders(System.Text.StringBuilder log)
+        {
+            log.AppendLine("=== Checking and Stripping Dangerous HierarchyHeaders ===");
+            string[] prefabs = new[]
+            {
+                "Assets/Prefabs/MainGame.prefab",
+                "Assets/Prefabs/HUD.prefab",
+                "Assets/Prefabs/Movement.prefab"
+            };
+
+            foreach (var path in prefabs)
+            {
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (prefab == null) continue;
+
+                var headers = prefab.GetComponentsInChildren<Alchemy.Hierarchy.HierarchyObject>(true);
+                if (headers != null && headers.Length > 0)
+                {
+                    foreach (var h in headers)
+                    {
+                        log.AppendLine($"Removing {h.GetType().Name} from {h.gameObject.name} in {path}");
+                        UnityEngine.Object.DestroyImmediate(h, true);
+                    }
+                    EditorUtility.SetDirty(prefab);
+                    PrefabUtility.SavePrefabAsset(prefab);
+                    log.AppendLine($"Saved stripped prefab: {path}");
+                }
+                else
+                {
+                    log.AppendLine($"[CLEAN] No HierarchyObject on {path}");
+                }
+            }
         }
 
         [MenuItem("Tools/Verify Wave and Enemies")]
