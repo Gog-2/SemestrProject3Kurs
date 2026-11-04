@@ -33,6 +33,7 @@ namespace Game.Buildings
 
         private int _currentHP = -1;
         private Color _originalColor;
+        private Vector3 _baseScale;
         private Tweener _punchTween;
         private Tweener _colorTween;
 
@@ -60,26 +61,96 @@ namespace Game.Buildings
                 gameObject.layer = castleLayer;
             }
 
+            if (_gridMap == null)
+            {
+                _gridMap = FindAnyObjectByType<GridMap>();
+            }
+
+            if (_spriteRenderer == null)
+            {
+                _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            }
+
+            Debug.Assert(_gridMap != null, "[Castle] _gridMap is not assigned!", this);
+            Debug.Assert(_spriteRenderer != null, "[Castle] _spriteRenderer is not assigned!", this);
+
             if (_spriteRenderer != null)
             {
                 _spriteRenderer.sortingLayerName = "Buildings";
                 _spriteRenderer.sortingOrder = 6;
                 _originalColor = _spriteRenderer.color;
             }
+
+            UpdatePositionAndScale();
         }
 
         private void Start()
         {
-            if (_placeAtMapCenter)
+            UpdatePositionAndScale();
+
+            if (_gridMap != null)
             {
-                _originCell = new Vector2Int((_gridMap.Width - _size.x) / 2, (_gridMap.Height - _size.y) / 2);
+                _gridMap.TryPlace(this);
             }
 
-            transform.position = _gridMap.CellToWorld(_originCell.x, _originCell.y) +
-                                 new Vector3((_size.x - 1) * 0.5f, (_size.y - 1) * 0.5f, 0f);
+            var cam = FindAnyObjectByType<Game.CameraSystem.CameraController>();
+            if (cam != null && cam.FocusOnStart)
+            {
+                cam.TeleportTo(transform.position);
+            }
+        }
 
-            _gridMap.TryPlace(this);
-            _spriteRenderer.transform.localScale = new Vector3(_size.x, _size.y, 1f);
+        [Button]
+        public void UpdatePositionAndScale()
+        {
+            if (_gridMap == null)
+            {
+                _gridMap = FindAnyObjectByType<GridMap>();
+            }
+
+            if (_spriteRenderer == null)
+            {
+                _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            }
+
+            if (_placeAtMapCenter && _gridMap != null)
+            {
+                _originCell = new Vector2Int((_gridMap.Width - _size.x) / 2, (_gridMap.Height - _size.y) / 2);
+                transform.position = _gridMap.CellToWorld(_originCell.x, _originCell.y) +
+                                     new Vector3((_size.x - 1) * 0.5f, (_size.y - 1) * 0.5f, 0f);
+            }
+
+            UpdateVisualScale();
+        }
+
+        public void UpdateVisualScale()
+        {
+            if (_spriteRenderer == null)
+            {
+                _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            }
+
+            if (_spriteRenderer == null) return;
+
+            if (_spriteRenderer.sprite != null)
+            {
+                Vector2 spriteWorldSize = _spriteRenderer.sprite.rect.size / _spriteRenderer.sprite.pixelsPerUnit;
+                if (spriteWorldSize.x > 0.0001f && spriteWorldSize.y > 0.0001f)
+                {
+                    _baseScale = new Vector3(_size.x / spriteWorldSize.x, _size.y / spriteWorldSize.y, 1f);
+                    _spriteRenderer.transform.localScale = _baseScale;
+
+                    Transform fp = transform.Find("FirePoint");
+                    if (fp != null)
+                    {
+                        fp.localPosition = new Vector3(0f, (_size.y * 0.5f) / _baseScale.y, 0f);
+                    }
+                    return;
+                }
+            }
+
+            _baseScale = new Vector3(_size.x, _size.y, 1f);
+            _spriteRenderer.transform.localScale = _baseScale;
         }
 
         private void OnValidate()
@@ -87,6 +158,8 @@ namespace Game.Buildings
             if (_maxHP < 1) _maxHP = 1;
             if (_size.x < 1) _size.x = 1;
             if (_size.y < 1) _size.y = 1;
+
+            UpdateVisualScale();
         }
 
         public void TakeDamage(int amount)
@@ -97,16 +170,23 @@ namespace Game.Buildings
 
             _punchTween?.Complete();
             _colorTween?.Kill();
-            _spriteRenderer.color = _originalColor;
+            if (_spriteRenderer != null)
+            {
+                _spriteRenderer.color = _originalColor;
+                if (_baseScale != Vector3.zero)
+                {
+                    _spriteRenderer.transform.localScale = _baseScale;
+                }
 
-            _punchTween = _spriteRenderer.transform.DOPunchScale(_punchStrength, 0.15f, 10, 1f)
-                .SetLink(gameObject)
-                .SetUpdate(true);
+                _punchTween = _spriteRenderer.transform.DOPunchScale(_punchStrength, 0.15f, 10, 1f)
+                    .SetLink(gameObject)
+                    .SetUpdate(true);
 
-            _colorTween = _spriteRenderer.DOColor(_damageColor, 0.075f)
-                .SetLoops(2, LoopType.Yoyo)
-                .SetLink(gameObject)
-                .SetUpdate(true);
+                _colorTween = _spriteRenderer.DOColor(_damageColor, 0.075f)
+                    .SetLoops(2, LoopType.Yoyo)
+                    .SetLink(gameObject)
+                    .SetUpdate(true);
+            }
 
             HealthChanged?.Invoke(this);
             BuildingHealthChanged?.Invoke(this);

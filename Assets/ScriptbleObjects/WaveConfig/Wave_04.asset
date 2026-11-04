@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25b5594ca99835c409e0988a22423128, type: 3}
+  m_Name: Wave_04
+  m_EditorClassIdentifier: Assembly-CSharp::Game.WaveSystem.WaveConfig
+  _waveNumber: 4
+  _durationSeconds: 75
+  _buildingPhaseDuration: 20
+  _isBossWave: 0
+  _isFinalWave: 0
+  _spawnGroups:
+  - _enemyData: {fileID: 11400000, guid: df034b4b754ea9b43bcc30a98f55b3e6, type: 2}
+    _count: 15
+    _startDelay: 0
+    _spawnInterval: 2.2
+    _spawnBatchSize: 1
+  - _enemyData: {fileID: 11400000, guid: fec3dc8dccc4a4d40a9e454ad527d488, type: 2}
+    _count: 8
+    _startDelay: 10
+    _spawnInterval: 4
+    _spawnBatchSize: 1
+  - _enemyData: {fileID: 11400000, guid: 26f59f7b351563140acd4f8ed3870aa0, type: 2}
+    _count: 6
+    _startDelay: 18
+    _spawnInterval: 5
+    _spawnBatchSize: 1
+  - _enemyData: {fileID: 11400000, guid: ad90164e5b9194240a9bd9d5b2089082, type: 2}
+    _count: 12
+    _startDelay: 30
+    _spawnInterval: 1.5
+    _spawnBatchSize: 1
+  _enemyData: {fileID: 11400000, guid: df034b4b754ea9b43bcc30a98f55b3e6, type: 2}
+  _totalEnemiesToSpawn: 15
+  _initialSpawnDelay: 0.2
+  _spawnInterval: 2.2

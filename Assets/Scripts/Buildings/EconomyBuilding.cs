@@ -52,12 +52,9 @@ namespace Game.Buildings
             }
 
             // Punch animation on production
-            if (_modelTransform != null)
-            {
-                _modelTransform.DOPunchScale(Vector3.one * 0.15f, 0.2f, 6, 1f)
-                    .SetLink(gameObject)
-                    .SetUpdate(true);
-            }
+            _modelTransform.DOPunchScale(Vector3.one * 0.15f, 0.2f, 6, 1f)
+                .SetLink(gameObject)
+                .SetUpdate(true);
         }
 
         private void ResetTimer()

@@ -27,9 +27,16 @@ namespace Game.UI.MainMenu
 
         private void Awake()
         {
-            if (_prevButton != null) _prevButton.onClick.AddListener(OnPrevClicked);
-            if (_nextButton != null) _nextButton.onClick.AddListener(OnNextClicked);
-            if (_actionButton != null) _actionButton.onClick.AddListener(OnActionClicked);
+            Debug.Assert(_prevButton != null, "[WeaponSelectionUI] _prevButton is not assigned!", this);
+            Debug.Assert(_nextButton != null, "[WeaponSelectionUI] _nextButton is not assigned!", this);
+            Debug.Assert(_actionButton != null, "[WeaponSelectionUI] _actionButton is not assigned!", this);
+            Debug.Assert(_nameText != null, "[WeaponSelectionUI] _nameText is not assigned!", this);
+            Debug.Assert(_descriptionText != null, "[WeaponSelectionUI] _descriptionText is not assigned!", this);
+            Debug.Assert(_actionButtonText != null, "[WeaponSelectionUI] _actionButtonText is not assigned!", this);
+
+            _prevButton.onClick.AddListener(OnPrevClicked);
+            _nextButton.onClick.AddListener(OnNextClicked);
+            _actionButton.onClick.AddListener(OnActionClicked);
         }
 
         private void OnEnable()
@@ -51,22 +58,19 @@ namespace Game.UI.MainMenu
             WeaponSelectionData weapon = _allWeapons[_currentIndex];
             if (weapon == null) return;
 
-            if (_nameText != null) _nameText.text = weapon.WeaponName;
-            if (_descriptionText != null) _descriptionText.text = weapon.Description;
+            _nameText.text = weapon.WeaponName;
+            _descriptionText.text = weapon.Description;
 
             bool isUnlocked = MetaSaveManager.IsWeaponUnlocked(weapon.Id);
 
-            if (_actionButtonText != null)
+            if (isUnlocked)
             {
-                if (isUnlocked)
-                {
-                    bool isSelected = MetaSaveManager.Data.SelectedWeaponId == weapon.Id;
-                    _actionButtonText.text = isSelected ? "ВЫБРАНО" : "ВЫБРАТЬ";
-                }
-                else
-                {
-                    _actionButtonText.text = $"ОТКРЫТЬ ({weapon.DiamondCost} алм.)";
-                }
+                bool isSelected = MetaSaveManager.Data.SelectedWeaponId == weapon.Id;
+                _actionButtonText.text = isSelected ? "ВЫБРАНО" : "ВЫБРАТЬ";
+            }
+            else
+            {
+                _actionButtonText.text = $"ОТКРЫТЬ ({weapon.DiamondCost} алм.)";
             }
 
             if (RunConfig.Instance != null && isUnlocked)

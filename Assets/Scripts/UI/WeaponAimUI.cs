@@ -36,10 +36,8 @@ namespace Game.UI
                 _mainCamera = Camera.main;
             }
 
-            if (_weapon == null)
-            {
-                _weapon = FindFirstObjectByType<CastleWeapon>();
-            }
+            Debug.Assert(_weapon != null, "[WeaponAimUI] _weapon is not assigned!", this);
+            Debug.Assert(_cooldownText != null, "[WeaponAimUI] _cooldownText is not assigned!", this);
         }
 
         private void Start()
@@ -279,11 +277,7 @@ namespace Game.UI
         private void EnsureAimVisuals()
         {
             if (_aimLine != null && _aimReticle != null) return;
-            if (_weapon == null)
-            {
-                _weapon = FindFirstObjectByType<CastleWeapon>();
-                if (_weapon == null) return;
-            }
+            if (_weapon == null) return;
 
             if (_aimVisualsRoot == null)
             {

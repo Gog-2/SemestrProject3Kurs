@@ -27,9 +27,16 @@ namespace Game.UI.MainMenu
 
         private void Awake()
         {
-            if (_prevButton != null) _prevButton.onClick.AddListener(OnPrevClicked);
-            if (_nextButton != null) _nextButton.onClick.AddListener(OnNextClicked);
-            if (_actionButton != null) _actionButton.onClick.AddListener(OnActionClicked);
+            Debug.Assert(_prevButton != null, "[ArenaSelectionUI] _prevButton is not assigned!", this);
+            Debug.Assert(_nextButton != null, "[ArenaSelectionUI] _nextButton is not assigned!", this);
+            Debug.Assert(_actionButton != null, "[ArenaSelectionUI] _actionButton is not assigned!", this);
+            Debug.Assert(_nameText != null, "[ArenaSelectionUI] _nameText is not assigned!", this);
+            Debug.Assert(_descriptionText != null, "[ArenaSelectionUI] _descriptionText is not assigned!", this);
+            Debug.Assert(_actionButtonText != null, "[ArenaSelectionUI] _actionButtonText is not assigned!", this);
+
+            _prevButton.onClick.AddListener(OnPrevClicked);
+            _nextButton.onClick.AddListener(OnNextClicked);
+            _actionButton.onClick.AddListener(OnActionClicked);
         }
 
         private void OnEnable()
@@ -51,22 +58,19 @@ namespace Game.UI.MainMenu
             ArenaData arena = _allArenas[_currentIndex];
             if (arena == null) return;
 
-            if (_nameText != null) _nameText.text = arena.ArenaName;
-            if (_descriptionText != null) _descriptionText.text = arena.Description;
+            _nameText.text = arena.ArenaName;
+            _descriptionText.text = arena.Description;
 
             bool isUnlocked = MetaSaveManager.IsArenaUnlocked(arena.Id);
 
-            if (_actionButtonText != null)
+            if (isUnlocked)
             {
-                if (isUnlocked)
-                {
-                    bool isSelected = MetaSaveManager.Data.SelectedArenaId == arena.Id;
-                    _actionButtonText.text = isSelected ? "ВЫБРАНА" : "ВЫБРАТЬ";
-                }
-                else
-                {
-                    _actionButtonText.text = $"ОТКРЫТЬ ({arena.DiamondCost} алм.)";
-                }
+                bool isSelected = MetaSaveManager.Data.SelectedArenaId == arena.Id;
+                _actionButtonText.text = isSelected ? "ВЫБРАНА" : "ВЫБРАТЬ";
+            }
+            else
+            {
+                _actionButtonText.text = $"ОТКРЫТЬ ({arena.DiamondCost} алм.)";
             }
 
             if (RunConfig.Instance != null && isUnlocked)

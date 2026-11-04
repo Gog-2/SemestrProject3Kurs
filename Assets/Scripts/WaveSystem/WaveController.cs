@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace Game.WaveSystem
     public class WaveController : MonoBehaviour
     {
         [Title("References")]
+        [SerializeField] private List<WaveConfig> _waveConfigs = new();
         [SerializeField] private WaveConfig _initialWaveConfig;
         [SerializeField] private EnemySpawner _spawner;
         [SerializeField] private Castle _castle;
@@ -32,46 +34,97 @@ namespace Game.WaveSystem
 
         [Title("Debug")]
         [SerializeField, ReadOnly] private WaveState _currentState = WaveState.NotStarted;
+        [SerializeField, ReadOnly] private int _currentWaveIndex = 0;
         [SerializeField, ReadOnly] private int _currentWaveNumber = 1;
+        [SerializeField, ReadOnly] private float _buildingPhaseRemainingTime = 0f;
 
         public WaveState CurrentState => _currentState;
         public int CurrentWaveNumber => _currentWaveNumber;
+        public int CurrentWaveIndex => _currentWaveIndex;
+        public IReadOnlyList<WaveConfig> WaveConfigs => _waveConfigs;
+        public float BuildingPhaseRemainingTime => _buildingPhaseRemainingTime;
         public IWaveTimer Timer => _waveTimer;
+        public EnemySpawner Spawner => _spawner;
+
+        public WaveConfig CurrentWaveConfig
+        {
+            get
+            {
+                if (_waveConfigs != null && _waveConfigs.Count > 0)
+                {
+                    int idx = Mathf.Clamp(_currentWaveIndex, 0, _waveConfigs.Count - 1);
+                    return _waveConfigs[idx];
+                }
+                return _initialWaveConfig;
+            }
+        }
 
         private readonly WaveTimer _waveTimer = new();
         private CancellationTokenSource _waveCts;
+        private bool _skipBuildingPhaseRequested;
 
         public event Action OnWaveStarted;
         public event Action OnWaveCleared;
         public event Action OnBuildingPhaseStarted;
         public event Action OnBuildingPhaseEnded;
+        public event Action<float> BuildingPhaseTimeChanged;
         public event Action OnGameOver;
         public event Action<WaveState> StateChanged;
+
+        private void Awake()
+        {
+            EnsureWaveConfigsPopulated();
+        }
 
         private void Start()
         {
             _castle.Destroyed += OnCastleDestroyed;
 
-            if (_initialWaveConfig != null)
+            WaveConfig firstConfig = CurrentWaveConfig;
+            if (firstConfig != null)
             {
-                _currentWaveNumber = _initialWaveConfig.WaveNumber;
+                _currentWaveNumber = firstConfig.WaveNumber;
             }
 
-            if (_autoStartFirstWave && _initialWaveConfig != null)
+            if (_autoStartFirstWave && firstConfig != null)
             {
                 StartWaveWithDelayAsync(_delayBeforeFirstWave).Forget();
             }
             else
             {
-                SetState(WaveState.BuildingPhase);
-                OnBuildingPhaseStarted?.Invoke();
+                float duration = firstConfig != null ? firstConfig.BuildingPhaseDuration : 20f;
+                RunFirstBuildingPhaseAsync(duration).Forget();
             }
         }
 
         private void OnDestroy()
         {
             CancelCurrentWave();
-            _castle.Destroyed -= OnCastleDestroyed;
+            if (_castle != null)
+            {
+                _castle.Destroyed -= OnCastleDestroyed;
+            }
+        }
+
+        private void EnsureWaveConfigsPopulated()
+        {
+            if ((_waveConfigs == null || _waveConfigs.Count == 0) && _initialWaveConfig != null)
+            {
+                _waveConfigs = new List<WaveConfig> { _initialWaveConfig };
+            }
+        }
+
+        [Button]
+        public void SkipBuildingPhaseAndStartWave()
+        {
+            if (_currentState == WaveState.BuildingPhase)
+            {
+                _skipBuildingPhaseRequested = true;
+            }
+            else if (_currentState == WaveState.NotStarted)
+            {
+                StartWave();
+            }
         }
 
         [Button]
@@ -81,14 +134,26 @@ namespace Game.WaveSystem
             {
                 _castle.HealFull();
                 _spawner.ClearAllEnemies();
-                SetState(WaveState.BuildingPhase);
+                _currentWaveIndex = 0;
+                EnsureWaveConfigsPopulated();
+                WaveConfig cfg = CurrentWaveConfig;
+                _currentWaveNumber = cfg != null ? cfg.WaveNumber : 1;
+                RunFirstBuildingPhaseAsync(cfg != null ? cfg.BuildingPhaseDuration : 20f).Forget();
+                return;
             }
-            else if (_currentState == WaveState.WaveActive)
+
+            if (_currentState == WaveState.BuildingPhase)
+            {
+                _skipBuildingPhaseRequested = true;
+                return;
+            }
+
+            if (_currentState == WaveState.WaveActive)
             {
                 return;
             }
 
-            StartWave(_initialWaveConfig);
+            StartWave(CurrentWaveConfig);
         }
 
         public void StartWave(WaveConfig config)
@@ -114,15 +179,57 @@ namespace Game.WaveSystem
                     await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: destroyCancellationToken);
                 }
 
-                if (_currentState != WaveState.GameOver && _initialWaveConfig != null)
+                if (_currentState != WaveState.GameOver && CurrentWaveConfig != null)
                 {
-                    StartWave(_initialWaveConfig);
+                    StartWave(CurrentWaveConfig);
                 }
             }
             catch (OperationCanceledException)
             {
                 // Clean cancellation on destroy
             }
+        }
+
+        private async UniTaskVoid RunFirstBuildingPhaseAsync(float duration)
+        {
+            try
+            {
+                CancelCurrentWave();
+                _waveCts = new CancellationTokenSource();
+                await RunBuildingPhaseAsync(duration, _waveCts.Token);
+
+                if (!_waveCts.IsCancellationRequested && _currentState != WaveState.GameOver)
+                {
+                    StartWave(CurrentWaveConfig);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Clean cancellation
+            }
+        }
+
+        private async UniTask RunBuildingPhaseAsync(float duration, CancellationToken ct)
+        {
+            _buildingPhaseRemainingTime = Mathf.Max(0.5f, duration);
+            _skipBuildingPhaseRequested = false;
+            SetState(WaveState.BuildingPhase);
+            OnBuildingPhaseStarted?.Invoke();
+            BuildingPhaseTimeChanged?.Invoke(_buildingPhaseRemainingTime);
+
+            while (_buildingPhaseRemainingTime > 0f && !_skipBuildingPhaseRequested && !ct.IsCancellationRequested)
+            {
+                await UniTask.Yield(PlayerLoopTiming.Update, ct);
+                if (_currentState == WaveState.GameOver) return;
+                if (_skipBuildingPhaseRequested) break;
+
+                _buildingPhaseRemainingTime -= Time.deltaTime;
+                if (_buildingPhaseRemainingTime < 0f) _buildingPhaseRemainingTime = 0f;
+                BuildingPhaseTimeChanged?.Invoke(_buildingPhaseRemainingTime);
+            }
+
+            _skipBuildingPhaseRequested = false;
+            OnBuildingPhaseEnded?.Invoke();
         }
 
         private async UniTaskVoid RunWaveLifecycleAsync(WaveConfig config, CancellationToken ct)
@@ -151,7 +258,7 @@ namespace Game.WaveSystem
 
                 while (_spawner.ActiveEnemyCount > 0)
                 {
-                    await UniTask.Delay(250, cancellationToken: ct);
+                    await UniTask.Delay(200, cancellationToken: ct);
                     if (_currentState == WaveState.GameOver) return;
                 }
 
@@ -163,10 +270,37 @@ namespace Game.WaveSystem
                 SetState(WaveState.WaveCompleted);
                 OnWaveCleared?.Invoke();
 
-                RunProgressionManager.Instance.RequestUpgradeSelection();
+                RunStatistics.Instance?.RecordWaveCleared(_currentWaveNumber);
 
-                SetState(WaveState.BuildingPhase);
-                OnBuildingPhaseStarted?.Invoke();
+                bool isLastAuthoredWave = _waveConfigs != null && _waveConfigs.Count > 0 && _currentWaveIndex >= _waveConfigs.Count - 1;
+                if (config.IsFinalWave || isLastAuthoredWave)
+                {
+                    GameManager.Instance.SetState(GameState.Victory);
+                    return;
+                }
+
+                if (RunProgressionManager.Instance != null)
+                {
+                    RunProgressionManager.Instance.RequestUpgradeSelection();
+                }
+
+                while (GameManager.Instance != null && GameManager.Instance.CurrentState == GameState.UpgradeSelection)
+                {
+                    await UniTask.Yield(PlayerLoopTiming.Update, ct);
+                    if (_currentState == WaveState.GameOver) return;
+                }
+
+                _currentWaveIndex++;
+                WaveConfig nextConfig = CurrentWaveConfig;
+                if (nextConfig != null)
+                {
+                    _currentWaveNumber = nextConfig.WaveNumber;
+                    await RunBuildingPhaseAsync(nextConfig.BuildingPhaseDuration, ct);
+
+                    if (ct.IsCancellationRequested || _currentState == WaveState.GameOver) return;
+
+                    RunWaveLifecycleAsync(nextConfig, ct).Forget();
+                }
             }
             catch (OperationCanceledException)
             {
@@ -176,23 +310,45 @@ namespace Game.WaveSystem
 
         private async UniTask RunEnemySpawningAsync(WaveConfig config, CancellationToken ct)
         {
-            if (config.EnemyData == null)
+            var groups = config.GetActiveSpawnGroups();
+            if (groups == null || groups.Count == 0)
             {
                 return;
             }
 
-            if (config.InitialSpawnDelay > 0f)
+            var tasks = new List<UniTask>(groups.Count);
+            for (int i = 0; i < groups.Count; i++)
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(config.InitialSpawnDelay), cancellationToken: ct);
+                tasks.Add(RunSpawnGroupAsync(groups[i], ct));
+            }
+
+            await UniTask.WhenAll(tasks);
+        }
+
+        private async UniTask RunSpawnGroupAsync(EnemySpawnGroup group, CancellationToken ct)
+        {
+            if (group.EnemyData == null) return;
+
+            if (group.StartDelay > 0f)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(group.StartDelay), cancellationToken: ct);
             }
 
             int spawnedCount = 0;
-            while (spawnedCount < config.TotalEnemiesToSpawn && _waveTimer.IsRunning && !ct.IsCancellationRequested)
-            {
-                _spawner.SpawnEnemy(config.EnemyData);
-                spawnedCount++;
+            int batch = Mathf.Max(1, group.SpawnBatchSize);
 
-                await UniTask.Delay(TimeSpan.FromSeconds(config.SpawnInterval), cancellationToken: ct);
+            while (spawnedCount < group.Count && _waveTimer.IsRunning && !ct.IsCancellationRequested)
+            {
+                int countToSpawn = Mathf.Min(batch, group.Count - spawnedCount);
+                for (int b = 0; b < countToSpawn; b++)
+                {
+                    _spawner.SpawnEnemy(group.EnemyData);
+                    spawnedCount++;
+                }
+
+                if (spawnedCount >= group.Count) break;
+
+                await UniTask.Delay(TimeSpan.FromSeconds(group.SpawnInterval), cancellationToken: ct);
             }
         }
 

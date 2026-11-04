@@ -28,10 +28,13 @@ namespace Game.UI
 
         private void Awake()
         {
-            if (_selectButton != null)
-            {
-                _selectButton.onClick.AddListener(OnButtonClicked);
-            }
+            Debug.Assert(_selectButton != null, "[UpgradeCardUI] _selectButton is not assigned!", this);
+            Debug.Assert(_titleText != null, "[UpgradeCardUI] _titleText is not assigned!", this);
+            Debug.Assert(_descriptionText != null, "[UpgradeCardUI] _descriptionText is not assigned!", this);
+            Debug.Assert(_rarityText != null, "[UpgradeCardUI] _rarityText is not assigned!", this);
+            Debug.Assert(_rarityBackground != null, "[UpgradeCardUI] _rarityBackground is not assigned!", this);
+
+            _selectButton.onClick.AddListener(OnButtonClicked);
         }
 
         public void Setup(UpgradeData data, Action<UpgradeData> onSelected)
@@ -47,21 +50,14 @@ namespace Game.UI
 
             gameObject.SetActive(true);
 
-            if (_titleText != null) _titleText.text = _data.Title;
-            if (_descriptionText != null) _descriptionText.text = _data.Description;
+            _titleText.text = _data.Title;
+            _descriptionText.text = _data.Description;
 
             Color rarityColor = GetRarityColor(_data.Rarity);
 
-            if (_rarityText != null)
-            {
-                _rarityText.text = _data.Rarity.ToString().ToUpper();
-                _rarityText.color = rarityColor;
-            }
-
-            if (_rarityBackground != null)
-            {
-                _rarityBackground.color = rarityColor;
-            }
+            _rarityText.text = _data.Rarity.ToString().ToUpper();
+            _rarityText.color = rarityColor;
+            _rarityBackground.color = rarityColor;
         }
 
         private Color GetRarityColor(UpgradeRarity rarity)

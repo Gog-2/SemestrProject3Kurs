@@ -13,13 +13,19 @@ MonoBehaviour:
   m_Name: Enemy
   m_EditorClassIdentifier: Assembly-CSharp::Game.Enemies.Data.EnemyData
   _id: regular_enemy
-  _displayName: Regular Enemy
+  _displayName: "\u041F\u0435\u0445\u043E\u0442\u0438\u043D\u0435\u0446"
+  _isBoss: 0
+  _sprite: {fileID: 21300000, guid: c3e948c2b7123490aa567891beef1003, type: 3}
+  _tintColor: {r: 1, g: 1, b: 1, a: 1}
+  _visualScale: {x: 1, y: 1, z: 1}
   _maxHP: 30
   _moveSpeed: 2
   _minSpeedRatio: 0.8
   _damage: 5
   _attackInterval: 1.5
   _attackRange: 0.8
+  _isRanged: 0
+  _honorReward: 10
   _lootTable:
     _minCoins: 1
     _maxCoins: 3

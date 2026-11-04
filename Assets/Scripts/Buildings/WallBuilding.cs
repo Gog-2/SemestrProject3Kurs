@@ -11,6 +11,15 @@ namespace Game.Buildings
         [SerializeField] private Sprite _verticalSprite;
         [SerializeField] private Sprite _crossSprite;
 
+        protected override void Awake()
+        {
+            base.Awake();
+            Debug.Assert(_singleSprite != null, $"[{name}] _singleSprite is not assigned!", this);
+            Debug.Assert(_horizontalSprite != null, $"[{name}] _horizontalSprite is not assigned!", this);
+            Debug.Assert(_verticalSprite != null, $"[{name}] _verticalSprite is not assigned!", this);
+            Debug.Assert(_crossSprite != null, $"[{name}] _crossSprite is not assigned!", this);
+        }
+
         protected override void OnPlaced()
         {
             base.OnPlaced();
@@ -26,7 +35,7 @@ namespace Game.Buildings
 
         public void UpdateConnections()
         {
-            if (_gridMap == null || _spriteRenderer == null) return;
+            if (_gridMap == null) return;
 
             bool north = IsWallAt(_originCell + Vector2Int.up);
             bool south = IsWallAt(_originCell + Vector2Int.down);
@@ -35,19 +44,19 @@ namespace Game.Buildings
 
             int connectionCount = (north ? 1 : 0) + (south ? 1 : 0) + (east ? 1 : 0) + (west ? 1 : 0);
 
-            if (connectionCount >= 3 && _crossSprite != null)
+            if (connectionCount >= 3)
             {
                 _spriteRenderer.sprite = _crossSprite;
             }
-            else if ((east || west) && !(north || south) && _horizontalSprite != null)
+            else if ((east || west) && !(north || south))
             {
                 _spriteRenderer.sprite = _horizontalSprite;
             }
-            else if ((north || south) && !(east || west) && _verticalSprite != null)
+            else if ((north || south) && !(east || west))
             {
                 _spriteRenderer.sprite = _verticalSprite;
             }
-            else if (_singleSprite != null)
+            else
             {
                 _spriteRenderer.sprite = _singleSprite;
             }

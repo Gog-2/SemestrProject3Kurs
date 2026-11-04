@@ -1,4 +1,4 @@
-namespace Game.Upgrades
+﻿namespace Game.Upgrades
 {
     public enum UpgradeRarity
     {

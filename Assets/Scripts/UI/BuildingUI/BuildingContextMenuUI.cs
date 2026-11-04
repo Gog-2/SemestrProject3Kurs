@@ -6,6 +6,7 @@ using Game.Buildings;
 
 namespace Game.UI.BuildingUI
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class BuildingContextMenuUI : MonoBehaviour
     {
         [Title("UI Elements")]
@@ -75,37 +76,24 @@ namespace Game.UI.BuildingUI
         {
             _mainCamera = Camera.main;
 
-            if (_canvasGroup == null)
-            {
-                _canvasGroup = GetComponent<CanvasGroup>();
-            }
+            Debug.Assert(_canvasGroup != null, "[BuildingContextMenuUI] _canvasGroup is not assigned!", this);
+            Debug.Assert(_destroyButton != null, "[BuildingContextMenuUI] _destroyButton is not assigned!", this);
+            Debug.Assert(_moveButton != null, "[BuildingContextMenuUI] _moveButton is not assigned!", this);
+            Debug.Assert(_upgradeButton != null, "[BuildingContextMenuUI] _upgradeButton is not assigned!", this);
+            Debug.Assert(_menuRect != null, "[BuildingContextMenuUI] _menuRect is not assigned!", this);
 
-            if (_canvasGroup != null)
-            {
-                _canvasGroup.alpha = 0f;
-                _canvasGroup.interactable = false;
-                _canvasGroup.blocksRaycasts = false;
-            }
-            else if (_panelRoot != null && _panelRoot != gameObject)
-            {
-                _panelRoot.SetActive(false);
-            }
+            _canvasGroup.alpha = 0f;
+            _canvasGroup.interactable = false;
+            _canvasGroup.blocksRaycasts = false;
 
-            if (_destroyButton != null)
-            {
-                _destroyButton.onClick.RemoveListener(OnDestroyClicked);
-                _destroyButton.onClick.AddListener(OnDestroyClicked);
-            }
-            if (_moveButton != null)
-            {
-                _moveButton.onClick.RemoveListener(OnMoveClicked);
-                _moveButton.onClick.AddListener(OnMoveClicked);
-            }
-            if (_upgradeButton != null)
-            {
-                _upgradeButton.onClick.RemoveListener(OnUpgradeClicked);
-                _upgradeButton.onClick.AddListener(OnUpgradeClicked);
-            }
+            _destroyButton.onClick.RemoveListener(OnDestroyClicked);
+            _destroyButton.onClick.AddListener(OnDestroyClicked);
+
+            _moveButton.onClick.RemoveListener(OnMoveClicked);
+            _moveButton.onClick.AddListener(OnMoveClicked);
+
+            _upgradeButton.onClick.RemoveListener(OnUpgradeClicked);
+            _upgradeButton.onClick.AddListener(OnUpgradeClicked);
         }
 
         private void Start()
@@ -136,7 +124,7 @@ namespace Game.UI.BuildingUI
         private void LateUpdate()
         {
             if (_currentBuilding == null) return;
-            if (_canvasGroup != null && _canvasGroup.alpha <= 0.01f) return;
+            if (_canvasGroup.alpha <= 0.01f) return;
             if (_panelRoot != null && !_panelRoot.activeSelf) return;
 
             UpdateScreenPosition();
@@ -153,15 +141,12 @@ namespace Game.UI.BuildingUI
             screenPos += (Vector3)_screenOffset;
 
             // Clamp so menu doesn't go off-screen
-            float halfWidth = _menuRect != null ? _menuRect.sizeDelta.x * 0.5f : 120f;
-            float halfHeight = _menuRect != null ? _menuRect.sizeDelta.y * 0.5f : 75f;
+            float halfWidth = _menuRect.sizeDelta.x * 0.5f;
+            float halfHeight = _menuRect.sizeDelta.y * 0.5f;
             screenPos.x = Mathf.Clamp(screenPos.x, halfWidth + 10f, Screen.width - halfWidth - 10f);
             screenPos.y = Mathf.Clamp(screenPos.y, halfHeight + 10f, Screen.height - halfHeight - 10f);
 
-            if (_menuRect != null)
-            {
-                _menuRect.position = screenPos;
-            }
+            _menuRect.position = screenPos;
         }
 
         public void OnBuildingSelected(Building building)
@@ -185,29 +170,20 @@ namespace Game.UI.BuildingUI
                 _panelRoot.SetActive(true);
             }
 
-            if (_canvasGroup != null)
-            {
-                _canvasGroup.alpha = 1f;
-                _canvasGroup.interactable = true;
-                _canvasGroup.blocksRaycasts = true;
-            }
-            else if (_panelRoot != null)
-            {
-                _panelRoot.SetActive(true);
-            }
+            _canvasGroup.alpha = 1f;
+            _canvasGroup.interactable = true;
+            _canvasGroup.blocksRaycasts = true;
 
             UpdateScreenPosition();
         }
 
         public void Hide()
         {
-            if (_canvasGroup != null)
-            {
-                _canvasGroup.alpha = 0f;
-                _canvasGroup.interactable = false;
-                _canvasGroup.blocksRaycasts = false;
-            }
-            else if (_panelRoot != null && _panelRoot != gameObject)
+            _canvasGroup.alpha = 0f;
+            _canvasGroup.interactable = false;
+            _canvasGroup.blocksRaycasts = false;
+
+            if (_panelRoot != null && _panelRoot != gameObject)
             {
                 _panelRoot.SetActive(false);
             }

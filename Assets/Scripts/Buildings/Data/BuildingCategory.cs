@@ -1,4 +1,4 @@
-namespace Game.Buildings
+﻿namespace Game.Buildings
 {
     public enum BuildingCategory
     {

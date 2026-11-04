@@ -26,6 +26,14 @@ namespace Game.UI.BuildingUI
         private Action<int> _onLeftClicked;
         private Action<int> _onRightClicked;
 
+        private void Awake()
+        {
+            Debug.Assert(_hotkeyText != null, "[BuildingSlotButton] _hotkeyText is not assigned!", this);
+            Debug.Assert(_costText != null, "[BuildingSlotButton] _costText is not assigned!", this);
+            Debug.Assert(_nameText != null, "[BuildingSlotButton] _nameText is not assigned!", this);
+            Debug.Assert(_background != null, "[BuildingSlotButton] _background is not assigned!", this);
+        }
+
         public void InitializeReferences(
             Image background,
             TMP_Text hotkeyText,
@@ -49,19 +57,16 @@ namespace Game.UI.BuildingUI
             _onLeftClicked = onLeftClicked;
             _onRightClicked = onRightClicked;
 
-            if (_hotkeyText != null)
-            {
-                _hotkeyText.text = (slotIndex + 1).ToString();
-            }
+            _hotkeyText.text = (slotIndex + 1).ToString();
 
             if (_data == null)
             {
-                if (_costText != null) _costText.text = "-";
-                if (_nameText != null) _nameText.text = "Пусто";
+                _costText.text = "-";
+                _nameText.text = "Пусто";
                 return;
             }
 
-            if (_nameText != null) _nameText.text = _data.DisplayName;
+            _nameText.text = _data.DisplayName;
 
             UpdateCostDisplay();
         }
@@ -71,16 +76,10 @@ namespace Game.UI.BuildingUI
             if (_data == null) return;
 
             int cost = _data.GetStats(1).cost;
-            if (_costText != null)
-            {
-                _costText.text = $"{cost} м.";
-            }
+            _costText.text = $"{cost} м.";
 
             bool hasCoins = PlayerWallet.Instance.Coins >= cost;
-            if (_background != null)
-            {
-                _background.color = hasCoins ? _availableColor : _insufficientCoinsColor;
-            }
+            _background.color = hasCoins ? _availableColor : _insufficientCoinsColor;
         }
 
         public void OnPointerClick(PointerEventData eventData)

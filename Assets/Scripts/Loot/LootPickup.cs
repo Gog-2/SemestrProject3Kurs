@@ -29,11 +29,9 @@ namespace Game.Loot
                 gameObject.layer = lootLayer;
             }
 
-            if (_spriteRenderer != null)
-            {
-                _spriteRenderer.sortingLayerName = "Loot";
-                _spriteRenderer.sortingOrder = 8;
-            }
+            Debug.Assert(_spriteRenderer != null, "[LootPickup] _spriteRenderer is not assigned!", this);
+            _spriteRenderer.sortingLayerName = "Loot";
+            _spriteRenderer.sortingOrder = 8;
         }
 
         public void Initialize(LootType type, int value, Action<LootPickup> onCollected)

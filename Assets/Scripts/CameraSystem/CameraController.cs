@@ -4,6 +4,7 @@ using Game.Core;
 
 namespace Game.CameraSystem
 {
+    [RequireComponent(typeof(Camera))]
     public class CameraController : MonoBehaviour
     {
         [BoxGroup("References")]
@@ -34,6 +35,7 @@ namespace Game.CameraSystem
         [BoxGroup("Debug")]
         [ShowInInspector, ReadOnly]
         public float CurrentZoom => _targetCamera != null ? _targetCamera.orthographicSize : 0f;
+        public bool FocusOnStart => _focusOnStart;
 
         private float _targetZoom;
         private bool _inputRegistered;
@@ -43,12 +45,27 @@ namespace Game.CameraSystem
             if (_targetCamera == null)
             {
                 _targetCamera = GetComponent<Camera>();
-                if (_targetCamera == null)
+            }
+            if (_targetCamera == null)
+            {
+                _targetCamera = Camera.main;
+            }
+
+            if (_gridMap == null)
+            {
+                _gridMap = FindAnyObjectByType<GridMap>();
+            }
+
+            if (_initialTarget == null)
+            {
+                var castle = FindAnyObjectByType<Game.Buildings.Castle>();
+                if (castle != null)
                 {
-                    _targetCamera = Camera.main;
+                    _initialTarget = castle.transform;
                 }
             }
 
+            Debug.Assert(_targetCamera != null, "[CameraController] _targetCamera is not assigned!", this);
             _targetZoom = _targetCamera != null ? _targetCamera.orthographicSize : 10f;
         }
 
@@ -64,6 +81,20 @@ namespace Game.CameraSystem
         [Button]
         public void FocusOnTarget()
         {
+            if (_initialTarget == null)
+            {
+                var castle = FindAnyObjectByType<Game.Buildings.Castle>();
+                if (castle != null)
+                {
+                    _initialTarget = castle.transform;
+                }
+            }
+
+            if (_gridMap == null)
+            {
+                _gridMap = FindAnyObjectByType<GridMap>();
+            }
+
             Vector3 targetPos;
             if (_initialTarget != null)
             {
@@ -179,8 +210,6 @@ namespace Game.CameraSystem
                 return;
             }
 
-            if (_targetCamera == null) return;
-
             // Convert screen delta to world delta
             Vector3 worldPosBefore = _targetCamera.ScreenToWorldPoint(new Vector3(0f, 0f, -_targetCamera.transform.position.z));
             Vector3 worldPosAfter = _targetCamera.ScreenToWorldPoint(new Vector3(screenDelta.x, screenDelta.y, -_targetCamera.transform.position.z));
@@ -229,6 +258,17 @@ namespace Game.CameraSystem
 
         private void ClampPositionToBounds()
         {
+            if (_gridMap == null)
+            {
+                _gridMap = FindAnyObjectByType<GridMap>();
+            }
+
+            if (_targetCamera == null)
+            {
+                _targetCamera = GetComponent<Camera>();
+                if (_targetCamera == null) _targetCamera = Camera.main;
+            }
+
             if (_gridMap == null || _targetCamera == null) return;
 
             Bounds bounds = _gridMap.Bounds;

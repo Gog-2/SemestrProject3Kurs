@@ -62,10 +62,10 @@ namespace Game.Buildings
                 _modelTransform = _spriteRenderer != null ? _spriteRenderer.transform : transform;
             }
 
-            if (_spriteRenderer != null)
-            {
-                _originalColor = _spriteRenderer.color;
-            }
+            Debug.Assert(_spriteRenderer != null, $"[{name}] _spriteRenderer is missing!", this);
+            Debug.Assert(_modelTransform != null, $"[{name}] _modelTransform is missing!", this);
+
+            _originalColor = _spriteRenderer.color;
         }
 
         public virtual void Initialize(BuildingData data, GridMap map, Vector2Int origin, int level = 1)
@@ -108,21 +108,15 @@ namespace Game.Buildings
             _punchTween?.Complete();
             _colorTween?.Kill();
 
-            if (_spriteRenderer != null)
-            {
-                _spriteRenderer.color = _originalColor;
-                _colorTween = _spriteRenderer.DOColor(_damageColor, 0.08f)
-                    .SetLoops(2, LoopType.Yoyo)
-                    .SetLink(gameObject)
-                    .SetUpdate(true);
-            }
+            _spriteRenderer.color = _originalColor;
+            _colorTween = _spriteRenderer.DOColor(_damageColor, 0.08f)
+                .SetLoops(2, LoopType.Yoyo)
+                .SetLink(gameObject)
+                .SetUpdate(true);
 
-            if (_modelTransform != null)
-            {
-                _punchTween = _modelTransform.DOPunchScale(_punchStrength, 0.12f, 8, 1f)
-                    .SetLink(gameObject)
-                    .SetUpdate(true);
-            }
+            _punchTween = _modelTransform.DOPunchScale(_punchStrength, 0.12f, 8, 1f)
+                .SetLink(gameObject)
+                .SetUpdate(true);
 
             HealthChanged?.Invoke(this);
             BuildingHealthChanged?.Invoke(this);

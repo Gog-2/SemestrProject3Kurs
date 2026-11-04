@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c5fd1248d4a9204aaac04d464a38cde, type: 3}
+  m_Name: Enemy_Fast
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Enemies.Data.EnemyData
+  _id: fast_goblin
+  _displayName: "\u0413\u043E\u0431\u043B\u0438\u043D-\u0431\u0435\u0433\u0443\u043D"
+  _isBoss: 0
+  _sprite: {fileID: 6229824873125743247, guid: a6e8952ed209c444bbd6bb5a1cdf870f, type: 3}
+  _tintColor: {r: 0.75, g: 1, b: 0.45, a: 1}
+  _visualScale: {x: 0.85, y: 0.85, z: 1}
+  _maxHP: 16
+  _moveSpeed: 3.2
+  _minSpeedRatio: 0.8
+  _damage: 3
+  _attackInterval: 0.9
+  _attackRange: 0.7
+  _isRanged: 0
+  _honorReward: 8
+  _lootTable:
+    _minCoins: 1
+    _maxCoins: 2
+    _coinDropChance: 1
+    _diamondDropChance: 0.05
+    _diamondAmount: 1

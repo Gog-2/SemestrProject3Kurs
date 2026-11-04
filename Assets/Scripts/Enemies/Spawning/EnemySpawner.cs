@@ -29,6 +29,7 @@ namespace Game.Enemies.Spawning
 
         public event Action<Enemy> EnemySpawned;
         public event Action<Enemy> EnemyDied;
+        public event Action<int> ActiveEnemyCountChanged;
 
         public Enemy SpawnEnemy(EnemyData data)
         {
@@ -42,7 +43,17 @@ namespace Game.Enemies.Spawning
             enemy.Died += OnEnemyDiedHandler;
 
             EnemySpawned?.Invoke(enemy);
+            ActiveEnemyCountChanged?.Invoke(_activeEnemyCount);
             return enemy;
+        }
+
+        public void SpawnBatch(EnemyData data, int count)
+        {
+            if (data == null || count <= 0) return;
+            for (int i = 0; i < count; i++)
+            {
+                SpawnEnemy(data);
+            }
         }
 
         private void OnEnemyDiedHandler(Enemy enemy)
@@ -51,6 +62,7 @@ namespace Game.Enemies.Spawning
             _activeEnemies.Remove(enemy);
             _activeEnemyCount = _activeEnemies.Count;
             EnemyDied?.Invoke(enemy);
+            ActiveEnemyCountChanged?.Invoke(_activeEnemyCount);
             _enemyPool.Release(enemy);
         }
 
@@ -64,6 +76,7 @@ namespace Game.Enemies.Spawning
             }
             _activeEnemies.Clear();
             _activeEnemyCount = 0;
+            ActiveEnemyCountChanged?.Invoke(0);
         }
 
         private Vector3 GetRandomPerimeterSpawnPosition()

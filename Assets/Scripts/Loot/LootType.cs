@@ -1,4 +1,4 @@
-namespace Game.Loot
+﻿namespace Game.Loot
 {
     public enum LootType
     {

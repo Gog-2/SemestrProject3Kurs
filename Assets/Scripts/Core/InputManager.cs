@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,14 +15,7 @@ namespace Game.Core
         private static InputManager _instance;
         public static InputManager Instance
         {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = FindFirstObjectByType<InputManager>();
-                }
-                return _instance;
-            }
+            get => _instance;
             private set => _instance = value;
         }
 

@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c5fd1248d4a9204aaac04d464a38cde, type: 3}
+  m_Name: Enemy_Archer
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Enemies.Data.EnemyData
+  _id: ranged_archer
+  _displayName: "\u041B\u0443\u0447\u043D\u0438\u043A \u0442\u044C\u043C\u044B"
+  _isBoss: 0
+  _sprite: {fileID: 5073403148795560596, guid: b591fef0d5063ea40b2e165db1c9a855, type: 3}
+  _tintColor: {r: 0.75, g: 0.5, b: 1, a: 1}
+  _visualScale: {x: 0.95, y: 0.95, z: 1}
+  _maxHP: 24
+  _moveSpeed: 1.7
+  _minSpeedRatio: 0.8
+  _damage: 6
+  _attackInterval: 2
+  _attackRange: 3.5
+  _isRanged: 1
+  _honorReward: 14
+  _lootTable:
+    _minCoins: 2
+    _maxCoins: 4
+    _coinDropChance: 1
+    _diamondDropChance: 0.08
+    _diamondAmount: 1

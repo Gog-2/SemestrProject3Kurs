@@ -7,7 +7,7 @@ using Game.Buildings;
 
 namespace Game.Projectiles
 {
-    [RequireComponent(typeof(Collider2D))]
+    [RequireComponent(typeof(Collider2D), typeof(Rigidbody2D))]
     public class Projectile : MonoBehaviour, IPoolable
     {
         [SerializeField] private SpriteRenderer _spriteRenderer;
@@ -30,21 +30,12 @@ namespace Game.Projectiles
 
         private void Awake()
         {
-            if (_collider == null)
-            {
-                _collider = GetComponent<Collider2D>();
-            }
+            Debug.Assert(_spriteRenderer != null, "[Projectile] _spriteRenderer is not assigned!", this);
+            Debug.Assert(_collider != null, "[Projectile] _collider is not assigned!", this);
+            Debug.Assert(_rigidbody != null, "[Projectile] _rigidbody is not assigned!", this);
 
-            if (_rigidbody == null)
-            {
-                _rigidbody = GetComponent<Rigidbody2D>();
-            }
-
-            if (_rigidbody != null)
-            {
-                _rigidbody.bodyType = RigidbodyType2D.Kinematic;
-                _rigidbody.useFullKinematicContacts = true;
-            }
+            _rigidbody.bodyType = RigidbodyType2D.Kinematic;
+            _rigidbody.useFullKinematicContacts = true;
         }
 
         private void Update()
@@ -129,12 +120,9 @@ namespace Game.Projectiles
             float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle);
 
-            if (_spriteRenderer != null)
-            {
-                if (data.Sprite != null) _spriteRenderer.sprite = data.Sprite;
-                _spriteRenderer.color = data.Color;
-                transform.localScale = new Vector3(data.Scale.x, data.Scale.y, 1f);
-            }
+            if (data.Sprite != null) _spriteRenderer.sprite = data.Sprite;
+            _spriteRenderer.color = data.Color;
+            transform.localScale = new Vector3(data.Scale.x, data.Scale.y, 1f);
 
             _hitTargets.Clear();
             _isAlive = true;

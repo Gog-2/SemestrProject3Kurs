@@ -15,6 +15,7 @@ namespace Game.UI.MainMenu
 
         private void Awake()
         {
+            Debug.Assert(_diamondBalanceText != null, "[ShopUI] _diamondBalanceText is not assigned!", this);
             if (_addTestDiamondsButton != null)
             {
                 _addTestDiamondsButton.onClick.AddListener(OnAddTestDiamondsClicked);
@@ -34,10 +35,7 @@ namespace Game.UI.MainMenu
 
         public void UpdateBalance()
         {
-            if (_diamondBalanceText != null)
-            {
-                _diamondBalanceText.text = $"Баланс: {MetaSaveManager.Data.Diamonds} алмазов";
-            }
+            _diamondBalanceText.text = $"Баланс: {MetaSaveManager.Data.Diamonds} алмазов";
         }
 
         private void OnAddTestDiamondsClicked()

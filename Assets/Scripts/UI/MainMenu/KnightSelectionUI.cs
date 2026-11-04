@@ -30,9 +30,19 @@ namespace Game.UI.MainMenu
 
         private void Awake()
         {
-            if (_prevButton != null) _prevButton.onClick.AddListener(OnPrevClicked);
-            if (_nextButton != null) _nextButton.onClick.AddListener(OnNextClicked);
-            if (_actionButton != null) _actionButton.onClick.AddListener(OnActionClicked);
+            Debug.Assert(_prevButton != null, "[KnightSelectionUI] _prevButton is not assigned!", this);
+            Debug.Assert(_nextButton != null, "[KnightSelectionUI] _nextButton is not assigned!", this);
+            Debug.Assert(_actionButton != null, "[KnightSelectionUI] _actionButton is not assigned!", this);
+            Debug.Assert(_nameText != null, "[KnightSelectionUI] _nameText is not assigned!", this);
+            Debug.Assert(_titleText != null, "[KnightSelectionUI] _titleText is not assigned!", this);
+            Debug.Assert(_quoteText != null, "[KnightSelectionUI] _quoteText is not assigned!", this);
+            Debug.Assert(_statsText != null, "[KnightSelectionUI] _statsText is not assigned!", this);
+            Debug.Assert(_skillsText != null, "[KnightSelectionUI] _skillsText is not assigned!", this);
+            Debug.Assert(_actionButtonText != null, "[KnightSelectionUI] _actionButtonText is not assigned!", this);
+
+            _prevButton.onClick.AddListener(OnPrevClicked);
+            _nextButton.onClick.AddListener(OnNextClicked);
+            _actionButton.onClick.AddListener(OnActionClicked);
         }
 
         private void OnEnable()
@@ -54,35 +64,26 @@ namespace Game.UI.MainMenu
             KnightData knight = _allKnights[_currentIndex];
             if (knight == null) return;
 
-            if (_nameText != null) _nameText.text = knight.KnightName;
-            if (_titleText != null) _titleText.text = knight.Title;
-            if (_quoteText != null) _quoteText.text = knight.Quote;
+            _nameText.text = knight.KnightName;
+            _titleText.text = knight.Title;
+            _quoteText.text = knight.Quote;
 
-            if (_statsText != null)
-            {
-                _statsText.text = $"Прочность замка: {knight.CastleMaxHP} (+{knight.HPPerLevel}/ур.)\nСлотов для построек: {knight.InitialBuildSlots}";
-            }
+            _statsText.text = $"Прочность замка: {knight.CastleMaxHP} (+{knight.HPPerLevel}/ур.)\nСлотов для построек: {knight.InitialBuildSlots}";
 
-            if (_skillsText != null)
-            {
-                string bld = knight.StartingBuildings != null ? string.Join(", ", knight.StartingBuildings) : "-";
-                string skl = knight.StartingSkills != null ? string.Join("\n- ", knight.StartingSkills) : "-";
-                _skillsText.text = $"Стартовые постройки: {bld}\nНавыки:\n- {skl}";
-            }
+            string bld = knight.StartingBuildings != null ? string.Join(", ", knight.StartingBuildings) : "-";
+            string skl = knight.StartingSkills != null ? string.Join("\n- ", knight.StartingSkills) : "-";
+            _skillsText.text = $"Стартовые постройки: {bld}\nНавыки:\n- {skl}";
 
             bool isUnlocked = MetaSaveManager.IsKnightUnlocked(knight.Id);
 
-            if (_actionButtonText != null)
+            if (isUnlocked)
             {
-                if (isUnlocked)
-                {
-                    bool isSelected = MetaSaveManager.Data.SelectedKnightId == knight.Id;
-                    _actionButtonText.text = isSelected ? "ВЫБРАН" : "ВЫБРАТЬ";
-                }
-                else
-                {
-                    _actionButtonText.text = $"ОТКРЫТЬ ({knight.DiamondCost} алм.)";
-                }
+                bool isSelected = MetaSaveManager.Data.SelectedKnightId == knight.Id;
+                _actionButtonText.text = isSelected ? "ВЫБРАН" : "ВЫБРАТЬ";
+            }
+            else
+            {
+                _actionButtonText.text = $"ОТКРЫТЬ ({knight.DiamondCost} алм.)";
             }
 
             if (RunConfig.Instance != null && isUnlocked)

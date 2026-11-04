@@ -31,6 +31,7 @@ namespace Game.Weapons
             {
                 _castle = GetComponentInParent<Castle>();
             }
+            Debug.Assert(_castle != null, $"[{name}] _castle is not assigned and not found in parents!", this);
         }
 
         protected virtual void Update()

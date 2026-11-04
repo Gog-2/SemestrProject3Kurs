@@ -24,6 +24,7 @@ namespace Game.Projectiles
             }
 
             Instance = this;
+            Debug.Assert(_projectilePrefab != null, "[ProjectilePool] _projectilePrefab is not assigned!", this);
 
             _pool = new ObjectPool<Projectile>(
                 createFunc: CreateProjectile,
@@ -63,11 +64,6 @@ namespace Game.Projectiles
 
         private Projectile CreateProjectile()
         {
-            if (_projectilePrefab == null)
-            {
-                throw new System.InvalidOperationException("ProjectilePool requires _projectilePrefab to be assigned.");
-            }
-
             Projectile projectile = Instantiate(_projectilePrefab, transform);
             projectile.gameObject.SetActive(false);
             return projectile;

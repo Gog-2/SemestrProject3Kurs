@@ -67,6 +67,9 @@ namespace Game.Enemies
         private int _currentHP;
 
         private Color _originalColor;
+        private Sprite _defaultSprite;
+        private CircleCollider2D _circleCollider;
+        private float _baseColliderRadius = 0.45f;
         private Tweener _flashTween;
         private Tweener _punchTween;
 
@@ -103,11 +106,19 @@ namespace Game.Enemies
                 _modelTransform = transform;
             }
 
-            if (_spriteRenderer != null)
+            Debug.Assert(_spriteRenderer != null, $"[{name}] _spriteRenderer is not assigned!", this);
+            _originalColor = _spriteRenderer.color;
+            _defaultSprite = _spriteRenderer.sprite;
+            _spriteRenderer.sortingLayerName = "Enemies";
+            _spriteRenderer.sortingOrder = 10;
+
+            if (_circleCollider == null)
             {
-                _originalColor = _spriteRenderer.color;
-                _spriteRenderer.sortingLayerName = "Enemies";
-                _spriteRenderer.sortingOrder = 10;
+                _circleCollider = GetComponent<CircleCollider2D>();
+                if (_circleCollider != null)
+                {
+                    _baseColliderRadius = _circleCollider.radius;
+                }
             }
         }
 
@@ -132,6 +143,22 @@ namespace Game.Enemies
             _minSpeedRatio = Mathf.Max(gddMinCap, Mathf.Clamp(_data.MinSpeedRatio, 0.05f, 1f));
             _currentSpeed = _baseSpeed;
             ClearSlows();
+
+            if (_spriteRenderer != null)
+            {
+                _spriteRenderer.sprite = _data.Sprite != null ? _data.Sprite : _defaultSprite;
+                _originalColor = _data.TintColor;
+                _spriteRenderer.color = _originalColor;
+            }
+
+            Vector3 scale = _data.VisualScale;
+            if (scale.sqrMagnitude < 0.001f) scale = Vector3.one;
+            _modelTransform.localScale = scale;
+
+            if (_circleCollider != null)
+            {
+                _circleCollider.radius = _baseColliderRadius * Mathf.Max(0.5f, scale.x);
+            }
         }
 
         private void Update()
@@ -159,6 +186,24 @@ namespace Game.Enemies
                 Vector2Int cell = _flowfield.WorldToCell(pos);
                 IBuilding occupant = _gridMap.GetOccupant(cell.x, cell.y);
 
+                if ((occupant == null || occupant.IsDead) && _attackRange >= 0.8f)
+                {
+                    Vector2 dir = _flowfield.GetDirection(pos);
+                    if (dir.sqrMagnitude > 0.0001f)
+                    {
+                        Vector2Int nextCell = cell + new Vector2Int(Mathf.RoundToInt(dir.x), Mathf.RoundToInt(dir.y));
+                        IBuilding nextOccupant = _gridMap.GetOccupant(nextCell.x, nextCell.y);
+                        if (nextOccupant != null && nextOccupant != (IBuilding)_castle && !nextOccupant.IsDead)
+                        {
+                            float distToNextCell = Vector2.Distance(pos, _gridMap.CellToWorld(nextCell.x, nextCell.y));
+                            if (distToNextCell <= _attackRange)
+                            {
+                                occupant = nextOccupant;
+                            }
+                        }
+                    }
+                }
+
                 if (occupant != null && occupant != (IBuilding)_castle && !occupant.IsDead)
                 {
                     TickCombat(dt, occupant);
@@ -175,11 +220,8 @@ namespace Game.Enemies
                 {
                     transform.position += (Vector3)(direction * (_currentSpeed * dt));
 
-                    if (_spriteRenderer != null)
-                    {
-                        if (direction.x > 0.05f) _spriteRenderer.flipX = false;
-                        else if (direction.x < -0.05f) _spriteRenderer.flipX = true;
-                    }
+                    if (direction.x > 0.05f) _spriteRenderer.flipX = false;
+                    else if (direction.x < -0.05f) _spriteRenderer.flipX = true;
                 }
             }
         }
@@ -191,14 +233,11 @@ namespace Game.Enemies
             _currentHP = Mathf.Max(0, _currentHP - amount);
 
             _flashTween?.Kill();
-            if (_spriteRenderer != null)
-            {
-                _spriteRenderer.color = _originalColor;
-                _flashTween = _spriteRenderer.DOColor(_damageFlashColor, 0.06f)
-                    .SetLoops(2, LoopType.Yoyo)
-                    .SetLink(gameObject)
-                    .SetUpdate(true);
-            }
+            _spriteRenderer.color = _originalColor;
+            _flashTween = _spriteRenderer.DOColor(_damageFlashColor, 0.06f)
+                .SetLoops(2, LoopType.Yoyo)
+                .SetLink(gameObject)
+                .SetUpdate(true);
 
             HealthChanged?.Invoke(this);
 
@@ -305,8 +344,9 @@ namespace Game.Enemies
             {
                 target.TakeDamage(_damage);
 
+                Vector3 currentScale = _data != null ? _data.VisualScale : Vector3.one;
                 _punchTween?.Kill();
-                _modelTransform.localScale = Vector3.one;
+                _modelTransform.localScale = currentScale;
                 _punchTween = _modelTransform.DOPunchScale(_punchScaleStrength, 0.12f, 8, 1f)
                     .SetLink(gameObject)
                     .SetUpdate(true);
@@ -329,7 +369,7 @@ namespace Game.Enemies
 #if UNITY_EDITOR
             _currentHP = _maxHP;
             _flashTween?.Kill();
-            if (_spriteRenderer != null) _spriteRenderer.color = _originalColor;
+            _spriteRenderer.color = _originalColor;
 #endif
         }
 
@@ -344,22 +384,18 @@ namespace Game.Enemies
 
             _flashTween?.Kill();
             _punchTween?.Kill();
-            _modelTransform.localScale = Vector3.one;
-            if (_spriteRenderer != null)
-            {
-                _spriteRenderer.color = _originalColor;
-            }
+            Vector3 currentScale = _data != null ? _data.VisualScale : Vector3.one;
+            _modelTransform.localScale = currentScale;
+            _spriteRenderer.color = _originalColor;
         }
 
         public void OnReturnToPool()
         {
             _flashTween?.Kill();
             _punchTween?.Kill();
-            _modelTransform.localScale = Vector3.one;
-            if (_spriteRenderer != null)
-            {
-                _spriteRenderer.color = _originalColor;
-            }
+            Vector3 currentScale = _data != null ? _data.VisualScale : Vector3.one;
+            _modelTransform.localScale = currentScale;
+            _spriteRenderer.color = _originalColor;
 
             _currentHP = _maxHP;
             _currentSpeed = _baseSpeed;

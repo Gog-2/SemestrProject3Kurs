@@ -59,6 +59,10 @@ namespace Game.Buildings
             }
 
             Instance = this;
+            Debug.Assert(_gridMap != null, "[BuildingManager] _gridMap is not assigned!", this);
+            Debug.Assert(_ghostView != null, "[BuildingManager] _ghostView is not assigned!", this);
+            Debug.Assert(_wallet != null, "[BuildingManager] _wallet is not assigned!", this);
+            Debug.Assert(_contextMenuUI != null, "[BuildingManager] _contextMenuUI is not assigned!", this);
         }
 
         private void Start()
@@ -319,10 +323,7 @@ namespace Game.Buildings
                 return;
             }
 
-            if (_wallet != null)
-            {
-                _wallet.TrySpendCoins(cost);
-            }
+            _wallet.TrySpendCoins(cost);
 
             int startingLevel = GetStartingLevel(_placingData);
 
@@ -413,7 +414,7 @@ namespace Game.Buildings
             }
 
             int refund = Mathf.RoundToInt(totalCost * 0.5f);
-            if (_wallet != null && refund > 0)
+            if (refund > 0)
             {
                 _wallet.AddCoins(refund);
             }
@@ -429,7 +430,7 @@ namespace Game.Buildings
             if (data == null) return;
 
             int refund = Mathf.RoundToInt(data.GetStats(1).cost * data.UnplacedSaleRefundRatio);
-            if (_wallet != null && refund > 0)
+            if (refund > 0)
             {
                 _wallet.AddCoins(refund);
             }
@@ -444,7 +445,7 @@ namespace Game.Buildings
 
             if (!building.CanUpgrade(out int cost)) return;
 
-            if (_wallet != null && !_wallet.TrySpendCoins(cost))
+            if (!_wallet.TrySpendCoins(cost))
             {
                 Debug.Log("[BuildingManager] Недостаточно монет для улучшения!");
                 return;
@@ -475,7 +476,7 @@ namespace Game.Buildings
             if (currentLvl >= 4) return;
             BuildingLevelStats nextStats = data.GetStats(currentLvl + 1);
 
-            if (_wallet != null && !_wallet.TrySpendCoins(nextStats.cost)) return;
+            if (!_wallet.TrySpendCoins(nextStats.cost)) return;
 
             _globalLevels[data.Id] = currentLvl + 1;
         }

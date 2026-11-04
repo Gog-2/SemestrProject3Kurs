@@ -16,15 +16,9 @@ namespace Game.Buildings
 
         private void Awake()
         {
-            if (_spriteRenderer != null)
-            {
-                _spriteRenderer.sortingLayerName = "Ghost";
-                _spriteRenderer.sortingOrder = 25;
-            }
-            else
-            {
-                Debug.LogError("BuildingGhostView: _spriteRenderer is not assigned.", this);
-            }
+            Debug.Assert(_spriteRenderer != null, "[BuildingGhostView] _spriteRenderer is not assigned!", this);
+            _spriteRenderer.sortingLayerName = "Ghost";
+            _spriteRenderer.sortingOrder = 25;
 
             gameObject.SetActive(false);
         }
@@ -40,21 +34,18 @@ namespace Game.Buildings
                 return;
             }
 
-            if (_spriteRenderer != null)
+            if (data.Icon != null)
             {
-                if (data.Icon != null)
-                {
-                    _spriteRenderer.sprite = data.Icon;
-                }
-                else if (data.Prefab != null)
-                {
-                    var prefabSr = data.Prefab.GetComponentInChildren<SpriteRenderer>();
-                    if (prefabSr != null) _spriteRenderer.sprite = prefabSr.sprite;
-                }
-
-                _spriteRenderer.color = _validColor;
-                transform.localScale = new Vector3(data.Size.x, data.Size.y, 1f);
+                _spriteRenderer.sprite = data.Icon;
             }
+            else if (data.Prefab != null)
+            {
+                var prefabSr = data.Prefab.GetComponentInChildren<SpriteRenderer>();
+                if (prefabSr != null) _spriteRenderer.sprite = prefabSr.sprite;
+            }
+
+            _spriteRenderer.color = _validColor;
+            transform.localScale = new Vector3(data.Size.x, data.Size.y, 1f);
 
             gameObject.SetActive(true);
         }
@@ -69,10 +60,7 @@ namespace Game.Buildings
 
             transform.position = worldPos;
 
-            if (_spriteRenderer != null)
-            {
-                _spriteRenderer.color = isValid ? _validColor : _invalidColor;
-            }
+            _spriteRenderer.color = isValid ? _validColor : _invalidColor;
         }
 
         public void Hide()

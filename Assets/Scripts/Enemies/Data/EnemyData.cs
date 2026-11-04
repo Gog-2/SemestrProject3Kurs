@@ -11,6 +11,11 @@ namespace Game.Enemies.Data
         [SerializeField] private string _displayName = "Regular Enemy";
         [SerializeField] private bool _isBoss = false;
 
+        [Title("Visuals & Customization")]
+        [SerializeField] private Sprite _sprite;
+        [SerializeField] private Color _tintColor = Color.white;
+        [SerializeField] private Vector3 _visualScale = Vector3.one;
+
         [Title("Health & Defense")]
         [SerializeField, Min(1)] private int _maxHP = 30;
 
@@ -23,6 +28,7 @@ namespace Game.Enemies.Data
         [SerializeField, Min(1)] private int _damage = 5;
         [SerializeField, Min(0.1f)] private float _attackInterval = 1.5f;
         [SerializeField, Min(0.1f)] private float _attackRange = 0.8f;
+        [SerializeField] private bool _isRanged = false;
 
         [Title("Loot & Rewards")]
         [SerializeField, Min(1)] private int _honorReward = 10;
@@ -31,6 +37,9 @@ namespace Game.Enemies.Data
         public string Id => _id;
         public string DisplayName => _displayName;
         public bool IsBoss => _isBoss;
+        public Sprite Sprite => _sprite;
+        public Color TintColor => _tintColor;
+        public Vector3 VisualScale => _visualScale;
         public int HonorReward => _honorReward;
         public int MaxHP => _maxHP;
         public float MoveSpeed => _moveSpeed;
@@ -38,6 +47,7 @@ namespace Game.Enemies.Data
         public int Damage => _damage;
         public float AttackInterval => _attackInterval;
         public float AttackRange => _attackRange;
+        public bool IsRanged => _isRanged;
         public LootTable LootTable => _lootTable;
 
         private void OnValidate()
@@ -48,6 +58,7 @@ namespace Game.Enemies.Data
             if (_damage < 1) _damage = 1;
             if (_attackInterval < 0.1f) _attackInterval = 0.1f;
             if (_attackRange < 0.1f) _attackRange = 0.1f;
+            if (_visualScale.x <= 0.01f || _visualScale.y <= 0.01f) _visualScale = Vector3.one;
         }
     }
 }
