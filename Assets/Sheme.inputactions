@@ -310,37 +310,15 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "1D Axis",
+                    "name": "",
                     "id": "e5a8568a-7d56-401c-be13-240f5e61ec11",
-                    "path": "1DAxis",
+                    "path": "<Mouse>/scroll/y",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "Clamp(min=-1,max=1),Invert",
                     "groups": "",
                     "action": "Scroll",
-                    "isComposite": true,
+                    "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "59a71f22-f6bd-4dff-9f0a-0e32c1d66e80",
-                    "path": "<Mouse>/scroll/up",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Scroll",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "30bbae87-7522-41e0-b89e-8c42bd3205a5",
-                    "path": "<Mouse>/scroll/down",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Scroll",
-                    "isComposite": false,
-                    "isPartOfComposite": true
                 },
                 {
                     "name": "",

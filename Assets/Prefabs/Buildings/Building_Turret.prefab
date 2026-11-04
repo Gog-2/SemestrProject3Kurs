@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bbadab61654ae846bbc8faefab9ce00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Buildings.TurretBuilding
-  _data: {fileID: 0}
+  _data: {fileID: 11400000, guid: 7ff4412ba544b1044b6854f8aff25308, type: 2}
   _spriteRenderer: {fileID: 846068361188596308}
   _modelTransform: {fileID: 3384402175668084477}
   _damageColor: {r: 1, g: 0.3, b: 0.3, a: 1}
@@ -192,3 +192,4 @@ MonoBehaviour:
   _projectileData: {fileID: 11400000, guid: 7c4343c50d2bdd24fbdcf077f9e0d170, type: 2}
   _firePoint: {fileID: 4693697200160244716}
   _rotationSpeed: 360
+  _firingAngleThreshold: 15

@@ -19,6 +19,19 @@ namespace Game.Editor
 {
     public static class SceneSetupCLI
     {
+        [MenuItem("Tools/Run Scene Setup & Assignment")]
+        public static void RunSetupMenu()
+        {
+            RunSetup();
+        }
+
+        [MenuItem("Tools/Validate SampleScene")]
+        public static void ValidateSceneMenu()
+        {
+            string report = ValidateScene();
+            Debug.Log(report);
+        }
+
         public static string RunSetup()
         {
             var log = new System.Text.StringBuilder();
@@ -76,6 +89,9 @@ namespace Game.Editor
 
             var inputManager = UnityEngine.Object.FindFirstObjectByType<InputManager>();
             Check("InputManager", inputManager != null, inputManager != null ? "Assigned in scene" : "MISSING");
+
+            var eventSystem = UnityEngine.Object.FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>();
+            Check("EventSystem", eventSystem != null, eventSystem != null ? "Assigned in scene" : "MISSING");
 
             var runConfig = UnityEngine.Object.FindFirstObjectByType<RunConfig>();
             Check("RunConfig", runConfig != null, runConfig != null ? "Assigned in scene" : "MISSING");
@@ -142,6 +158,8 @@ namespace Game.Editor
                 Check("WeaponAimUI._mainCamera", so.FindProperty("_mainCamera").objectReferenceValue != null, "Assigned");
                 Check("WeaponAimUI._weapon", so.FindProperty("_weapon").objectReferenceValue != null, "Assigned");
                 Check("WeaponAimUI._cooldownText", so.FindProperty("_cooldownText").objectReferenceValue != null, "Assigned");
+                Check("WeaponAimUI._aimLine", so.FindProperty("_aimLine").objectReferenceValue != null, "Assigned");
+                Check("WeaponAimUI._aimReticle", so.FindProperty("_aimReticle").objectReferenceValue != null, "Assigned");
             }
             else Check("WeaponAimUI", false, "Not found");
 
@@ -388,6 +406,16 @@ namespace Game.Editor
                 log.AppendLine("Created [InputManager] in SampleScene");
             }
 
+            // Ensure EventSystem exists in scene
+            var eventSystemGo = GameObject.Find("EventSystem") ?? UnityEngine.Object.FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>()?.gameObject;
+            if (eventSystemGo == null)
+            {
+                eventSystemGo = new GameObject("EventSystem");
+                eventSystemGo.AddComponent<UnityEngine.EventSystems.EventSystem>();
+                eventSystemGo.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+                log.AppendLine("Created EventSystem in SampleScene");
+            }
+
             // Ensure [RunConfig] exists in scene
             var runConfigGo = GameObject.Find("[RunConfig]");
             if (runConfigGo == null)
@@ -546,6 +574,75 @@ namespace Game.Editor
                     var tmp = aimUI.GetComponentInChildren<TMPro.TMP_Text>(true);
                     if (tmp != null) txtProp.objectReferenceValue = tmp;
                 }
+
+                var lineProp = so.FindProperty("_aimLine");
+                var reticleProp = so.FindProperty("_aimReticle");
+                if ((lineProp != null && lineProp.objectReferenceValue == null) ||
+                    (reticleProp != null && reticleProp.objectReferenceValue == null))
+                {
+                    Transform visualsRoot = ballista != null ? ballista.transform.Find("WeaponAimVisuals") : null;
+                    if (visualsRoot == null)
+                    {
+                        var visualsGo = new GameObject("WeaponAimVisuals");
+                        if (ballista != null) visualsGo.transform.SetParent(ballista.transform, false);
+                        visualsRoot = visualsGo.transform;
+                    }
+
+                    Transform lineTransform = visualsRoot.Find("AimLine");
+                    LineRenderer lineRenderer = null;
+                    if (lineTransform == null)
+                    {
+                        var lineGo = new GameObject("AimLine");
+                        lineGo.transform.SetParent(visualsRoot, false);
+                        lineRenderer = lineGo.AddComponent<LineRenderer>();
+                        lineRenderer.useWorldSpace = true;
+                        lineRenderer.positionCount = 2;
+                        lineRenderer.startWidth = 0.05f;
+                        lineRenderer.endWidth = 0.05f;
+                        Color aimCol = new Color(1f, 0.85f, 0.2f, 0.9f);
+                        lineRenderer.startColor = aimCol;
+                        lineRenderer.endColor = aimCol;
+                        lineRenderer.sortingLayerName = "Default";
+                        lineRenderer.sortingOrder = 100;
+                        Shader shader = Shader.Find("Sprites/Default") ?? Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default");
+                        if (shader != null) lineRenderer.material = new Material(shader) { color = aimCol };
+                    }
+                    else
+                    {
+                        lineRenderer = lineTransform.GetComponent<LineRenderer>();
+                    }
+
+                    Transform reticleTransform = visualsRoot.Find("AimReticle");
+                    if (reticleTransform == null)
+                    {
+                        var reticleGo = new GameObject("AimReticle");
+                        reticleGo.transform.SetParent(visualsRoot, false);
+                        reticleTransform = reticleGo.transform;
+                        var reticleLine = reticleGo.AddComponent<LineRenderer>();
+                        reticleLine.useWorldSpace = false;
+                        reticleLine.loop = true;
+                        reticleLine.positionCount = 48;
+                        reticleLine.startWidth = 0.05f;
+                        reticleLine.endWidth = 0.05f;
+                        Color aimCol = new Color(1f, 0.85f, 0.2f, 0.9f);
+                        reticleLine.startColor = aimCol;
+                        reticleLine.endColor = aimCol;
+                        reticleLine.sortingLayerName = "Default";
+                        reticleLine.sortingOrder = 101;
+                        Shader shader = Shader.Find("Sprites/Default") ?? Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default");
+                        if (shader != null) reticleLine.material = new Material(shader) { color = aimCol };
+                        int segs = reticleLine.positionCount;
+                        for (int i = 0; i < segs; i++)
+                        {
+                            float angle = (i / (float)segs) * Mathf.PI * 2f;
+                            reticleLine.SetPosition(i, new Vector3(Mathf.Cos(angle) * 0.45f, Mathf.Sin(angle) * 0.45f, 0f));
+                        }
+                    }
+
+                    if (lineProp != null && lineRenderer != null) lineProp.objectReferenceValue = lineRenderer;
+                    if (reticleProp != null && reticleTransform != null) reticleProp.objectReferenceValue = reticleTransform;
+                }
+
                 so.ApplyModifiedPropertiesWithoutUndo();
                 EditorUtility.SetDirty(aimUI);
                 log.AppendLine("Wired WeaponAimUI");

@@ -23,7 +23,7 @@ namespace Game.Buildings
         {
             if (IsDead) return;
 
-            if (GameManager.Instance.IsPaused)
+            if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing)
             {
                 return;
             }
@@ -38,7 +38,7 @@ namespace Game.Buildings
 
         private void ProduceCurrency()
         {
-            int amount = CurrentStats.productionAmount > 0 ? CurrentStats.productionAmount : 1;
+            int amount = CurrentStats.productionAmount;
 
             if (_producesDiamonds)
             {
@@ -62,14 +62,7 @@ namespace Game.Buildings
 
         private void ResetTimer()
         {
-            float baseInterval = CurrentStats.productionInterval > 0 ? CurrentStats.productionInterval : 10f;
-
-            // Economic bonus from progression cards
-            if (!_producesDiamonds)
-            {
-                baseInterval = Mathf.Max(1f, baseInterval * (1f - (RunProgressionManager.Instance.ExtraDiamondDropChance > 0 ? 0f : 0f)));
-            }
-
+            float baseInterval = CurrentStats.productionInterval;
             _productionTimer = baseInterval;
         }
     }

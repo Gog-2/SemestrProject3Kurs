@@ -30,11 +30,6 @@ namespace Game.UI.MainMenu
             if (_prevButton != null) _prevButton.onClick.AddListener(OnPrevClicked);
             if (_nextButton != null) _nextButton.onClick.AddListener(OnNextClicked);
             if (_actionButton != null) _actionButton.onClick.AddListener(OnActionClicked);
-
-            if (_allArenas.Count == 0)
-            {
-                PopulateDefaultArenas();
-            }
         }
 
         private void OnEnable()
@@ -125,20 +120,6 @@ namespace Game.UI.MainMenu
                 RunConfig.Instance.SelectedArena = arena;
             }
             RefreshDisplay();
-        }
-
-        private void PopulateDefaultArenas()
-        {
-            ArenaData Create(string id, string name, string desc, string scene, bool unlocked, int cost)
-            {
-                var a = ScriptableObject.CreateInstance<ArenaData>();
-                a.InitializeRuntime(id, name, desc, scene, unlocked, cost);
-                return a;
-            }
-
-            _allArenas.Add(Create("arena_plains", "Зелёные равнины", "Базовая арена. Клетки равнин и воды, замедляющие передвижение врагов.", "SampleScene", true, 0));
-            _allArenas.Add(Create("arena_lava", "Вулканический каньон", "Арена с реками лавы, наносящими периодический урон всем, кто ступает на них.", "SampleScene", false, 30));
-            _allArenas.Add(Create("arena_forest", "Древний лес", "Густой лес с 50% шансом промаха дальнобойных атак.", "SampleScene", false, 30));
         }
     }
 }

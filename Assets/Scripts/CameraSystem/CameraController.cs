@@ -36,6 +36,7 @@ namespace Game.CameraSystem
         public float CurrentZoom => _targetCamera != null ? _targetCamera.orthographicSize : 0f;
 
         private float _targetZoom;
+        private bool _inputRegistered;
 
         private void Awake()
         {
@@ -53,6 +54,7 @@ namespace Game.CameraSystem
 
         private void Start()
         {
+            RegisterInput();
             if (_focusOnStart)
             {
                 FocusOnTarget();
@@ -89,16 +91,30 @@ namespace Game.CameraSystem
 
         private void OnEnable()
         {
-            if (InputManager.Instance == null) return;
-            InputManager.Instance.TouchPanDelta += OnTouchPanDelta;
+            RegisterInput();
         }
 
         private void OnDisable()
         {
+            UnregisterInput();
+        }
+
+        private void RegisterInput()
+        {
+            if (_inputRegistered) return;
+            if (InputManager.Instance == null) return;
+            InputManager.Instance.TouchPanDelta += OnTouchPanDelta;
+            _inputRegistered = true;
+        }
+
+        private void UnregisterInput()
+        {
+            if (!_inputRegistered) return;
             if (InputManager.Instance != null)
             {
                 InputManager.Instance.TouchPanDelta -= OnTouchPanDelta;
             }
+            _inputRegistered = false;
         }
 
         private void OnValidate()
@@ -111,7 +127,12 @@ namespace Game.CameraSystem
 
         private void LateUpdate()
         {
-            if (GameManager.Instance.CurrentState != GameState.Playing)
+            if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing)
+            {
+                return;
+            }
+
+            if (InputManager.Instance == null)
             {
                 return;
             }
@@ -153,7 +174,7 @@ namespace Game.CameraSystem
 
         private void OnTouchPanDelta(Vector2 screenDelta)
         {
-            if (GameManager.Instance.CurrentState != GameState.Playing)
+            if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing)
             {
                 return;
             }
@@ -188,17 +209,18 @@ namespace Game.CameraSystem
                 Vector2 mousePos = Vector2.zero;
                 bool canZoomToCursor = _zoomToCursor && !InputManager.Instance.HasActiveTouch;
 
+                float camDistance = -_targetCamera.transform.position.z;
                 if (canZoomToCursor)
                 {
                     mousePos = InputManager.Instance.PointerScreenPosition;
-                    mouseWorldBefore = _targetCamera.ScreenToWorldPoint(mousePos);
+                    mouseWorldBefore = _targetCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, camDistance));
                 }
 
                 _targetCamera.orthographicSize = Mathf.Lerp(_targetCamera.orthographicSize, _targetZoom, _zoomSmoothSpeed * dt);
 
                 if (canZoomToCursor)
                 {
-                    Vector3 mouseWorldAfter = _targetCamera.ScreenToWorldPoint(mousePos);
+                    Vector3 mouseWorldAfter = _targetCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, camDistance));
                     Vector3 diff = mouseWorldBefore - mouseWorldAfter;
                     transform.position += new Vector3(diff.x, diff.y, 0f);
                 }
@@ -215,23 +237,19 @@ namespace Game.CameraSystem
 
             Vector3 pos = transform.position;
 
-            if (camHorzExtent * 2f >= bounds.size.x)
-            {
-                pos.x = bounds.center.x;
-            }
-            else
-            {
-                pos.x = Mathf.Clamp(pos.x, bounds.min.x + camHorzExtent, bounds.max.x - camHorzExtent);
-            }
+            // Allow extra margin when camera view exceeds map size so movement is not locked to center
+            float paddingX = Mathf.Max(0f, camHorzExtent - bounds.size.x * 0.5f);
+            float paddingY = Mathf.Max(0f, camVertExtent - bounds.size.y * 0.5f);
 
-            if (camVertExtent * 2f >= bounds.size.y)
-            {
-                pos.y = bounds.center.y;
-            }
-            else
-            {
-                pos.y = Mathf.Clamp(pos.y, bounds.min.y + camVertExtent, bounds.max.y - camVertExtent);
-            }
+            float minX = bounds.min.x + camHorzExtent - paddingX;
+            float maxX = bounds.max.x - camHorzExtent + paddingX;
+            if (minX > maxX) (minX, maxX) = (maxX, minX);
+            pos.x = Mathf.Clamp(pos.x, minX, maxX);
+
+            float minY = bounds.min.y + camVertExtent - paddingY;
+            float maxY = bounds.max.y - camVertExtent + paddingY;
+            if (minY > maxY) (minY, maxY) = (maxY, minY);
+            pos.y = Mathf.Clamp(pos.y, minY, maxY);
 
             transform.position = pos;
         }

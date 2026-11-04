@@ -30,11 +30,6 @@ namespace Game.UI.MainMenu
             if (_prevButton != null) _prevButton.onClick.AddListener(OnPrevClicked);
             if (_nextButton != null) _nextButton.onClick.AddListener(OnNextClicked);
             if (_actionButton != null) _actionButton.onClick.AddListener(OnActionClicked);
-
-            if (_allWeapons.Count == 0)
-            {
-                PopulateDefaultWeapons();
-            }
         }
 
         private void OnEnable()
@@ -125,22 +120,6 @@ namespace Game.UI.MainMenu
                 RunConfig.Instance.SelectedWeapon = weapon;
             }
             RefreshDisplay();
-        }
-
-        private void PopulateDefaultWeapons()
-        {
-            WeaponSelectionData Create(string id, string name, string desc, bool unlocked, int cost)
-            {
-                var w = ScriptableObject.CreateInstance<WeaponSelectionData>();
-                w.InitializeRuntime(id, name, desc, unlocked, cost);
-                return w;
-            }
-
-            _allWeapons.Add(Create("heavy_ballista", "Тяжёлая баллиста", "Выстреливает массивными болтами, пробивающими всех врагов насквозь и отталкивающими их на одну клетку.", true, 0));
-            _allWeapons.Add(Create("alch_mortar", "Алхимическая мортира", "Выстреливает разрывными снарядами по площади 2х2 клетки, оставляя горящие лужи.", false, 40));
-            _allWeapons.Add(Create("tar_cannon", "Смоляная пушка", "Создаёт поле смолы, замедляющее врагов на 30-80%.", false, 40));
-            _allWeapons.Add(Create("orthunk_tower", "Ортхунк (Ураган)", "Смерч, наносящий периодический урон и стягивающий врагов к центру.", false, 40));
-            _allWeapons.Add(Create("archers_salvo", "Обстрел лучников", "Град стрел лучников замка по указанной области.", false, 40));
         }
     }
 }

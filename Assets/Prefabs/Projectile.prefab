@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3989822771911643254}
   - component: {fileID: 1604941690525227095}
   - component: {fileID: 1653273746028819582}
+  - component: {fileID: 7510934198199277818}
   - component: {fileID: 6149038903572547216}
   m_Layer: 0
   m_Name: Projectile
@@ -81,7 +82,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 20
   m_MaskInteraction: 0
   m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -144,3 +145,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Projectiles.Projectile
   _spriteRenderer: {fileID: 1604941690525227095}
   _collider: {fileID: 1653273746028819582}
+  _rigidbody: {fileID: 7510934198199277818}
+--- !u!50 &7510934198199277818
+Rigidbody2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5510934198199277817}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 1
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

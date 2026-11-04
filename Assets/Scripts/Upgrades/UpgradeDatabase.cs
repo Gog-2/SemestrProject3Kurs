@@ -25,16 +25,6 @@ namespace Game.Upgrades
                 pool.Add(upgrade);
             }
 
-            // Fallback: if pool is empty or not enough, populate with all non-null upgrades
-            if (pool.Count < count)
-            {
-                pool.Clear();
-                for (int i = 0; i < _upgrades.Count; i++)
-                {
-                    if (_upgrades[i] != null) pool.Add(_upgrades[i]);
-                }
-            }
-
             var result = new List<UpgradeData>();
             int picksNeeded = Mathf.Min(count, pool.Count);
 

@@ -45,6 +45,7 @@ namespace Game.UI
         private void Start()
         {
             EnsureAimVisuals();
+            SetAimVisuals(false);
             RegisterInput();
             UpdateCooldownText();
         }
@@ -278,7 +279,11 @@ namespace Game.UI
         private void EnsureAimVisuals()
         {
             if (_aimLine != null && _aimReticle != null) return;
-            if (_weapon == null) return;
+            if (_weapon == null)
+            {
+                _weapon = FindFirstObjectByType<CastleWeapon>();
+                if (_weapon == null) return;
+            }
 
             if (_aimVisualsRoot == null)
             {

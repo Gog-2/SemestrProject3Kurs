@@ -11,17 +11,7 @@ namespace Game.Weapons
         [SerializeField] private HeavyBallistaData _data;
         [SerializeField] private Transform _firePoint;
 
-        public override float MaxCooldown
-        {
-            get
-            {
-                if (_data != null)
-                {
-                    return _data.GetStats(_currentLevel).cooldown;
-                }
-                return 8f;
-            }
-        }
+        public override float MaxCooldown => _data != null ? _data.GetStats(_currentLevel).cooldown : 0f;
 
         public BallistaLevelStats CurrentStats => _data != null ? _data.GetStats(_currentLevel) : default;
 
@@ -44,16 +34,8 @@ namespace Game.Weapons
                 direction.Normalize();
             }
 
-            BallistaLevelStats stats = _data != null ? _data.GetStats(_currentLevel) : new BallistaLevelStats
-            {
-                damage = 15,
-                cooldown = 8f,
-                speed = 15f,
-                knockbackCells = 1f,
-                pierceCount = 999
-            };
-
-            ProjectileData projData = _data != null ? _data.ProjectileData : null;
+            BallistaLevelStats stats = _data.GetStats(_currentLevel);
+            ProjectileData projData = _data.ProjectileData;
 
             ProjectilePool.Instance.Spawn(origin, direction, projData, stats.damage);
 

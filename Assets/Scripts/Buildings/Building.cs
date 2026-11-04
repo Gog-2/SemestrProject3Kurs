@@ -40,7 +40,7 @@ namespace Game.Buildings
 
         // IDamageable
         public int CurrentHP => _currentHP;
-        public int MaxHP => CurrentStats.maxHP > 0 ? CurrentStats.maxHP : 100;
+        public int MaxHP => CurrentStats.maxHP;
         public bool IsDead => _currentHP <= 0;
 
         public event Action<IDamageable> HealthChanged;

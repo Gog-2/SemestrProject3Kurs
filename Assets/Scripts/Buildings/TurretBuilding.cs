@@ -12,16 +12,28 @@ namespace Game.Buildings
         [SerializeField] private ProjectileData _projectileData;
         [SerializeField] private Transform _firePoint;
         [SerializeField] private float _rotationSpeed = 360f;
+        [SerializeField] private float _firingAngleThreshold = 15f;
 
         private float _attackTimer;
         private Enemy _currentTarget;
+
+        public float AttackRange => CurrentStats.attackRange;
+        public float AttackInterval => CurrentStats.attackInterval;
+        public int BaseDamage => CurrentStats.damage;
+        public Vector3 FireOrigin => _firePoint != null ? _firePoint.position : transform.position;
+
+        protected override void OnPlaced()
+        {
+            base.OnPlaced();
+            _attackTimer = GetCalculatedAttackInterval();
+        }
 
         private void Update()
         {
             if (IsDead) return;
 
-            // Do not fire if paused
-            if (GameManager.Instance.IsPaused)
+            // Only attack during active playing state
+            if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing)
             {
                 return;
             }
@@ -30,53 +42,88 @@ namespace Game.Buildings
             _attackTimer -= dt;
 
             // Target evaluation
-            if (_currentTarget == null || _currentTarget.IsDead || !IsTargetInRange(_currentTarget))
+            if (_currentTarget == null || !_currentTarget.gameObject.activeInHierarchy || _currentTarget.IsDead || !IsTargetInRange(_currentTarget))
             {
                 _currentTarget = FindNearestEnemy();
             }
 
             if (_currentTarget != null)
             {
-                Vector3 origin = _firePoint != null ? _firePoint.position : transform.position;
-                Vector2 dir = (_currentTarget.transform.position - origin).normalized;
+                Vector3 targetDelta = _currentTarget.transform.position - transform.position;
+                float sqrDist = targetDelta.sqrMagnitude;
 
-                // Rotate towards enemy
-                if (dir.sqrMagnitude > 0.001f)
-                {
-                    float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-                    Quaternion targetRot = Quaternion.Euler(0, 0, targetAngle);
-                    transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot, _rotationSpeed * dt);
-                }
+                Vector2 dir = sqrDist > 0.0001f ? (Vector2)(targetDelta / Mathf.Sqrt(sqrDist)) : Vector2.up;
 
-                if (_attackTimer <= 0f)
+                // Turret sprite and fire point face UP (+Y) by default.
+                // Subtract 90 degrees to align +Y with target direction.
+                float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
+                Quaternion targetRot = Quaternion.Euler(0, 0, targetAngle);
+
+                Transform rotTarget = _modelTransform != null ? _modelTransform : transform;
+                rotTarget.rotation = Quaternion.RotateTowards(rotTarget.rotation, targetRot, _rotationSpeed * dt);
+
+                float angleDiff = Quaternion.Angle(rotTarget.rotation, targetRot);
+
+                // Fire when aligned within threshold and timer is ready
+                float threshold = Mathf.Max(5f, _firingAngleThreshold);
+                if (angleDiff <= threshold && _attackTimer <= 0f)
                 {
-                    Fire(dir);
-                    float interval = CurrentStats.attackInterval > 0 ? CurrentStats.attackInterval : 2f;
-                    _attackTimer = interval;
+                    Vector2 fireDirection = rotTarget.up;
+                    Fire(fireDirection);
+                    _attackTimer = GetCalculatedAttackInterval();
                 }
             }
         }
 
         private void Fire(Vector2 direction)
         {
-            Vector3 origin = _firePoint != null ? _firePoint.position : transform.position;
-            int damage = CurrentStats.damage > 0 ? CurrentStats.damage : 10;
+            if (ProjectilePool.Instance == null)
+            {
+                Debug.LogWarning("[TurretBuilding] ProjectilePool instance not found.", this);
+                return;
+            }
 
-            ProjectilePool.Instance.Spawn(origin, direction, _projectileData, damage);
+            if (_projectileData == null)
+            {
+                Debug.LogWarning("[TurretBuilding] _projectileData is not assigned.", this);
+                return;
+            }
+
+            int damage = GetCalculatedDamage();
+            ProjectilePool.Instance.Spawn(FireOrigin, direction, _projectileData, damage);
 
             AddCombatXP(damage);
+        }
+
+        public int GetCalculatedDamage()
+        {
+            int damage = BaseDamage;
+            if (RunProgressionManager.Instance != null)
+            {
+                damage = Mathf.RoundToInt(damage * RunProgressionManager.Instance.RangedDamageMultiplier);
+            }
+            return damage;
+        }
+
+        public float GetCalculatedAttackInterval()
+        {
+            float interval = AttackInterval;
+            if (RunProgressionManager.Instance != null && RunProgressionManager.Instance.AttackSpeedMultiplier > 0.001f)
+            {
+                interval /= RunProgressionManager.Instance.AttackSpeedMultiplier;
+            }
+            return interval;
         }
 
         private bool IsTargetInRange(Enemy enemy)
         {
             if (enemy == null) return false;
-            float range = CurrentStats.attackRange > 0 ? CurrentStats.attackRange : 4f;
-            return Vector2.Distance(transform.position, enemy.transform.position) <= range;
+            return Vector2.Distance(transform.position, enemy.transform.position) <= AttackRange;
         }
 
         private Enemy FindNearestEnemy()
         {
-            float range = CurrentStats.attackRange > 0 ? CurrentStats.attackRange : 4f;
+            float range = AttackRange;
             float bestDistance = range * range;
             Enemy bestEnemy = null;
 
@@ -85,7 +132,7 @@ namespace Game.Buildings
             for (int i = 0; i < enemies.Count; i++)
             {
                 Enemy e = enemies[i];
-                if (e == null || e.IsDead) continue;
+                if (e == null || !e.gameObject.activeInHierarchy || e.IsDead) continue;
 
                 float sqrDist = (e.transform.position - transform.position).sqrMagnitude;
                 if (sqrDist <= bestDistance)
@@ -100,9 +147,8 @@ namespace Game.Buildings
 
         private void OnDrawGizmosSelected()
         {
-            float range = CurrentStats.attackRange > 0 ? CurrentStats.attackRange : 4f;
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, range);
+            Gizmos.DrawWireSphere(transform.position, AttackRange);
         }
     }
 }

@@ -2151,7 +2151,6 @@ MonoBehaviour:
   _quoteText: {fileID: 881785117}
   _statsText: {fileID: 1338618912}
   _skillsText: {fileID: 362112628}
-  _portraitImage: {fileID: 0}
   _prevButton: {fileID: 1663050443}
   _nextButton: {fileID: 1781925402}
   _actionButton: {fileID: 127903535}
@@ -4385,7 +4384,6 @@ MonoBehaviour:
   _allArenas: []
   _nameText: {fileID: 399930586}
   _descriptionText: {fileID: 1440084907}
-  _previewImage: {fileID: 0}
   _prevButton: {fileID: 1257940608}
   _nextButton: {fileID: 1306653705}
   _actionButton: {fileID: 1805355698}
@@ -5653,7 +5651,6 @@ MonoBehaviour:
   _allWeapons: []
   _nameText: {fileID: 818261655}
   _descriptionText: {fileID: 1854614493}
-  _iconImage: {fileID: 0}
   _prevButton: {fileID: 890373877}
   _nextButton: {fileID: 1603285017}
   _actionButton: {fileID: 1081614319}

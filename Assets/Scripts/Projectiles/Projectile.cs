@@ -7,10 +7,14 @@ using Game.Buildings;
 
 namespace Game.Projectiles
 {
+    [RequireComponent(typeof(Collider2D))]
     public class Projectile : MonoBehaviour, IPoolable
     {
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private Collider2D _collider;
+        [SerializeField] private Rigidbody2D _rigidbody;
+
+        private static readonly RaycastHit2D[] s_hitBuffer = new RaycastHit2D[16];
 
         private ProjectileData _data;
         private Vector2 _direction;
@@ -24,17 +28,81 @@ namespace Game.Projectiles
 
         private readonly HashSet<IDamageable> _hitTargets = new();
 
+        private void Awake()
+        {
+            if (_collider == null)
+            {
+                _collider = GetComponent<Collider2D>();
+            }
+
+            if (_rigidbody == null)
+            {
+                _rigidbody = GetComponent<Rigidbody2D>();
+            }
+
+            if (_rigidbody != null)
+            {
+                _rigidbody.bodyType = RigidbodyType2D.Kinematic;
+                _rigidbody.useFullKinematicContacts = true;
+            }
+        }
+
         private void Update()
         {
             if (!_isAlive) return;
 
             float dt = Time.deltaTime;
-            transform.position += (Vector3)(_direction * (_speed * dt));
+            float stepDistance = _speed * dt;
+
+            if (stepDistance > 0.0001f)
+            {
+                SweepCheck(stepDistance);
+                if (!_isAlive) return;
+            }
+
+            transform.position += (Vector3)(_direction * stepDistance);
 
             _lifetime -= dt;
             if (_lifetime <= 0f)
             {
                 Despawn();
+            }
+        }
+
+        private void SweepCheck(float distance)
+        {
+            float radius = 0.2f;
+            if (_collider is CircleCollider2D circle)
+            {
+                radius = circle.radius * Mathf.Max(transform.localScale.x, transform.localScale.y);
+            }
+
+            int hitCount = Physics2D.CircleCastNonAlloc(
+                transform.position,
+                radius,
+                _direction,
+                s_hitBuffer,
+                distance,
+                ~0
+            );
+
+            for (int i = 0; i < hitCount; i++)
+            {
+                Collider2D col = s_hitBuffer[i].collider;
+                if (col == null || col == _collider) continue;
+
+                if (col.TryGetComponent<Enemy>(out var enemy))
+                {
+                    HandleHit(enemy);
+                    if (!_isAlive) return;
+                }
+                else if (col.TryGetComponent<IDamageable>(out var damageable))
+                {
+                    if (damageable is Castle || damageable is Building) continue;
+
+                    HandleHit(damageable);
+                    if (!_isAlive) return;
+                }
             }
         }
 
@@ -47,12 +115,13 @@ namespace Game.Projectiles
         {
             _data = data;
             _direction = direction.normalized;
-            _damage = damageOverride > 0 ? damageOverride : (data != null ? data.Damage : 15);
-            _speed = data != null ? data.Speed : 15f;
-            _pierceRemaining = data != null ? data.PierceCount : 999;
-            _knockbackCells = data != null ? data.KnockbackCells : 1f;
-            _lifetime = data != null ? data.MaxLifetime : 5f;
             _onDespawn = onDespawn;
+
+            _damage = damageOverride >= 0 ? damageOverride : data.Damage;
+            _speed = data.Speed;
+            _pierceRemaining = data.PierceCount;
+            _knockbackCells = data.KnockbackCells;
+            _lifetime = data.MaxLifetime;
 
             transform.position = spawnPosition;
 
@@ -60,7 +129,7 @@ namespace Game.Projectiles
             float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle);
 
-            if (_spriteRenderer != null && data != null)
+            if (_spriteRenderer != null)
             {
                 if (data.Sprite != null) _spriteRenderer.sprite = data.Sprite;
                 _spriteRenderer.color = data.Color;
