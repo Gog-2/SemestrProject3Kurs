@@ -22,10 +22,10 @@ MonoBehaviour:
   _prefab: {fileID: 1328164778208230327, guid: 0af3046238cc1324d90f66ece8d5edde, type: 3}
   _category: 3
   _size: {x: 1, y: 1}
-  _upgradeType: 1
+  _upgradeType: 0
   _isDestructible: 1
   _placedSaleRefundRatio: 0.5
-  _unplacedSaleRefundRatio: 1
+  _unplacedSaleRefundRatio: 0.5
   _levels:
   - cost: 50
     maxHP: 150

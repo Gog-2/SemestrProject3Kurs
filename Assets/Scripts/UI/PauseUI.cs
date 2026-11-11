@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using Alchemy.Inspector;
 using DG.Tweening;
 using Game.Core;
+using Game.UI.MainMenu;
 
 namespace Game.UI
 {
@@ -16,10 +18,17 @@ namespace Game.UI
         [SerializeField] private Button _restartButton;
         [SerializeField] private Button _mainMenuButton;
 
+        [Title("Audio Settings (GIG-28)")]
+        [SerializeField] private Slider _musicSlider;
+        [SerializeField] private Slider _sfxSlider;
+        [SerializeField] private TMP_Text _musicValueText;
+        [SerializeField] private TMP_Text _sfxValueText;
+
         [Title("Animation")]
         [SerializeField] private float _fadeDuration = 0.2f;
 
         private Tween _fadeTween;
+        private bool _audioBound;
 
         private void Awake()
         {
@@ -40,6 +49,8 @@ namespace Game.UI
 
             _mainMenuButton.onClick.RemoveListener(OnMainMenuClicked);
             _mainMenuButton.onClick.AddListener(OnMainMenuClicked);
+
+            SettingsUI.BindAudioControls(_musicSlider, _sfxSlider, _musicValueText, _sfxValueText, ref _audioBound);
         }
 
         private void OnEnable()
@@ -81,6 +92,7 @@ namespace Game.UI
 
             if (visible)
             {
+                SettingsUI.SyncAudioControls(_musicSlider, _sfxSlider, _musicValueText, _sfxValueText);
                 if (_panelRoot != null && _panelRoot != gameObject)
                 {
                     _panelRoot.SetActive(true);

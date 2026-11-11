@@ -15,6 +15,7 @@ namespace Game.UI.MainMenu
         [SerializeField] private GameObject _arenaSelectionPanel;
         [SerializeField] private GameObject _weaponSelectionPanel;
         [SerializeField] private GameObject _shopPanel;
+        [SerializeField] private GameObject _settingsPanel;
 
         [Title("Header")]
         [SerializeField] private TMP_Text _diamondBalanceText;
@@ -22,6 +23,7 @@ namespace Game.UI.MainMenu
         [Title("Title Screen Buttons")]
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _shopButton;
+        [SerializeField] private Button _settingsButton;
         [SerializeField] private Button _quitButton;
 
         [Title("Wizard Flow Buttons")]
@@ -47,8 +49,14 @@ namespace Game.UI.MainMenu
             Debug.Assert(_startRunButton != null, "[MainMenuManager] _startRunButton is not assigned!", this);
             Debug.Assert(_backToTitleButton != null, "[MainMenuManager] _backToTitleButton is not assigned!", this);
 
+            MetaSaveManager.ApplyAudioVolumes();
+
             _playButton.onClick.AddListener(OpenKnightSelection);
             _shopButton.onClick.AddListener(OpenShop);
+            if (_settingsButton != null)
+            {
+                _settingsButton.onClick.AddListener(OpenSettings);
+            }
             _quitButton.onClick.AddListener(OnQuitClicked);
 
             _knightToArenaButton.onClick.AddListener(OpenArenaSelection);
@@ -105,6 +113,15 @@ namespace Game.UI.MainMenu
             _shopPanel.SetActive(true);
         }
 
+        public void OpenSettings()
+        {
+            HideAllPanels();
+            if (_settingsPanel != null)
+            {
+                _settingsPanel.SetActive(true);
+            }
+        }
+
         public void StartRun()
         {
             string sceneToLoad = "SampleScene";
@@ -125,6 +142,7 @@ namespace Game.UI.MainMenu
             _arenaSelectionPanel.SetActive(false);
             _weaponSelectionPanel.SetActive(false);
             _shopPanel.SetActive(false);
+            if (_settingsPanel != null) _settingsPanel.SetActive(false);
         }
 
         private void OnQuitClicked()

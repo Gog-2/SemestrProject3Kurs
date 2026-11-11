@@ -55,26 +55,59 @@ namespace Game.UI.BuildingUI
             {
                 PlayerWallet.Instance.CoinsChanged -= OnCoinsChanged;
             }
+
+            WalletUI.Instance?.HideSellPreview();
         }
 
         public void RefreshSlots()
         {
             if (BuildingManager.Instance == null) return;
-            IReadOnlyList<BuildingData> slots = BuildingManager.Instance.Slots;
+
+            int maxSlots = BuildingManager.Instance.MaxSlots;
+            EnsureSlotCapacity(maxSlots);
+
+            IReadOnlyList<BuildingSlotEntry> entries = BuildingManager.Instance.SlotEntries;
 
             for (int i = 0; i < _slotButtons.Length; i++)
             {
                 if (_slotButtons[i] == null) continue;
 
-                BuildingData data = (slots != null && i < slots.Count) ? slots[i] : null;
+                bool visible = i < maxSlots;
+                _slotButtons[i].gameObject.SetActive(visible);
+                if (!visible) continue;
+
+                BuildingData data = (entries != null && i < entries.Count) ? entries[i].Data : null;
+                int count = (entries != null && i < entries.Count) ? entries[i].Count : 0;
 
                 _slotButtons[i].Setup(
                     i,
                     data,
+                    count,
                     OnSlotLeftClicked,
-                    OnSlotRightClicked
+                    OnSlotDoubleLeftClicked,
+                    OnSlotRightClicked,
+                    OnSlotPointerEnter,
+                    OnSlotPointerExit
                 );
             }
+        }
+
+        private void EnsureSlotCapacity(int targetCapacity)
+        {
+            if (_slotButtons == null || _slotButtons.Length == 0 || _slotButtons.Length >= targetCapacity) return;
+
+            BuildingSlotButton template = _slotButtons[0];
+            if (template == null) return;
+
+            Transform parent = template.transform.parent;
+            var list = new List<BuildingSlotButton>(_slotButtons);
+            while (list.Count < targetCapacity)
+            {
+                BuildingSlotButton clone = Instantiate(template, parent);
+                clone.name = $"Slot_{list.Count + 1}";
+                list.Add(clone);
+            }
+            _slotButtons = list.ToArray();
         }
 
         private void OnSlotLeftClicked(int slotIndex)
@@ -82,16 +115,38 @@ namespace Game.UI.BuildingUI
             BuildingManager.Instance?.SelectSlot(slotIndex);
         }
 
+        private void OnSlotDoubleLeftClicked(int slotIndex)
+        {
+            WalletUI.Instance?.HideSellPreview();
+            BuildingManager.Instance?.SellUnplacedBlueprint(slotIndex);
+        }
+
         private void OnSlotRightClicked(int slotIndex)
         {
+            WalletUI.Instance?.HideSellPreview();
             BuildingManager.Instance?.SellUnplacedBlueprint(slotIndex);
+        }
+
+        private void OnSlotPointerEnter(int slotIndex)
+        {
+            if (BuildingManager.Instance == null || WalletUI.Instance == null) return;
+            int refund = BuildingManager.Instance.GetUnplacedSellRefund(slotIndex);
+            if (refund > 0)
+            {
+                WalletUI.Instance.ShowSellPreview(refund);
+            }
+        }
+
+        private void OnSlotPointerExit()
+        {
+            WalletUI.Instance?.HideSellPreview();
         }
 
         private void OnCoinsChanged(int currentCoins)
         {
             for (int i = 0; i < _slotButtons.Length; i++)
             {
-                if (_slotButtons[i] != null)
+                if (_slotButtons[i] != null && _slotButtons[i].gameObject.activeSelf)
                 {
                     _slotButtons[i].UpdateCostDisplay();
                 }

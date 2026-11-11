@@ -4,15 +4,19 @@ using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using TMPro;
 using Game.Core;
+using Game.Data;
 using Game.Buildings;
 using Game.Projectiles;
 using Game.Weapons;
 using Game.Upgrades;
 using Game.UI;
 using Game.UI.BuildingUI;
+using Game.UI.MainMenu;
 using Game.CameraSystem;
 using Game.WaveSystem;
 using Game.Enemies.Data;
@@ -54,6 +58,8 @@ namespace Game.Editor
 
             // Strip dangerous Alchemy HierarchyHeaders from prefabs to prevent build-time GameObject deletion
             StripDangerousHierarchyHeaders(log);
+
+            UpdateHudPrefabCardIcons(log);
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -306,19 +312,41 @@ namespace Game.Editor
             if (existing == null)
             {
                 var data = ScriptableObject.CreateInstance<UpgradeDatabase>();
-                data.PopulateWithDefaultUpgrades();
                 AssetDatabase.CreateAsset(data, path);
+                data.PopulateWithDefaultUpgrades();
                 log.AppendLine($"Created: {path}");
             }
             else
             {
-                if (existing.AllUpgrades.Count == 0)
+                bool hasNulls = existing.AllUpgrades.Count == 0;
+                if (!hasNulls)
+                {
+                    for (int i = 0; i < existing.AllUpgrades.Count; i++)
+                    {
+                        if (existing.AllUpgrades[i] == null)
+                        {
+                            hasNulls = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (hasNulls)
                 {
                     existing.PopulateWithDefaultUpgrades();
                     EditorUtility.SetDirty(existing);
+                    log.AppendLine($"Repaired UpgradeDatabase sub-assets: {path}");
                 }
-                log.AppendLine($"Already exists: {path}");
+                else
+                {
+                    log.AppendLine($"Already exists: {path}");
+                }
             }
+        }
+
+        private static bool IsCorruptedText(string value)
+        {
+            return string.IsNullOrEmpty(value) || value.Contains("??");
         }
 
         private static void CreateDefaultMetaData(System.Text.StringBuilder log)
@@ -334,9 +362,15 @@ namespace Game.Editor
             if (knight == null)
             {
                 knight = ScriptableObject.CreateInstance<Game.Data.KnightData>();
-                knight.InitializeRuntime("hador_oplot", "Хадор Оплот", "Рыцарь-Бастион", "Камень не молит о пощаде, он просто стоит.", 2000, 125, 4, new[] { "Стены" }, new[] { "Несокрушимый фундамент" }, true, 0);
+                knight.InitializeRuntime("hador_oplot", "Хадор Оплот", "Рыцарь-Бастион", "«Камень не молит о пощаде, он просто стоит.»", 2000, 125, 4, new[] { "Стены" }, new[] { "Несокрушимый фундамент" }, true, 0);
                 AssetDatabase.CreateAsset(knight, knightPath);
                 log.AppendLine($"Created: {knightPath}");
+            }
+            else if (IsCorruptedText(knight.KnightName) || IsCorruptedText(knight.Title) || IsCorruptedText(knight.Quote))
+            {
+                knight.InitializeRuntime("hador_oplot", "Хадор Оплот", "Рыцарь-Бастион", "«Камень не молит о пощаде, он просто стоит.»", 2000, 125, 4, new[] { "Стены" }, new[] { "Несокрушимый фундамент" }, true, 0);
+                EditorUtility.SetDirty(knight);
+                log.AppendLine($"Repaired UTF-8 text: {knightPath}");
             }
 
             string arenaPath = "Assets/ScriptbleObjects/Data/DefaultArena.asset";
@@ -344,9 +378,15 @@ namespace Game.Editor
             if (arena == null)
             {
                 arena = ScriptableObject.CreateInstance<Game.Data.ArenaData>();
-                arena.InitializeRuntime("arena_plains", "Зелёные равнины", "Базовая арена.", "SampleScene", true, 0);
+                arena.InitializeRuntime("arena_plains", "Зелёные равнины", "Базовая арена. Клетки равнин и воды, замедляющие врагов.", "SampleScene", true, 0);
                 AssetDatabase.CreateAsset(arena, arenaPath);
                 log.AppendLine($"Created: {arenaPath}");
+            }
+            else if (IsCorruptedText(arena.ArenaName) || IsCorruptedText(arena.Description))
+            {
+                arena.InitializeRuntime("arena_plains", "Зелёные равнины", "Базовая арена. Клетки равнин и воды, замедляющие врагов.", "SampleScene", true, 0);
+                EditorUtility.SetDirty(arena);
+                log.AppendLine($"Repaired UTF-8 text: {arenaPath}");
             }
 
             string weaponPath = "Assets/ScriptbleObjects/Data/DefaultWeapon.asset";
@@ -355,9 +395,16 @@ namespace Game.Editor
             {
                 var ballistaData = AssetDatabase.LoadAssetAtPath<HeavyBallistaData>("Assets/ScriptbleObjects/Weapons/HeavyBallistaData.asset");
                 weapon = ScriptableObject.CreateInstance<Game.Data.WeaponSelectionData>();
-                weapon.InitializeRuntime("heavy_ballista", "Тяжёлая баллиста", "Стреляет мощными болтами.", true, 0, ballistaData);
+                weapon.InitializeRuntime("heavy_ballista", "Тяжёлая баллиста", "Выстреливает массивными болтами, пробивающими всех врагов и отталкивающими их на одну клетку.", true, 0, ballistaData);
                 AssetDatabase.CreateAsset(weapon, weaponPath);
                 log.AppendLine($"Created: {weaponPath}");
+            }
+            else if (IsCorruptedText(weapon.WeaponName) || IsCorruptedText(weapon.Description))
+            {
+                var ballistaData = AssetDatabase.LoadAssetAtPath<HeavyBallistaData>("Assets/ScriptbleObjects/Weapons/HeavyBallistaData.asset");
+                weapon.InitializeRuntime("heavy_ballista", "Тяжёлая баллиста", "Выстреливает массивными болтами, пробивающими всех врагов и отталкивающими их на одну клетку.", true, 0, ballistaData);
+                EditorUtility.SetDirty(weapon);
+                log.AppendLine($"Repaired UTF-8 text: {weaponPath}");
             }
         }
 
@@ -473,8 +520,9 @@ namespace Game.Editor
                 minCoins: 1,
                 maxCoins: 3,
                 coinDropChance: 1.0f,
-                diamondDropChance: 0.05f,
-                diamondAmount: 1,
+                diamondDropChance: 0.01f,
+                minDiamonds: 1,
+                maxDiamonds: 1,
                 log: log);
 
             // Fast Goblin
@@ -497,8 +545,9 @@ namespace Game.Editor
                 minCoins: 1,
                 maxCoins: 2,
                 coinDropChance: 1.0f,
-                diamondDropChance: 0.05f,
-                diamondAmount: 1,
+                diamondDropChance: 0.01f,
+                minDiamonds: 1,
+                maxDiamonds: 1,
                 log: log);
 
             // Armored Tank
@@ -521,8 +570,9 @@ namespace Game.Editor
                 minCoins: 4,
                 maxCoins: 8,
                 coinDropChance: 1.0f,
-                diamondDropChance: 0.15f,
-                diamondAmount: 1,
+                diamondDropChance: 0.01f,
+                minDiamonds: 1,
+                maxDiamonds: 1,
                 log: log);
 
             // Ranged Archer
@@ -545,8 +595,9 @@ namespace Game.Editor
                 minCoins: 2,
                 maxCoins: 4,
                 coinDropChance: 1.0f,
-                diamondDropChance: 0.08f,
-                diamondAmount: 1,
+                diamondDropChance: 0.01f,
+                minDiamonds: 1,
+                maxDiamonds: 1,
                 log: log);
 
             // Arena Boss
@@ -570,7 +621,8 @@ namespace Game.Editor
                 maxCoins: 35,
                 coinDropChance: 1.0f,
                 diamondDropChance: 1.0f,
-                diamondAmount: 3,
+                minDiamonds: 3,
+                maxDiamonds: 5,
                 log: log);
         }
 
@@ -704,7 +756,8 @@ namespace Game.Editor
             int maxCoins,
             float coinDropChance,
             float diamondDropChance,
-            int diamondAmount,
+            int minDiamonds,
+            int maxDiamonds,
             System.Text.StringBuilder log)
         {
             var existing = AssetDatabase.LoadAssetAtPath<EnemyData>(path);
@@ -738,7 +791,8 @@ namespace Game.Editor
                 lootProp.FindPropertyRelative("_maxCoins").intValue = maxCoins;
                 lootProp.FindPropertyRelative("_coinDropChance").floatValue = coinDropChance;
                 lootProp.FindPropertyRelative("_diamondDropChance").floatValue = diamondDropChance;
-                lootProp.FindPropertyRelative("_diamondAmount").intValue = diamondAmount;
+                lootProp.FindPropertyRelative("_minDiamondAmount").intValue = minDiamonds;
+                lootProp.FindPropertyRelative("_maxDiamondAmount").intValue = maxDiamonds;
             }
 
             so.ApplyModifiedPropertiesWithoutUndo();
@@ -1384,14 +1438,309 @@ namespace Game.Editor
                     so.FindProperty("_selectedKnight").objectReferenceValue = defaultKnight;
                     so.FindProperty("_selectedArena").objectReferenceValue = defaultArena;
                     so.FindProperty("_selectedWeapon").objectReferenceValue = defaultWeapon;
+                    var diffProp = so.FindProperty("_selectedDifficulty");
+                    if (diffProp != null) diffProp.enumValueIndex = (int)DifficultyMode.Base;
                     so.ApplyModifiedPropertiesWithoutUndo();
                     EditorUtility.SetDirty(rc);
                     log.AppendLine("Wired [RunConfig] in MainMenu");
                 }
             }
 
+            // Populate MainMenu selection lists
+            var knightSelectionUI = UnityEngine.Object.FindFirstObjectByType<KnightSelectionUI>(FindObjectsInactive.Include);
+            if (knightSelectionUI != null)
+            {
+                AssignAllAssetsToList(knightSelectionUI, "_allKnights", defaultKnight);
+                EditorUtility.SetDirty(knightSelectionUI);
+                log.AppendLine("Wired KnightSelectionUI._allKnights");
+            }
+
+            var arenaSelectionUI = UnityEngine.Object.FindFirstObjectByType<ArenaSelectionUI>(FindObjectsInactive.Include);
+            if (arenaSelectionUI != null)
+            {
+                AssignAllAssetsToList(arenaSelectionUI, "_allArenas", defaultArena);
+                EditorUtility.SetDirty(arenaSelectionUI);
+                log.AppendLine("Wired ArenaSelectionUI._allArenas");
+            }
+
+            var weaponSelectionUI = UnityEngine.Object.FindFirstObjectByType<WeaponSelectionUI>(FindObjectsInactive.Include);
+            if (weaponSelectionUI != null)
+            {
+                AssignAllAssetsToList(weaponSelectionUI, "_allWeapons", defaultWeapon);
+                EditorUtility.SetDirty(weaponSelectionUI);
+                log.AppendLine("Wired WeaponSelectionUI._allWeapons");
+            }
+
+            var mainMenuMgr = UnityEngine.Object.FindFirstObjectByType<MainMenuManager>(FindObjectsInactive.Include);
+            var shopUI = UnityEngine.Object.FindFirstObjectByType<ShopUI>(FindObjectsInactive.Include);
+            if (shopUI != null && mainMenuMgr != null)
+            {
+                var so = new SerializedObject(shopUI);
+                var mgrProp = so.FindProperty("_mainMenuManager");
+                if (mgrProp != null)
+                {
+                    mgrProp.objectReferenceValue = mainMenuMgr;
+                    so.ApplyModifiedPropertiesWithoutUndo();
+                    EditorUtility.SetDirty(shopUI);
+                    log.AppendLine("Wired ShopUI._mainMenuManager");
+                }
+            }
+
+            // Setup Difficulty Selection UI on WeaponPanel
+            SetupMainMenuDifficultyUI(log);
+
             EditorSceneManager.SaveScene(scene);
             log.AppendLine("Saved MainMenu.unity");
+        }
+
+        private static void AssignAllAssetsToList<T>(UnityEngine.Object target, string propertyName, T preferredFirst) where T : UnityEngine.Object
+        {
+            var items = new List<T>();
+            if (preferredFirst != null) items.Add(preferredFirst);
+
+            string[] guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
+            for (int i = 0; i < guids.Length; i++)
+            {
+                string assetPath = AssetDatabase.GUIDToAssetPath(guids[i]);
+                var asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                if (asset != null && !items.Contains(asset))
+                {
+                    items.Add(asset);
+                }
+            }
+
+            var so = new SerializedObject(target);
+            var prop = so.FindProperty(propertyName);
+            if (prop != null && prop.isArray)
+            {
+                prop.ClearArray();
+                for (int i = 0; i < items.Count; i++)
+                {
+                    prop.InsertArrayElementAtIndex(i);
+                    prop.GetArrayElementAtIndex(i).objectReferenceValue = items[i];
+                }
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+        }
+
+        private static void SetupMainMenuDifficultyUI(System.Text.StringBuilder log)
+        {
+            var canvasGo = GameObject.Find("Canvas");
+            if (canvasGo == null) return;
+
+            Transform weaponPanel = canvasGo.transform.Find("WeaponPanel");
+            if (weaponPanel == null) return;
+
+            SetAnchorY(weaponPanel.Find("WeaponName"), 0.76f);
+            SetAnchorY(weaponPanel.Find("PrevBtn"), 0.65f);
+            SetAnchorY(weaponPanel.Find("NextBtn"), 0.65f);
+            Transform weaponDesc = weaponPanel.Find("WeaponDesc");
+            if (weaponDesc != null && weaponDesc is RectTransform descRt)
+            {
+                SetAnchorY(descRt, 0.60f);
+                descRt.sizeDelta = new Vector2(descRt.sizeDelta.x, 90f);
+            }
+            SetAnchorY(weaponPanel.Find("ActionBtn"), 0.46f);
+            SetAnchorY(weaponPanel.Find("StartRunBtn"), 0.11f);
+
+            TMP_Text sampleTmp = weaponPanel.GetComponentInChildren<TMP_Text>(true);
+            TMP_FontAsset font = sampleTmp != null ? sampleTmp.font : TMP_Settings.defaultFontAsset;
+
+            Transform existingSection = weaponPanel.Find("DifficultySection");
+            if (existingSection != null)
+            {
+                UnityEngine.Object.DestroyImmediate(existingSection.gameObject);
+            }
+
+            var sectionGo = new GameObject("DifficultySection", typeof(RectTransform), typeof(DifficultySelectionUI));
+            sectionGo.transform.SetParent(weaponPanel, false);
+            var sectionRt = (RectTransform)sectionGo.transform;
+            sectionRt.anchorMin = Vector2.zero;
+            sectionRt.anchorMax = Vector2.one;
+            sectionRt.offsetMin = Vector2.zero;
+            sectionRt.offsetMax = Vector2.zero;
+            sectionRt.SetAsLastSibling();
+
+            // Place before StartRunBtn so visual/focus order makes sense
+            Transform startBtn = weaponPanel.Find("StartRunBtn");
+            if (startBtn != null) startBtn.SetAsLastSibling();
+
+            CreateMenuLabel(sectionGo.transform, "DifficultyHeader", "СЛОЖНОСТЬ ЗАБЕГА", new Vector2(0.50f, 0.37f), new Vector2(450f, 34f), 24f, Color.white, font);
+            var (baseBtn, baseTxt) = CreateMenuButton(sectionGo.transform, "DiffBtn_Base", "Базовая", new Vector2(0.34f, 0.30f), new Vector2(220f, 48f), 20f, font);
+            var (hardBtn, hardTxt) = CreateMenuButton(sectionGo.transform, "DiffBtn_Hard", "Усложнённая", new Vector2(0.50f, 0.30f), new Vector2(220f, 48f), 20f, font);
+            var (legBtn, legTxt) = CreateMenuButton(sectionGo.transform, "DiffBtn_Legendary", "Легендарная", new Vector2(0.66f, 0.30f), new Vector2(220f, 48f), 20f, font);
+            TMP_Text diffDesc = CreateMenuLabel(sectionGo.transform, "DifficultyDesc", "Стандартный баланс волны и наград", new Vector2(0.50f, 0.22f), new Vector2(920f, 48f), 18f, new Color(0.85f, 0.85f, 0.85f, 1f), font);
+
+            var diffUI = sectionGo.GetComponent<DifficultySelectionUI>();
+            diffUI.InitializeReferences(baseBtn, hardBtn, legBtn, baseTxt, hardTxt, legTxt, diffDesc);
+            EditorUtility.SetDirty(diffUI);
+            log.AppendLine("Configured DifficultySelectionUI on MainMenu Canvas/WeaponPanel");
+        }
+
+        private static void SetAnchorY(Transform target, float anchorY)
+        {
+            if (target is RectTransform rt)
+            {
+                rt.anchorMin = new Vector2(rt.anchorMin.x, anchorY);
+                rt.anchorMax = new Vector2(rt.anchorMax.x, anchorY);
+                rt.anchoredPosition = Vector2.zero;
+            }
+        }
+
+        private static TMP_Text CreateMenuLabel(Transform parent, string name, string text, Vector2 anchor, Vector2 size, float fontSize, Color color, TMP_FontAsset font)
+        {
+            var go = new GameObject(name, typeof(RectTransform));
+            go.transform.SetParent(parent, false);
+            var rt = (RectTransform)go.transform;
+            rt.anchorMin = anchor;
+            rt.anchorMax = anchor;
+            rt.anchoredPosition = Vector2.zero;
+            rt.sizeDelta = size;
+
+            var tmp = go.AddComponent<TextMeshProUGUI>();
+            if (font != null) tmp.font = font;
+            tmp.text = text;
+            tmp.fontSize = fontSize;
+            tmp.alignment = TextAlignmentOptions.Center;
+            tmp.color = color;
+            return tmp;
+        }
+
+        private static (Button button, TMP_Text label) CreateMenuButton(Transform parent, string name, string text, Vector2 anchor, Vector2 size, float fontSize, TMP_FontAsset font)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(Button));
+            go.transform.SetParent(parent, false);
+            var rt = (RectTransform)go.transform;
+            rt.anchorMin = anchor;
+            rt.anchorMax = anchor;
+            rt.anchoredPosition = Vector2.zero;
+            rt.sizeDelta = size;
+
+            var img = go.GetComponent<Image>();
+            img.color = new Color(0.20f, 0.35f, 0.55f, 1f);
+            var btn = go.GetComponent<Button>();
+
+            var labelGo = new GameObject("Text", typeof(RectTransform));
+            labelGo.transform.SetParent(go.transform, false);
+            var labelRt = (RectTransform)labelGo.transform;
+            labelRt.anchorMin = Vector2.zero;
+            labelRt.anchorMax = Vector2.one;
+            labelRt.offsetMin = Vector2.zero;
+            labelRt.offsetMax = Vector2.zero;
+
+            var tmp = labelGo.AddComponent<TextMeshProUGUI>();
+            if (font != null) tmp.font = font;
+            tmp.text = text;
+            tmp.fontSize = fontSize;
+            tmp.alignment = TextAlignmentOptions.Center;
+            tmp.color = Color.white;
+
+            return (btn, tmp);
+        }
+
+        [MenuItem("Tools/Update HUD Card Icons")]
+        public static void UpdateHudCardIconsMenu()
+        {
+            var log = new System.Text.StringBuilder();
+            UpdateHudPrefabCardIcons(log);
+            AssetDatabase.SaveAssets();
+            Debug.Log(log.ToString());
+        }
+
+        private static void UpdateHudPrefabCardIcons(System.Text.StringBuilder log)
+        {
+            const string hudPath = "Assets/Prefabs/HUD.prefab";
+            var prefabRoot = PrefabUtility.LoadPrefabContents(hudPath);
+            if (prefabRoot == null)
+            {
+                log.AppendLine($"[WARN] Could not load {hudPath}");
+                return;
+            }
+
+            try
+            {
+                UpgradeCardUI[] cards = prefabRoot.GetComponentsInChildren<UpgradeCardUI>(true);
+                for (int i = 0; i < cards.Length; i++)
+                {
+                    UpgradeCardUI card = cards[i];
+                    if (card == null) continue;
+
+                    Transform titleT = card.transform.Find("Title");
+                    if (titleT is RectTransform titleRt)
+                    {
+                        SetAnchorY(titleRt, 0.80f);
+                        titleRt.sizeDelta = new Vector2(titleRt.sizeDelta.x, 50f);
+                    }
+
+                    Transform descT = card.transform.Find("Desc");
+                    if (descT is RectTransform descRt)
+                    {
+                        SetAnchorY(descRt, 0.40f);
+                        descRt.sizeDelta = new Vector2(descRt.sizeDelta.x, 125f);
+                    }
+
+                    Transform iconT = card.transform.Find("Icon");
+                    GameObject iconGo;
+                    if (iconT == null)
+                    {
+                        iconGo = new GameObject("Icon", typeof(RectTransform), typeof(Image));
+                        iconGo.transform.SetParent(card.transform, false);
+                    }
+                    else
+                    {
+                        iconGo = iconT.gameObject;
+                    }
+
+                    var iconRt = (RectTransform)iconGo.transform;
+                    iconRt.anchorMin = new Vector2(0.5f, 0.65f);
+                    iconRt.anchorMax = new Vector2(0.5f, 0.65f);
+                    iconRt.anchoredPosition = Vector2.zero;
+                    iconRt.sizeDelta = new Vector2(56f, 56f);
+
+                    var iconImg = iconGo.GetComponent<Image>() ?? iconGo.AddComponent<Image>();
+                    iconImg.preserveAspect = true;
+                    iconImg.enabled = iconImg.sprite != null;
+
+                    var cardSo = new SerializedObject(card);
+                    var iconProp = cardSo.FindProperty("_iconImage");
+                    if (iconProp != null)
+                    {
+                        iconProp.objectReferenceValue = iconImg;
+                        cardSo.ApplyModifiedPropertiesWithoutUndo();
+                    }
+                    EditorUtility.SetDirty(card);
+                }
+
+                PrefabUtility.SaveAsPrefabAsset(prefabRoot, hudPath);
+                log.AppendLine($"Updated UpgradeCardUI Icon slots on {hudPath} ({cards.Length} cards)");
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(prefabRoot);
+            }
+        }
+
+        [MenuItem("Tools/Apply Phase 0 Assets & UI")]
+        public static string ApplyPhase0AssetsAndUI()
+        {
+            var log = new System.Text.StringBuilder();
+            log.AppendLine("=== Applying Phase 0 Assets & UI ===");
+
+            EnsureDirectories();
+            CreateUpgradeDatabase(log);
+            CreateDefaultMetaData(log);
+            CreateEnemyAssetsAndSprites(log);
+            UpdateHudPrefabCardIcons(log);
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            SetupMainMenu(log);
+            EditorSceneManager.OpenScene("Assets/Scenes/SampleScene.unity");
+
+            log.AppendLine("=== Phase 0 Assets & UI Applied ===");
+            Debug.Log(log.ToString());
+            return log.ToString();
         }
 
         [MenuItem("Tools/Strip Dangerous HierarchyHeaders")]
@@ -1460,7 +1809,7 @@ namespace Game.Editor
                     sb.AppendLine($"[FAIL] Missing EnemyData: {path}");
                     continue;
                 }
-                sb.AppendLine($"[PASS] Enemy '{ed.DisplayName}' ({ed.Id}): HP={ed.MaxHP}, Spd={ed.MoveSpeed}, Dmg={ed.Damage}, Range={ed.AttackRange}, Boss={ed.IsBoss}, Sprite={(ed.Sprite != null ? ed.Sprite.name : "null")}, Scale={ed.VisualScale}, Coins={ed.LootTable.MinCoins}-{ed.LootTable.MaxCoins}, Dia={ed.LootTable.DiamondAmount} (chance={ed.LootTable.DiamondDropChance:P0})");
+                sb.AppendLine($"[PASS] Enemy '{ed.DisplayName}' ({ed.Id}): HP={ed.MaxHP}, Spd={ed.MoveSpeed}, Dmg={ed.Damage}, Range={ed.AttackRange}, Boss={ed.IsBoss}, Sprite={(ed.Sprite != null ? ed.Sprite.name : "null")}, Scale={ed.VisualScale}, Coins={ed.LootTable.MinCoins}-{ed.LootTable.MaxCoins}, Dia={ed.LootTable.MinDiamonds}-{ed.LootTable.MaxDiamonds} (chance={ed.LootTable.DiamondDropChance:P0})");
             }
 
             // 2. Verify WaveConfigs

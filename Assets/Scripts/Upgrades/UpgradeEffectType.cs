@@ -36,6 +36,13 @@
         // Control
         SlowOnHitPercent,
         TrapDamagePercent,
-        BombDamagePercent
+        BombDamagePercent,
+
+        // Extended Shop / Build Pool bonuses (appended to preserve serialized enum indices)
+        SpellDamagePercent,
+        BuildingCostDiscountPercent,
+        SupportEffectivenessPercent,
+        AggroLimitAdd,
+        RepairAllBuildingsPercent
     }
 }

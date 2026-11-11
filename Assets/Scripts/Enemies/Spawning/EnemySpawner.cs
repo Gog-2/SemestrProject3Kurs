@@ -41,6 +41,7 @@ namespace Game.Enemies.Spawning
             _activeEnemies.Add(enemy);
             _activeEnemyCount = _activeEnemies.Count;
             enemy.Died += OnEnemyDiedHandler;
+            enemy.Retreated += OnEnemyRetreatedHandler;
 
             EnemySpawned?.Invoke(enemy);
             ActiveEnemyCountChanged?.Invoke(_activeEnemyCount);
@@ -59,11 +60,35 @@ namespace Game.Enemies.Spawning
         private void OnEnemyDiedHandler(Enemy enemy)
         {
             enemy.Died -= OnEnemyDiedHandler;
+            enemy.Retreated -= OnEnemyRetreatedHandler;
             _activeEnemies.Remove(enemy);
             _activeEnemyCount = _activeEnemies.Count;
+            _flowfield?.RecordDeathHeat(enemy.transform.position);
             EnemyDied?.Invoke(enemy);
             ActiveEnemyCountChanged?.Invoke(_activeEnemyCount);
             _enemyPool.Release(enemy);
+        }
+
+        private void OnEnemyRetreatedHandler(Enemy enemy)
+        {
+            enemy.Died -= OnEnemyDiedHandler;
+            enemy.Retreated -= OnEnemyRetreatedHandler;
+            _activeEnemies.Remove(enemy);
+            _activeEnemyCount = _activeEnemies.Count;
+            ActiveEnemyCountChanged?.Invoke(_activeEnemyCount);
+            _enemyPool.Release(enemy);
+        }
+
+        public void RetreatAllActiveEnemies()
+        {
+            for (int i = _activeEnemies.Count - 1; i >= 0; i--)
+            {
+                Enemy enemy = _activeEnemies[i];
+                if (enemy != null && !enemy.IsDead)
+                {
+                    enemy.BeginRetreat();
+                }
+            }
         }
 
         public void ClearAllEnemies()
@@ -72,6 +97,7 @@ namespace Game.Enemies.Spawning
             {
                 Enemy enemy = _activeEnemies[i];
                 enemy.Died -= OnEnemyDiedHandler;
+                enemy.Retreated -= OnEnemyRetreatedHandler;
                 _enemyPool.Release(enemy);
             }
             _activeEnemies.Clear();

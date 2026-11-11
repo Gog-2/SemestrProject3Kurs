@@ -13,6 +13,10 @@ namespace Game.Core
         [SerializeField] private KnightData _selectedKnight;
         [SerializeField] private ArenaData _selectedArena;
         [SerializeField] private WeaponSelectionData _selectedWeapon;
+        [SerializeField] private DifficultyMode _selectedDifficulty = DifficultyMode.Base;
+
+        public static DifficultyMode ActiveDifficulty =>
+            Instance != null ? Instance.SelectedDifficulty : MetaSaveManager.Data.SelectedDifficulty;
 
         public KnightData SelectedKnight
         {
@@ -32,6 +36,12 @@ namespace Game.Core
             set => _selectedWeapon = value;
         }
 
+        public DifficultyMode SelectedDifficulty
+        {
+            get => _selectedDifficulty;
+            set => _selectedDifficulty = value;
+        }
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -41,6 +51,7 @@ namespace Game.Core
             }
 
             Instance = this;
+            _selectedDifficulty = MetaSaveManager.Data.SelectedDifficulty;
             DontDestroyOnLoad(gameObject);
         }
     }

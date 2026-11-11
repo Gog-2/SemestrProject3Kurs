@@ -15,6 +15,7 @@ namespace Game.UI
         [SerializeField] private TMP_Text _descriptionText;
         [SerializeField] private TMP_Text _rarityText;
         [SerializeField] private Image _rarityBackground;
+        [SerializeField] private Image _iconImage;
         [SerializeField] private Button _selectButton;
 
         [Title("Visuals")]
@@ -58,6 +59,12 @@ namespace Game.UI
             _rarityText.text = _data.Rarity.ToString().ToUpper();
             _rarityText.color = rarityColor;
             _rarityBackground.color = rarityColor;
+
+            if (_iconImage != null)
+            {
+                _iconImage.sprite = _data.Icon;
+                _iconImage.enabled = _data.Icon != null;
+            }
         }
 
         private Color GetRarityColor(UpgradeRarity rarity)

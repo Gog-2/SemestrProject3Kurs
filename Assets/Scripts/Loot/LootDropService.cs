@@ -55,12 +55,17 @@ namespace Game.Loot
 
         private void OnEnemyDied(Enemy enemy)
         {
+            if (enemy == null || enemy.Data == null) return;
+
             LootTable loot = enemy.Data.LootTable;
+            if (loot == null) return;
+
             Vector3 deathPos = enemy.transform.position;
 
             if (UnityEngine.Random.value <= loot.CoinDropChance)
             {
-                int coinsToDrop = UnityEngine.Random.Range(loot.MinCoins, loot.MaxCoins + 1);
+                int rawCoins = UnityEngine.Random.Range(loot.MinCoins, loot.MaxCoins + 1);
+                int coinsToDrop = ScaleCoinsByDifficulty(rawCoins);
                 if (coinsToDrop > 0)
                 {
                     LootPickup coin = _coinPool.Get();
@@ -69,28 +74,60 @@ namespace Game.Loot
                 }
             }
 
-            if (UnityEngine.Random.value <= loot.DiamondDropChance)
+            float extraDiamondChance = RunProgressionManager.Instance != null
+                ? RunProgressionManager.Instance.GetEffectiveDiamondDropChanceBonus()
+                : 0f;
+            float totalDiamondChance = Mathf.Clamp01(loot.DiamondDropChance + extraDiamondChance);
+
+            if (UnityEngine.Random.value <= totalDiamondChance)
             {
+                int minDiamonds = Mathf.Max(1, loot.MinDiamonds);
+                int maxDiamonds = Mathf.Max(minDiamonds, loot.MaxDiamonds);
+                int diamondAmount = UnityEngine.Random.Range(minDiamonds, maxDiamonds + 1);
+
                 LootPickup diamond = _diamondPool.Get();
                 diamond.transform.position = deathPos;
-                diamond.Initialize(LootType.Diamond, loot.DiamondAmount, OnPickupCollected);
+                diamond.Initialize(LootType.Diamond, diamondAmount, OnPickupCollected);
             }
+        }
+
+        private static int ScaleCoinsByDifficulty(int rawCoins)
+        {
+            if (rawCoins <= 0) return 0;
+
+            float mult = DifficultyModifiers.GetCoinDropMultiplier(RunConfig.ActiveDifficulty);
+            float scaled = rawCoins * mult;
+            int whole = Mathf.FloorToInt(scaled);
+            float fraction = scaled - whole;
+            if (fraction > 0f && UnityEngine.Random.value < fraction)
+            {
+                whole++;
+            }
+
+            return whole;
         }
 
         private void OnPickupCollected(LootPickup pickup)
         {
+            if (pickup == null) return;
+
             if (pickup.Type == LootType.Coin)
             {
-                int bonus = RunProgressionManager.Instance.BonusCoinsPerKill;
+                int bonus = RunProgressionManager.Instance != null
+                    ? RunProgressionManager.Instance.GetEffectiveCoinPerKillBonus()
+                    : 0;
                 int totalCoins = pickup.Amount + bonus;
-                _wallet.AddCoins(totalCoins);
-                RunStatistics.Instance.AddCoinsEarned(totalCoins);
+                if (_wallet != null) _wallet.AddCoins(totalCoins);
+                else PlayerWallet.Instance?.AddCoins(totalCoins);
+                RunStatistics.Instance?.AddCoinsEarned(totalCoins);
+                RunProgressionManager.Instance?.AddCombatGoldXP(totalCoins);
                 _coinPool.Release(pickup);
             }
             else if (pickup.Type == LootType.Diamond)
             {
-                _wallet.AddDiamonds(pickup.Amount);
-                RunStatistics.Instance.AddDiamondsEarned(pickup.Amount);
+                if (_wallet != null) _wallet.AddDiamonds(pickup.Amount);
+                else PlayerWallet.Instance?.AddDiamonds(pickup.Amount);
+                RunStatistics.Instance?.AddDiamondsEarned(pickup.Amount);
                 _diamondPool.Release(pickup);
             }
         }

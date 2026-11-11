@@ -6,6 +6,7 @@ using Game.Enemies.Spawning;
 using Game.Loot;
 using Game.Pathfinding;
 using Game.Projectiles;
+using Game.Spells;
 using Game.UI;
 using Game.WaveSystem;
 using Game.Weapons;
@@ -76,8 +77,12 @@ namespace Game.Core
             var enemyPool = FindAnyObjectByType<EnemyPool>();
             var lootDrop = FindAnyObjectByType<LootDropService>();
 
-            // 4. Combat & Weapons
-            var ballista = FindAnyObjectByType<HeavyBallista>();
+            // 4. Combat & Weapons (GIG-85: Equip weapon selected in MainMenu)
+            CastleWeapon activeWeapon = ResolveSelectedCastleWeapon(castle, progression);
+            if (activeWeapon != null)
+            {
+                log.AppendLine($"[PASS] CastleWeapon active: {activeWeapon.GetType().Name} (Lv.{activeWeapon.CurrentLevel})");
+            }
 
             // 5. Verification & Auto-Healing of Links
             if (wallet != null)
@@ -110,12 +115,15 @@ namespace Game.Core
 
             if (buildingManager != null)
             {
-                log.AppendLine("[PASS] BuildingManager ready");
+                buildingManager.RegisterPlacementValidator(MageTowerBuilding.CanPlaceMageTower);
+                log.AppendLine("[PASS] BuildingManager ready (MageTower cap validator registered)");
             }
             else
             {
                 log.AppendLine("[WARN] BuildingManager not found in scene!");
             }
+
+            EnsureSpellSystems(log);
 
             // 6. Refresh UI components
             var walletUI = FindAnyObjectByType<WalletUI>(FindObjectsInactive.Include);
@@ -128,6 +136,12 @@ namespace Game.Core
             if (waveTimerUI != null && waveController != null)
             {
                 waveTimerUI.BindWaveController(waveController);
+            }
+
+            var weaponAimUI = FindAnyObjectByType<WeaponAimUI>(FindObjectsInactive.Include);
+            if (weaponAimUI != null && activeWeapon != null)
+            {
+                weaponAimUI.BindWeapon(activeWeapon);
             }
 
             IsReady = true;
@@ -148,6 +162,75 @@ namespace Game.Core
             {
                 wallet.ForceRefresh();
             }
+        }
+
+        private CastleWeapon ResolveSelectedCastleWeapon(Castle castle, RunProgressionManager progression)
+        {
+            CastleWeapon existing = FindAnyObjectByType<CastleWeapon>();
+            string selectedId = RunConfig.Instance != null && RunConfig.Instance.SelectedWeapon != null
+                ? RunConfig.Instance.SelectedWeapon.Id
+                : null;
+
+            if (string.IsNullOrEmpty(selectedId) || selectedId == "heavy_ballista")
+            {
+                if (existing is HeavyBallista hb && RunConfig.Instance?.SelectedWeapon?.BallistaData != null)
+                {
+                    hb.Configure(RunConfig.Instance.SelectedWeapon.BallistaData);
+                }
+                progression?.BindWeapon(existing);
+                return existing;
+            }
+
+            GameObject mountGo = existing != null
+                ? existing.gameObject
+                : (castle != null ? castle.gameObject : null);
+            if (mountGo == null) return existing;
+
+            if (existing != null)
+            {
+                existing.enabled = false;
+                Destroy(existing);
+            }
+
+            CastleWeapon spawned = selectedId switch
+            {
+                "alchemical_mortar" => mountGo.AddComponent<AlchemicalMortar>(),
+                "tar_cannon" => mountGo.AddComponent<TarCannon>(),
+                "orthanc" => mountGo.AddComponent<OrthancTower>(),
+                "archer_volley" => mountGo.AddComponent<ArcherVolley>(),
+                _ => mountGo.AddComponent<HeavyBallista>()
+            };
+
+            if (spawned is HeavyBallista newHb && RunConfig.Instance?.SelectedWeapon?.BallistaData != null)
+            {
+                newHb.Configure(RunConfig.Instance.SelectedWeapon.BallistaData);
+            }
+
+            progression?.BindWeapon(spawned);
+            return spawned;
+        }
+
+        private void EnsureSpellSystems(System.Text.StringBuilder log)
+        {
+            var scrollMgr = SpellScrollManager.Instance ?? FindAnyObjectByType<SpellScrollManager>();
+            if (scrollMgr == null)
+            {
+                scrollMgr = gameObject.AddComponent<SpellScrollManager>();
+            }
+
+            var caster = FindAnyObjectByType<SpellCaster>();
+            if (caster == null)
+            {
+                caster = gameObject.AddComponent<SpellCaster>();
+            }
+
+            var panel = FindAnyObjectByType<SpellPanelUI>(FindObjectsInactive.Include);
+            if (panel != null && scrollMgr != null)
+            {
+                panel.Bind(scrollMgr);
+            }
+
+            log.AppendLine($"[PASS] Spell systems ready (ScrollManager max={scrollMgr.MaxScrolls})");
         }
     }
 }

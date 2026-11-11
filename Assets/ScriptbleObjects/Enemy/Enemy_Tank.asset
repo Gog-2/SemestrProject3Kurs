@@ -19,6 +19,9 @@ MonoBehaviour:
   _tintColor: {r: 0.9, g: 0.45, b: 0.45, a: 1}
   _visualScale: {x: 1.35, y: 1.35, z: 1}
   _maxHP: 140
+  _defense: 4
+  _damageResistance: 0.25
+  _hpGrowthPerWave: 0.12
   _moveSpeed: 1.2
   _minSpeedRatio: 0.8
   _damage: 16
@@ -30,5 +33,6 @@ MonoBehaviour:
     _minCoins: 4
     _maxCoins: 8
     _coinDropChance: 1
-    _diamondDropChance: 0.15
-    _diamondAmount: 1
+    _diamondDropChance: 0.01
+    _minDiamondAmount: 1
+    _maxDiamondAmount: 1

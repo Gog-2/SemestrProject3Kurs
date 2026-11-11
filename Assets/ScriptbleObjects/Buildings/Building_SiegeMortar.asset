@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85ebb5caf6276bc4f9b5cbf2073f4a65, type: 3}
+  m_Name: Building_SiegeMortar
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Buildings.BuildingData
+  _id: siege_mortar
+  _displayName: "\u041C\u043E\u0440\u0442\u0438\u0440\u0430"
+  _description: "\u041D\u0430\u0432\u0435\u0441\u043D\u0430\u044F \u0431\u043E\u043C\u0431\u0430\u0440\u0434\u0438\u0440\u043E\u0432\u043A\u0430
+    \u043F\u043E \u0431\u043E\u043B\u044C\u0448\u043E\u0439 \u043F\u043B\u043E\u0449\u0430\u0434\u0438."
+  _icon: {fileID: 21300000, guid: f89f651266507ae4a87d56bf047f8e07, type: 3}
+  _prefab: {fileID: 5234803653936846947, guid: 7d06b3ba31ed1df4698943e3d4868d02, type: 3}
+  _category: 3
+  _size: {x: 2, y: 2}
+  _upgradeType: 0
+  _isDestructible: 1
+  _placedSaleRefundRatio: 0.5
+  _unplacedSaleRefundRatio: 0.5
+  _levels:
+  - cost: 110
+    maxHP: 150
+    damage: 50
+    attackRange: 4
+    attackInterval: 20
+    productionInterval: 0
+    productionAmount: 0
+    spawnInterval: 0
+    unitCount: 0
+    combatXpRequirement: 0
+  - cost: 190
+    maxHP: 200
+    damage: 60
+    attackRange: 4
+    attackInterval: 17
+    productionInterval: 0
+    productionAmount: 0
+    spawnInterval: 0
+    unitCount: 0
+    combatXpRequirement: 140
+  - cost: 290
+    maxHP: 250
+    damage: 80
+    attackRange: 5
+    attackInterval: 14
+    productionInterval: 0
+    productionAmount: 0
+    spawnInterval: 0
+    unitCount: 0
+    combatXpRequirement: 300
+  - cost: 420
+    maxHP: 350
+    damage: 100
+    attackRange: 6
+    attackInterval: 11
+    productionInterval: 0
+    productionAmount: 0
+    spawnInterval: 0
+    unitCount: 0
+    combatXpRequirement: 520

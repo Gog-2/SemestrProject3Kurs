@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DefaultArena
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.ArenaData
   _id: arena_plains
-  _arenaName: ??????? ???????
-  _description: ??????? ?????.
+  _arenaName: Зелёные равнины
+  _description: Базовая арена. Клетки равнин и воды, замедляющие врагов.
   _preview: {fileID: 0}
   _sceneName: SampleScene
   _unlockedByDefault: 1

@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using DG.Tweening;
 using Alchemy.Inspector;
+using Game.Buildings;
 using Game.Core;
 
 namespace Game.Loot
@@ -49,19 +50,34 @@ namespace Game.Loot
 
             transform.localScale = Vector3.zero;
             Vector3 randomOffset = new Vector3(UnityEngine.Random.Range(-0.4f, 0.4f), UnityEngine.Random.Range(-0.4f, 0.4f), 0f);
-            Vector3 targetPos = transform.position + randomOffset;
+            Vector3 popPos = transform.position + randomOffset;
 
             _animSequence = DOTween.Sequence()
                 .Append(transform.DOScale(Vector3.one, 0.15f).SetEase(Ease.OutBack))
-                .Join(transform.DOJump(targetPos, 0.5f, 1, 0.4f))
-                .AppendInterval(0.6f)
-                .Append(transform.DOScale(Vector3.zero, 0.2f).SetEase(Ease.InBack))
+                .Join(transform.DOJump(popPos, 0.5f, 1, 0.4f))
+                .AppendInterval(0.35f);
+
+            if (Castle.Instance != null)
+            {
+                Vector3 castlePos = Castle.Instance.transform.position;
+                _animSequence
+                    .Append(transform.DOMove(castlePos, 0.35f).SetEase(Ease.InQuad))
+                    .Join(transform.DOScale(Vector3.one * 0.4f, 0.35f).SetEase(Ease.InQuad));
+            }
+            else
+            {
+                _animSequence
+                    .AppendInterval(0.25f)
+                    .Append(transform.DOScale(Vector3.zero, 0.2f).SetEase(Ease.InBack));
+            }
+
+            _animSequence
                 .OnComplete(() =>
                 {
                     _onCollectedCallback?.Invoke(this);
                 })
                 .SetLink(gameObject)
-                .SetUpdate(true);
+                .SetUpdate(false);
         }
 
         public void OnSpawnFromPool()

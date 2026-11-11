@@ -18,6 +18,11 @@ namespace Game.Enemies.Data
 
         [Title("Health & Defense")]
         [SerializeField, Min(1)] private int _maxHP = 30;
+        [Tooltip("Flat damage absorbed by armor per hit (minimum 1 damage always goes through).")]
+        [SerializeField, Min(0)] private int _defense = 0;
+        [Tooltip("Percentage damage resistance (0..0.8, max 80% per GDD).")]
+        [SerializeField, Range(0f, 0.8f)] private float _damageResistance = 0f;
+        [SerializeField, Min(0f)] private float _hpGrowthPerWave = 0f;
 
         [Title("Movement")]
         [SerializeField, Min(0.1f)] private float _moveSpeed = 2f;
@@ -42,6 +47,9 @@ namespace Game.Enemies.Data
         public Vector3 VisualScale => _visualScale;
         public int HonorReward => _honorReward;
         public int MaxHP => _maxHP;
+        public int Defense => _defense;
+        public float DamageResistance => _damageResistance;
+        public float HpGrowthPerWave => _hpGrowthPerWave;
         public float MoveSpeed => _moveSpeed;
         public float MinSpeedRatio => _minSpeedRatio;
         public int Damage => _damage;
@@ -53,12 +61,22 @@ namespace Game.Enemies.Data
         private void OnValidate()
         {
             if (_maxHP < 1) _maxHP = 1;
+            if (_defense < 0) _defense = 0;
+            _damageResistance = Mathf.Clamp(_damageResistance, 0f, 0.8f);
+            if (_hpGrowthPerWave < 0f) _hpGrowthPerWave = 0f;
             if (_moveSpeed < 0.1f) _moveSpeed = 0.1f;
             if (_minSpeedRatio < 0.05f) _minSpeedRatio = 0.05f;
             if (_damage < 1) _damage = 1;
             if (_attackInterval < 0.1f) _attackInterval = 0.1f;
             if (_attackRange < 0.1f) _attackRange = 0.1f;
             if (_visualScale.x <= 0.01f || _visualScale.y <= 0.01f) _visualScale = Vector3.one;
+        }
+
+        public void SetDefenseStats(int defense, float damageResistance, float hpGrowthPerWave = 0f)
+        {
+            _defense = Mathf.Max(0, defense);
+            _damageResistance = Mathf.Clamp(damageResistance, 0f, 0.8f);
+            _hpGrowthPerWave = Mathf.Max(0f, hpGrowthPerWave);
         }
     }
 }

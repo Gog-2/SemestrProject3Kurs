@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85ebb5caf6276bc4f9b5cbf2073f4a65, type: 3}
+  m_Name: Building_ArcherTower
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Buildings.BuildingData
+  _id: archer_tower
+  _displayName: "\u0411\u0430\u0448\u043D\u044F \u043B\u0443\u0447\u043D\u0438\u043A\u043E\u0432"
+  _description: "\u0421\u0442\u0440\u0435\u043B\u044F\u0435\u0442 \u0437\u0430\u043B\u043F\u0430\u043C\u0438
+    \u043F\u0440\u0438 \u043D\u0430\u043B\u0438\u0447\u0438\u0438 \u0441\u043E\u0441\u0435\u0434\u043D\u0435\u0433\u043E
+    \u041B\u0430\u0433\u0435\u0440\u044F \u043B\u0443\u0447\u043D\u0438\u043A\u043E\u0432;
+    \u043D\u0430 \u0423\u0440.4 \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442
+    \u0448\u0438\u043F\u044B."
+  _icon: {fileID: 21300000, guid: f89f651266507ae4a87d56bf047f8e07, type: 3}
+  _prefab: {fileID: 6323291566103516829, guid: 1fbc9742b7271344b9f8074761237b5a, type: 3}
+  _category: 3
+  _size: {x: 2, y: 2}
+  _upgradeType: 0
+  _isDestructible: 1
+  _placedSaleRefundRatio: 0.5
+  _unplacedSaleRefundRatio: 0.5
+  _levels:
+  - cost: 90
+    maxHP: 300
+    damage: 8
+    attackRange: 2
+    attackInterval: 2.5
+    productionInterval: 0
+    productionAmount: 0
+    spawnInterval: 0
+    unitCount: 0
+    combatXpRequirement: 0
+  - cost: 160
+    maxHP: 400
+    damage: 8
+    attackRange: 2
+    attackInterval: 2.5
+    productionInterval: 0
+    productionAmount: 0
+    spawnInterval: 0
+    unitCount: 0
+    combatXpRequirement: 120
+  - cost: 240
+    maxHP: 500
+    damage: 8
+    attackRange: 2
+    attackInterval: 2
+    productionInterval: 0
+    productionAmount: 0
+    spawnInterval: 0
+    unitCount: 0
+    combatXpRequirement: 260
+  - cost: 350
+    maxHP: 500
+    damage: 10
+    attackRange: 2
+    attackInterval: 1
+    productionInterval: 0
+    productionAmount: 0
+    spawnInterval: 0
+    unitCount: 0
+    combatXpRequirement: 450

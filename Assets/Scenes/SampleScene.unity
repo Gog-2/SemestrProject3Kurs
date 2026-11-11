@@ -291,6 +291,8 @@ GameObject:
   - component: {fileID: 1059899310}
   - component: {fileID: 1059899315}
   - component: {fileID: 1059899316}
+  - component: {fileID: 1059899318}
+  - component: {fileID: 1059899317}
   m_Layer: 0
   m_Name: '[GameSystems]'
   m_TagString: Untagged
@@ -339,6 +341,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Core.RunProgressionManager
   _castle: {fileID: 75240530}
   _upgradeDatabase: {fileID: 11400000, guid: 92201469f02fab3448fe7a70654a53b2, type: 2}
+  _castleWeapon: {fileID: 0}
 --- !u!114 &1059899313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -404,6 +407,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Core.SceneBootstrapper
   _logDetailedReport: 1
+--- !u!114 &1059899317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1059899309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83ddb449935dfad40ab40042ea94b52a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Spells.SpellCaster
+  _mainCamera: {fileID: 0}
+--- !u!114 &1059899318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1059899309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9244f31e8cc76d44a8b6d224b0434302, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Spells.SpellScrollManager
+  _maxScrolls: 5
 --- !u!1 &1130518309
 GameObject:
   m_ObjectHideFlags: 0
@@ -436,6 +465,7 @@ MonoBehaviour:
   _selectedKnight: {fileID: 11400000, guid: 24b648d758caadf43bf903b86da8ddd4, type: 2}
   _selectedArena: {fileID: 11400000, guid: 153b48a920e94de458906da4a8ae1522, type: 2}
   _selectedWeapon: {fileID: 11400000, guid: 8bbad9c1ba2171d43a5a8fba0bf6857e, type: 2}
+  _selectedDifficulty: 0
 --- !u!4 &1130518311
 Transform:
   m_ObjectHideFlags: 0

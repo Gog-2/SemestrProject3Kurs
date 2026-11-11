@@ -23,7 +23,7 @@ namespace Game.Buildings
 
         [Title("Economy")]
         [SerializeField, Range(0f, 1f)] private float _placedSaleRefundRatio = 0.5f; // 50% per GDD
-        [SerializeField, Range(0f, 1f)] private float _unplacedSaleRefundRatio = 1.0f; // 100%
+        [SerializeField, Range(0f, 1f)] private float _unplacedSaleRefundRatio = 0.5f; // 50% per GDD & GIG-33/GIG-82
 
         [Title("Level Stats (1 to 4)")]
         [SerializeField]
@@ -73,6 +73,11 @@ namespace Game.Buildings
             _levels = levels;
             _prefab = prefab;
             _icon = icon;
+        }
+
+        public void SetDestructible(bool isDestructible)
+        {
+            _isDestructible = isDestructible;
         }
     }
 }

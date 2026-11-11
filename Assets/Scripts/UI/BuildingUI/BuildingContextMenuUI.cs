@@ -1,11 +1,22 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 using Alchemy.Inspector;
 using Game.Buildings;
 
 namespace Game.UI.BuildingUI
 {
+    public class PointerHoverRelay : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    {
+        public Action Entered;
+        public Action Exited;
+
+        public void OnPointerEnter(PointerEventData eventData) => Entered?.Invoke();
+        public void OnPointerExit(PointerEventData eventData) => Exited?.Invoke();
+    }
+
     [RequireComponent(typeof(CanvasGroup))]
     public class BuildingContextMenuUI : MonoBehaviour
     {
@@ -53,21 +64,7 @@ namespace Game.UI.BuildingUI
             _destroyButton = destroyButton;
             _destroyButtonText = destroyButtonText;
 
-            if (_destroyButton != null)
-            {
-                _destroyButton.onClick.RemoveListener(OnDestroyClicked);
-                _destroyButton.onClick.AddListener(OnDestroyClicked);
-            }
-            if (_moveButton != null)
-            {
-                _moveButton.onClick.RemoveListener(OnMoveClicked);
-                _moveButton.onClick.AddListener(OnMoveClicked);
-            }
-            if (_upgradeButton != null)
-            {
-                _upgradeButton.onClick.RemoveListener(OnUpgradeClicked);
-                _upgradeButton.onClick.AddListener(OnUpgradeClicked);
-            }
+            BindButtons();
 
             if (_panelRoot != null) _panelRoot.SetActive(false);
         }
@@ -86,14 +83,33 @@ namespace Game.UI.BuildingUI
             _canvasGroup.interactable = false;
             _canvasGroup.blocksRaycasts = false;
 
-            _destroyButton.onClick.RemoveListener(OnDestroyClicked);
-            _destroyButton.onClick.AddListener(OnDestroyClicked);
+            BindButtons();
+        }
 
-            _moveButton.onClick.RemoveListener(OnMoveClicked);
-            _moveButton.onClick.AddListener(OnMoveClicked);
+        private void BindButtons()
+        {
+            if (_destroyButton != null)
+            {
+                _destroyButton.onClick.RemoveListener(OnDestroyClicked);
+                _destroyButton.onClick.AddListener(OnDestroyClicked);
 
-            _upgradeButton.onClick.RemoveListener(OnUpgradeClicked);
-            _upgradeButton.onClick.AddListener(OnUpgradeClicked);
+                var relay = _destroyButton.GetComponent<PointerHoverRelay>();
+                if (relay == null) relay = _destroyButton.gameObject.AddComponent<PointerHoverRelay>();
+                relay.Entered = OnDestroyHoverEnter;
+                relay.Exited = OnDestroyHoverExit;
+            }
+
+            if (_moveButton != null)
+            {
+                _moveButton.onClick.RemoveListener(OnMoveClicked);
+                _moveButton.onClick.AddListener(OnMoveClicked);
+            }
+
+            if (_upgradeButton != null)
+            {
+                _upgradeButton.onClick.RemoveListener(OnUpgradeClicked);
+                _upgradeButton.onClick.AddListener(OnUpgradeClicked);
+            }
         }
 
         private void Start()
@@ -119,6 +135,7 @@ namespace Game.UI.BuildingUI
             {
                 BuildingManager.Instance.SelectedBuildingChanged -= OnBuildingSelected;
             }
+            WalletUI.Instance?.HideSellPreview();
         }
 
         private void LateUpdate()
@@ -140,7 +157,6 @@ namespace Game.UI.BuildingUI
             Vector3 screenPos = _mainCamera.WorldToScreenPoint(_currentBuilding.transform.position);
             screenPos += (Vector3)_screenOffset;
 
-            // Clamp so menu doesn't go off-screen
             float halfWidth = _menuRect.sizeDelta.x * 0.5f;
             float halfHeight = _menuRect.sizeDelta.y * 0.5f;
             screenPos.x = Mathf.Clamp(screenPos.x, halfWidth + 10f, Screen.width - halfWidth - 10f);
@@ -179,6 +195,8 @@ namespace Game.UI.BuildingUI
 
         public void Hide()
         {
+            WalletUI.Instance?.HideSellPreview();
+
             _canvasGroup.alpha = 0f;
             _canvasGroup.interactable = false;
             _canvasGroup.blocksRaycasts = false;
@@ -193,10 +211,10 @@ namespace Game.UI.BuildingUI
         {
             if (_currentBuilding == null) return;
 
-            string name = _currentBuilding.Data != null ? _currentBuilding.Data.DisplayName : "Постройка";
+            string displayName = _currentBuilding.Data != null ? _currentBuilding.Data.DisplayName : "Постройка";
             if (_titleText != null)
             {
-                _titleText.text = $"{name} (Ур. {_currentBuilding.CurrentLevel})";
+                _titleText.text = $"{displayName} (Ур. {_currentBuilding.CurrentLevel})";
             }
 
             if (_hpText != null)
@@ -206,32 +224,36 @@ namespace Game.UI.BuildingUI
 
             if (_combatXpText != null)
             {
-                _combatXpText.text = $"Боевой опыт: {_currentBuilding.CombatXP}";
+                int req = _currentBuilding.NextLevelCombatXpRequirement;
+                if (_currentBuilding.IsCombatXpReady)
+                {
+                    _combatXpText.text = "Опыт: ГОТОВО (-25% и лечение)";
+                }
+                else if (req > 0)
+                {
+                    _combatXpText.text = $"Боевой опыт: {_currentBuilding.CombatXP}/{req}";
+                }
+                else
+                {
+                    _combatXpText.text = $"Боевой опыт: {_currentBuilding.CombatXP}";
+                }
             }
 
-            // Destroy refund (50%)
             if (_destroyButtonText != null)
             {
-                int refund = 0;
-                if (_currentBuilding.Data != null)
-                {
-                    int totalCost = 0;
-                    for (int i = 1; i <= _currentBuilding.CurrentLevel; i++)
-                    {
-                        totalCost += _currentBuilding.Data.GetStats(i).cost;
-                    }
-                    refund = Mathf.RoundToInt(totalCost * _currentBuilding.Data.PlacedSaleRefundRatio);
-                }
+                int refund = BuildingManager.Instance != null
+                    ? BuildingManager.Instance.GetPlacedSellRefund(_currentBuilding)
+                    : 0;
                 _destroyButtonText.text = $"Снести [Q] (+{refund} м.)";
             }
 
-            // Upgrade info
             if (_upgradeButton != null && _upgradeButtonText != null)
             {
                 if (_currentBuilding.CanUpgrade(out int upgradeCost))
                 {
                     _upgradeButton.interactable = true;
-                    _upgradeButtonText.text = $"Улучшить [C] ({upgradeCost} м.)";
+                    string badge = _currentBuilding.IsCombatXpReady ? " ★" : "";
+                    _upgradeButtonText.text = $"Улучшить [C] ({upgradeCost} м.){badge}";
                 }
                 else
                 {
@@ -241,10 +263,26 @@ namespace Game.UI.BuildingUI
             }
         }
 
+        private void OnDestroyHoverEnter()
+        {
+            if (_currentBuilding == null || BuildingManager.Instance == null || WalletUI.Instance == null) return;
+            int refund = BuildingManager.Instance.GetPlacedSellRefund(_currentBuilding);
+            if (refund > 0)
+            {
+                WalletUI.Instance.ShowSellPreview(refund);
+            }
+        }
+
+        private void OnDestroyHoverExit()
+        {
+            WalletUI.Instance?.HideSellPreview();
+        }
+
         private void OnDestroyClicked()
         {
             if (_currentBuilding != null)
             {
+                WalletUI.Instance?.HideSellPreview();
                 BuildingManager.Instance.SellBuilding(_currentBuilding);
             }
         }

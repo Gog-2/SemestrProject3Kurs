@@ -28,6 +28,10 @@ namespace Game.UI
         private bool _visualsVisible;
         private GameObject _aimVisualsRoot;
         private Material _aimMaterial;
+        private LineRenderer _reticleLine;
+        private LineRenderer _rangeLine;
+        private float _lastBuiltRange = -1f;
+        private float _lastBuiltReticleRadius = -1f;
 
         private void Awake()
         {
@@ -60,6 +64,35 @@ namespace Game.UI
             EnsureAimVisuals();
             SetAimVisuals(false);
             RegisterInput();
+            UpdateCooldownText();
+        }
+
+        public void BindWeapon(CastleWeapon weapon)
+        {
+            if (_weapon == weapon && _weapon != null)
+            {
+                UpdateCooldownText();
+                return;
+            }
+
+            if (_weapon != null)
+            {
+                _weapon.CooldownChanged -= OnCooldownChanged;
+                _weapon.AimingToggled -= SetAimVisuals;
+            }
+
+            _weapon = weapon;
+
+            if (_weapon != null)
+            {
+                _weapon.CooldownChanged -= OnCooldownChanged;
+                _weapon.CooldownChanged += OnCooldownChanged;
+                _weapon.AimingToggled -= SetAimVisuals;
+                _weapon.AimingToggled += SetAimVisuals;
+            }
+
+            EnsureAimVisuals();
+            SetAimVisuals(_weapon != null && _weapon.IsAiming);
             UpdateCooldownText();
         }
 
@@ -265,6 +298,11 @@ namespace Game.UI
                 _aimReticle.gameObject.SetActive(active);
             }
 
+            if (_rangeLine != null)
+            {
+                _rangeLine.enabled = active && _weapon != null && _weapon.MaxRange > 0.01f;
+            }
+
             if (active)
             {
                 UpdateAimVisuals();
@@ -280,9 +318,27 @@ namespace Game.UI
             Vector3 target = GetPointerWorldPosition();
             target.z = 0f;
 
+            _weapon.RotateTowardsWorldPoint(target);
+
+            bool inRange = _weapon.IsTargetInRange(target);
+            Color currentColor = inRange ? _aimColor : new Color(1f, 0.25f, 0.25f, 0.9f);
+
+            float targetReticleRadius = Mathf.Max(0.25f, _weapon.AoERadius);
+            if (_reticleLine != null && !Mathf.Approximately(_lastBuiltReticleRadius, targetReticleRadius))
+            {
+                BuildCirclePoints(_reticleLine, targetReticleRadius);
+                _lastBuiltReticleRadius = targetReticleRadius;
+            }
+
             if (_aimReticle != null)
             {
                 _aimReticle.position = target;
+            }
+
+            if (_reticleLine != null)
+            {
+                _reticleLine.startColor = currentColor;
+                _reticleLine.endColor = currentColor;
             }
 
             if (_aimLine != null)
@@ -293,6 +349,29 @@ namespace Game.UI
                 _aimLine.positionCount = 2;
                 _aimLine.SetPosition(0, origin);
                 _aimLine.SetPosition(1, target);
+                _aimLine.startColor = currentColor;
+                _aimLine.endColor = currentColor;
+            }
+
+            if (_rangeLine != null)
+            {
+                float maxRange = _weapon.MaxRange;
+                if (maxRange > 0.01f)
+                {
+                    _rangeLine.enabled = true;
+                    Vector3 origin = _weapon.AimOrigin;
+                    origin.z = 0f;
+                    _rangeLine.transform.position = origin;
+                    if (!Mathf.Approximately(_lastBuiltRange, maxRange))
+                    {
+                        BuildCirclePoints(_rangeLine, maxRange);
+                        _lastBuiltRange = maxRange;
+                    }
+                }
+                else
+                {
+                    _rangeLine.enabled = false;
+                }
             }
         }
 
@@ -372,18 +451,46 @@ namespace Game.UI
                     reticleLine.material = _aimMaterial;
                 }
 
-                int segments = reticleLine.positionCount;
-                for (int i = 0; i < segments; i++)
-                {
-                    float angle = (i / (float)segments) * Mathf.PI * 2f;
-                    reticleLine.SetPosition(i, new Vector3(
-                        Mathf.Cos(angle) * _reticleRadius,
-                        Mathf.Sin(angle) * _reticleRadius,
-                        0f));
-                }
+                _reticleLine = reticleLine;
+                BuildCirclePoints(_reticleLine, _reticleRadius);
+                _lastBuiltReticleRadius = _reticleRadius;
+            }
+
+            if (_rangeLine == null)
+            {
+                var rangeGo = new GameObject("AimRangeCircle");
+                rangeGo.transform.SetParent(_aimVisualsRoot.transform, false);
+
+                _rangeLine = rangeGo.AddComponent<LineRenderer>();
+                _rangeLine.useWorldSpace = false;
+                _rangeLine.loop = true;
+                _rangeLine.positionCount = Mathf.Max(24, _reticleSegments);
+                _rangeLine.startWidth = 0.04f;
+                _rangeLine.endWidth = 0.04f;
+                Color rangeCol = new Color(_aimColor.r, _aimColor.g, _aimColor.b, 0.35f);
+                _rangeLine.startColor = rangeCol;
+                _rangeLine.endColor = rangeCol;
+                _rangeLine.sortingLayerName = "Default";
+                _rangeLine.sortingOrder = 99;
+                if (_aimMaterial != null) _rangeLine.material = _aimMaterial;
+                _rangeLine.enabled = false;
             }
 
             SetAimVisuals(false);
+        }
+
+        private static void BuildCirclePoints(LineRenderer line, float radius)
+        {
+            if (line == null) return;
+            int segments = line.positionCount;
+            for (int i = 0; i < segments; i++)
+            {
+                float angle = (i / (float)segments) * Mathf.PI * 2f;
+                line.SetPosition(i, new Vector3(
+                    Mathf.Cos(angle) * radius,
+                    Mathf.Sin(angle) * radius,
+                    0f));
+            }
         }
     }
 }

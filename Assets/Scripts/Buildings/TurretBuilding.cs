@@ -100,7 +100,8 @@ namespace Game.Buildings
             int damage = BaseDamage;
             if (RunProgressionManager.Instance != null)
             {
-                damage = Mathf.RoundToInt(damage * RunProgressionManager.Instance.RangedDamageMultiplier);
+                BuildingCategory category = _data != null ? _data.Category : BuildingCategory.Siege;
+                damage = Mathf.RoundToInt(damage * RunProgressionManager.Instance.GetEffectiveBuildingAttackDamageMultiplier(category));
             }
             return damage;
         }
@@ -108,9 +109,13 @@ namespace Game.Buildings
         public float GetCalculatedAttackInterval()
         {
             float interval = AttackInterval;
-            if (RunProgressionManager.Instance != null && RunProgressionManager.Instance.AttackSpeedMultiplier > 0.001f)
+            if (RunProgressionManager.Instance != null)
             {
-                interval /= RunProgressionManager.Instance.AttackSpeedMultiplier;
+                float speedMult = RunProgressionManager.Instance.GetEffectiveAttackSpeedMultiplier();
+                if (speedMult > 0.001f)
+                {
+                    interval /= speedMult;
+                }
             }
             return interval;
         }

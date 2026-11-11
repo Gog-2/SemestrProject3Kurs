@@ -6,6 +6,9 @@ namespace Game.Core
     public static class MetaSaveManager
     {
         private const string MetaKey = "GIGA_MetaProgression_Save";
+        private const string MusicVolKey = "GIGA_Audio_MusicVolume";
+        private const string SfxVolKey = "GIGA_Audio_SFXVolume";
+
         private static MetaProgressionData _data;
 
         public static MetaProgressionData Data
@@ -20,8 +23,40 @@ namespace Game.Core
             }
         }
 
+        public static float MusicVolume
+        {
+            get => PlayerPrefs.GetFloat(MusicVolKey, 0.7f);
+            set
+            {
+                PlayerPrefs.SetFloat(MusicVolKey, Mathf.Clamp01(value));
+                PlayerPrefs.Save();
+                ApplyAudioVolumes();
+                AudioSettingsChanged?.Invoke();
+            }
+        }
+
+        public static float SfxVolume
+        {
+            get => PlayerPrefs.GetFloat(SfxVolKey, 0.8f);
+            set
+            {
+                PlayerPrefs.SetFloat(SfxVolKey, Mathf.Clamp01(value));
+                PlayerPrefs.Save();
+                ApplyAudioVolumes();
+                AudioSettingsChanged?.Invoke();
+            }
+        }
+
+        public static void ApplyAudioVolumes()
+        {
+            AudioListener.volume = Mathf.Clamp01(Mathf.Max(MusicVolume, SfxVolume));
+        }
+
         public static event Action DiamondsChanged;
         public static event Action UnlocksChanged;
+        public static event Action BonusesChanged;
+        public static event Action AudioSettingsChanged;
+        public static event Action<DifficultyMode> SelectedDifficultyChanged;
 
         public static void Load()
         {
@@ -44,9 +79,21 @@ namespace Game.Core
             }
 
             // Ensure default unlocks
+            _data.UnlockedKnightIds ??= new System.Collections.Generic.List<string>();
+            _data.UnlockedArenaIds ??= new System.Collections.Generic.List<string>();
+            _data.UnlockedWeaponIds ??= new System.Collections.Generic.List<string>();
+            _data.UnlockedDifficulties ??= new System.Collections.Generic.List<DifficultyMode>();
+            _data.PurchasedBonuses ??= new System.Collections.Generic.List<MetaBonusEntry>();
+
             if (!_data.UnlockedKnightIds.Contains("hador_oplot")) _data.UnlockedKnightIds.Add("hador_oplot");
             if (!_data.UnlockedArenaIds.Contains("arena_plains")) _data.UnlockedArenaIds.Add("arena_plains");
             if (!_data.UnlockedWeaponIds.Contains("heavy_ballista")) _data.UnlockedWeaponIds.Add("heavy_ballista");
+            if (!_data.UnlockedDifficulties.Contains(DifficultyMode.Base)) _data.UnlockedDifficulties.Add(DifficultyMode.Base);
+
+            if (!_data.UnlockedDifficulties.Contains(_data.SelectedDifficulty))
+            {
+                _data.SelectedDifficulty = DifficultyMode.Base;
+            }
         }
 
         public static void Save()
@@ -113,12 +160,99 @@ namespace Game.Core
             return true;
         }
 
+        public static bool IsDifficultyUnlocked(DifficultyMode mode)
+        {
+            return mode == DifficultyMode.Base ||
+                   (Data.UnlockedDifficulties != null && Data.UnlockedDifficulties.Contains(mode));
+        }
+
+        public static void SetSelectedDifficulty(DifficultyMode mode)
+        {
+            if (!IsDifficultyUnlocked(mode)) return;
+            if (Data.SelectedDifficulty == mode) return;
+
+            Data.SelectedDifficulty = mode;
+            Save();
+            SelectedDifficultyChanged?.Invoke(mode);
+        }
+
+        public static bool UnlockNextDifficultyAfterVictory(DifficultyMode clearedMode)
+        {
+            DifficultyMode? nextMode = clearedMode switch
+            {
+                DifficultyMode.Base => DifficultyMode.Hard,
+                DifficultyMode.Hard => DifficultyMode.Legendary,
+                _ => null
+            };
+
+            if (!nextMode.HasValue || IsDifficultyUnlocked(nextMode.Value))
+            {
+                return false;
+            }
+
+            Data.UnlockedDifficulties.Add(nextMode.Value);
+            Save();
+            UnlocksChanged?.Invoke();
+            return true;
+        }
+
         public static void SetSelected(string knightId, string arenaId, string weaponId)
         {
             if (!string.IsNullOrEmpty(knightId)) Data.SelectedKnightId = knightId;
             if (!string.IsNullOrEmpty(arenaId)) Data.SelectedArenaId = arenaId;
             if (!string.IsNullOrEmpty(weaponId)) Data.SelectedWeaponId = weaponId;
             Save();
+        }
+
+        public static int GetBonusLevel(string bonusId)
+        {
+            if (string.IsNullOrEmpty(bonusId) || Data.PurchasedBonuses == null) return 0;
+
+            for (int i = 0; i < Data.PurchasedBonuses.Count; i++)
+            {
+                if (Data.PurchasedBonuses[i] != null && Data.PurchasedBonuses[i].Id == bonusId)
+                {
+                    return Data.PurchasedBonuses[i].Level;
+                }
+            }
+
+            return 0;
+        }
+
+        public static bool TryUpgradeBonus(string bonusId)
+        {
+            MetaBonusDefinition def = MetaBonusCatalog.FindById(bonusId);
+            if (def == null) return false;
+
+            int currentLevel = GetBonusLevel(bonusId);
+            if (currentLevel >= def.MaxLevel) return false;
+
+            int cost = def.GetCostForNextLevel(currentLevel);
+            if (cost < 0 || !TrySpendDiamonds(cost)) return false;
+
+            Data.PurchasedBonuses ??= new System.Collections.Generic.List<MetaBonusEntry>();
+            MetaBonusEntry existing = null;
+            for (int i = 0; i < Data.PurchasedBonuses.Count; i++)
+            {
+                if (Data.PurchasedBonuses[i] != null && Data.PurchasedBonuses[i].Id == bonusId)
+                {
+                    existing = Data.PurchasedBonuses[i];
+                    break;
+                }
+            }
+
+            if (existing != null)
+            {
+                existing.Level = currentLevel + 1;
+            }
+            else
+            {
+                Data.PurchasedBonuses.Add(new MetaBonusEntry { Id = bonusId, Level = 1 });
+            }
+
+            Save();
+            BonusesChanged?.Invoke();
+            return true;
         }
     }
 }

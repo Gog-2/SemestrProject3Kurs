@@ -102,7 +102,9 @@ namespace Game.Projectiles
             Vector2 direction,
             ProjectileData data,
             int damageOverride = -1,
-            Action<Projectile> onDespawn = null)
+            Action<Projectile> onDespawn = null,
+            int pierceOverride = -1,
+            float knockbackOverride = -1f)
         {
             _data = data;
             _direction = direction.normalized;
@@ -110,8 +112,8 @@ namespace Game.Projectiles
 
             _damage = damageOverride >= 0 ? damageOverride : data.Damage;
             _speed = data.Speed;
-            _pierceRemaining = data.PierceCount;
-            _knockbackCells = data.KnockbackCells;
+            _pierceRemaining = pierceOverride >= 0 ? pierceOverride : data.PierceCount;
+            _knockbackCells = knockbackOverride >= 0f ? knockbackOverride : data.KnockbackCells;
             _lifetime = data.MaxLifetime;
 
             transform.position = spawnPosition;
@@ -158,6 +160,16 @@ namespace Game.Projectiles
             if (target is Enemy enemy)
             {
                 enemy.ApplyKnockback(_direction, _knockbackCells);
+
+                if (RunProgressionManager.Instance != null && RunProgressionManager.Instance.SlowOnHitPercent > 0f)
+                {
+                    enemy.ApplySlow(RunProgressionManager.Instance.SlowOnHitPercent, 3f);
+                }
+            }
+
+            if (_data != null && _data.SplashRadius > 0.05f)
+            {
+                ApplySplashAround(transform.position, target);
             }
 
             if (_pierceRemaining > 0)
@@ -166,6 +178,30 @@ namespace Game.Projectiles
                 if (_pierceRemaining <= 0)
                 {
                     Despawn();
+                }
+            }
+        }
+
+        private void ApplySplashAround(Vector3 center, IDamageable alreadyHit)
+        {
+            float r = _data.SplashRadius;
+            float sqrR = r * r;
+            var enemies = Enemy.ActiveEnemies;
+            int splashDmg = Mathf.Max(1, Mathf.RoundToInt(_damage * _data.EdgeDamageMultiplier));
+
+            for (int i = enemies.Count - 1; i >= 0; i--)
+            {
+                Enemy e = enemies[i];
+                if (e == null || e.IsDead || ReferenceEquals(e, alreadyHit)) continue;
+                if ((e.transform.position - center).sqrMagnitude <= sqrR)
+                {
+                    e.TakeDamage(splashDmg);
+                    if (_knockbackCells > 0f)
+                    {
+                        Vector2 pushDir = ((Vector2)(e.transform.position - center));
+                        if (pushDir.sqrMagnitude < 0.001f) pushDir = _direction;
+                        e.ApplyKnockback(pushDir.normalized, _knockbackCells * 0.5f);
+                    }
                 }
             }
         }

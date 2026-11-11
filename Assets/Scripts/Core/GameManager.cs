@@ -23,6 +23,7 @@ namespace Game.Core
         [SerializeField] private bool _allowPauseKey = true;
 
         private GameState _previousStateBeforePause = GameState.Playing;
+        private bool _metaResultsCommitted;
 
         public GameState CurrentState => _currentState;
         public bool IsPaused => _currentState == GameState.Paused;
@@ -40,6 +41,7 @@ namespace Game.Core
             }
 
             Instance = this;
+            _metaResultsCommitted = false;
             Time.timeScale = 1f;
 
             if (_pauseUI == null) _pauseUI = FindAnyObjectByType<PauseUI>();
@@ -107,18 +109,14 @@ namespace Game.Core
             }
             else if (_currentState == GameState.GameOver || _currentState == GameState.Victory)
             {
+                bool isVictory = _currentState == GameState.Victory;
+                CommitRunMetaResults(isVictory);
+
                 Time.timeScale = 0f;
                 _pauseUI?.SetVisible(false);
                 PauseToggled?.Invoke(false);
 
-                if (_currentState == GameState.GameOver)
-                {
-                    _gameOverUI?.Show(isVictory: false);
-                }
-                else
-                {
-                    _gameOverUI?.Show(isVictory: true);
-                }
+                _gameOverUI?.Show(isVictory: isVictory);
             }
             else if (_currentState == GameState.Playing)
             {
@@ -184,6 +182,26 @@ namespace Game.Core
             {
                 Debug.LogWarning("[GameManager] 'MainMenu' scene not found in Build Settings! Loading scene index 0.");
                 SceneManager.LoadScene(0);
+            }
+        }
+
+        private void CommitRunMetaResults(bool isVictory)
+        {
+            if (_metaResultsCommitted) return;
+            _metaResultsCommitted = true;
+
+            int diamondsEarned = RunStatistics.Instance != null
+                ? RunStatistics.Instance.DiamondsEarned
+                : (PlayerWallet.Instance != null ? PlayerWallet.Instance.Diamonds : 0);
+
+            if (diamondsEarned > 0)
+            {
+                MetaSaveManager.AddDiamonds(diamondsEarned);
+            }
+
+            if (isVictory)
+            {
+                MetaSaveManager.UnlockNextDifficultyAfterVictory(RunConfig.ActiveDifficulty);
             }
         }
     }

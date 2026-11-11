@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dea9faa235da064f835b3d0672dcb85, type: 3}
+  m_Name: Knight_Borin
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Data.KnightData
+  _id: borin_ogneplav
+  _knightName: "\u0411\u043E\u0440\u0438\u043D \u041E\u0433\u043D\u0435\u043F\u043B\u0430\u0432"
+  _title: "\u0420\u044B\u0446\u0430\u0440\u044C-\u0418\u043D\u0436\u0435\u043D\u0435\u0440"
+  _quote: "\xAB\u0425\u043E\u0440\u043E\u0448\u0430\u044F \u0432\u0437\u0440\u044B\u0432\u0447\u0430\u0442\u043A\u0430
+    \u0438 \u043A\u0430\u043F\u043B\u044F \u043A\u0438\u0441\u043B\u043E\u0442\u044B
+    \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u0435\u0435, \u0447\u0435\u043C
+    \u0442\u044B\u0441\u044F\u0447\u0430 \u043A\u043B\u0438\u043D\u043A\u043E\u0432.\xBB"
+  _portrait: {fileID: 0}
+  _castleMaxHP: 1300
+  _hpPerLevel: 150
+  _initialBuildSlots: 6
+  _startingBuildingAssets:
+  - {fileID: 11400000, guid: 921dce356cfa9a8409e7dafee5c32903, type: 2}
+  - {fileID: 11400000, guid: 5e8af09340862d34ca8b9fe47e539ca9, type: 2}
+  _preferredStartingWeapon: {fileID: 11400000, guid: e91a72e799d8fa54294246a661e452bc, type: 2}
+  _startingBuildings:
+  - "\u041C\u043E\u0440\u0442\u0438\u0440\u0430"
+  - "\u0421\u0442\u0440\u043E\u0438\u0442\u0435\u043B\u0438"
+  _startingSkills:
+  - "\u042D\u0432\u0440\u0438\u043A\u0430 (+20% \u0432\u0437\u0440\u044B\u0432\u043D\u043E\u0433\u043E
+    \u0443\u0440\u043E\u043D\u0430 \u0438 \u0440\u0430\u0434\u0438\u0443\u0441\u0430;
+    +20% \u0441\u043A. \u043F\u0440\u043E\u0431\u0438\u0432\u043D\u044B\u0445)"
+  - "\u0417\u043E\u043B\u043E\u0442\u044B\u0435 \u0440\u0443\u043A\u0438 (+25% \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u0438
+    \u043F\u043E\u0447\u0438\u043D\u043A\u0438, +1 \u043A\u043B. \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u0438)"
+  _passiveId: 3
+  _destructibleBuildingHpBonus: 0
+  _nonEconomyBuildingHpBonus: 0
+  _economyBuildingHpFlatBonus: 0
+  _economySpeedBonus: 0
+  _unitMaxHpBonus: 0
+  _unitAggroBonus: 0
+  _mageCooldownReduction: 0
+  _supportEffectivenessBonus: 0
+  _explosiveDamageBonus: 0.2
+  _explosiveRadiusBonus: 1
+  _piercingCooldownSpeedBonus: 0.2
+  _piercingRangeBonus: 1
+  _builderRepairSpeedBonus: 0.25
+  _builderRangeBonus: 1
+  _trapDamageBonus: 0
+  _trapUsesBonus: 0
+  _controlSlowPercent: 0
+  _controlSlowDuration: 0
+  _rangedUnitDamageBonus: 0
+  _hunterStealthBonusSeconds: 0
+  _bonusCoinPerKill: 0
+  _unlockedByDefault: 0
+  _diamondCost: 25

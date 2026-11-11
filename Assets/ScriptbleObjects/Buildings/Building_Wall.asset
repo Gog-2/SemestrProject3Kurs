@@ -25,7 +25,7 @@ MonoBehaviour:
   _upgradeType: 1
   _isDestructible: 1
   _placedSaleRefundRatio: 0.5
-  _unplacedSaleRefundRatio: 1
+  _unplacedSaleRefundRatio: 0.5
   _levels:
   - cost: 25
     maxHP: 200

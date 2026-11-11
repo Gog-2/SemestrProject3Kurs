@@ -52,6 +52,11 @@ namespace Game.Buildings
             if (RunConfig.Instance != null && RunConfig.Instance.SelectedKnight != null)
             {
                 _maxHP = RunConfig.Instance.SelectedKnight.CastleMaxHP;
+                float metaHpBonus = MetaBonusCatalog.GetTotalBonus(MetaBonusType.CastleHealthPercent);
+                if (metaHpBonus > 0f)
+                {
+                    _maxHP = Mathf.RoundToInt(_maxHP * (1f + metaHpBonus));
+                }
             }
 
             if (_currentHP < 0)

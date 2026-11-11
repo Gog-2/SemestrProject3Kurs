@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dea9faa235da064f835b3d0672dcb85, type: 3}
+  m_Name: Knight_Baron
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Data.KnightData
+  _id: baron_zlatoliz
+  _knightName: "\u0411\u0430\u0440\u043E\u043D \u0417\u043B\u0430\u0442\u043E\u043B\u0438\u0437"
+  _title: "\u0420\u044B\u0446\u0430\u0440\u044C-\u041A\u0430\u0437\u043D\u0430\u0447\u0435\u0439"
+  _quote: "\xAB\u0417\u043E\u043B\u043E\u0442\u043E \u2014 \u043B\u0443\u0447\u0448\u0430\u044F
+    \u0431\u0440\u043E\u043D\u044F.\xBB"
+  _portrait: {fileID: 0}
+  _castleMaxHP: 1650
+  _hpPerLevel: 90
+  _initialBuildSlots: 6
+  _startingBuildingAssets:
+  - {fileID: 11400000, guid: 0a4ea93fb90b9184f93aeb60dde2bf6f, type: 2}
+  - {fileID: 11400000, guid: 5e8af09340862d34ca8b9fe47e539ca9, type: 2}
+  _preferredStartingWeapon: {fileID: 11400000, guid: 8bbad9c1ba2171d43a5a8fba0bf6857e, type: 2}
+  _startingBuildings:
+  - "\u0417\u043E\u043B\u043E\u0442\u0430\u044F \u0448\u0430\u0445\u0442\u0430"
+  - "\u0421\u0442\u0440\u043E\u0438\u0442\u0435\u043B\u0438"
+  _startingSkills:
+  - "\u041A\u0440\u043E\u0432\u044C \u0438 \u0437\u043E\u043B\u043E\u0442\u043E (+1
+    \u043C\u043E\u043D\u0435\u0442\u0430 \u0437\u0430 \u0443\u0431\u0438\u0439\u0441\u0442\u0432\u043E)"
+  - "\u0420\u043E\u0441\u0442\u043E\u0432\u0449\u0438\u0447\u0435\u0441\u0442\u0432\u043E
+    (+30% \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u0438 \u0438 +25 HP \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u043A\u0438)"
+  - "\u0421\u043A\u0440\u044F\u0433\u0430 (-25% HP \u043D\u0435\u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0445
+    \u043F\u043E\u0441\u0442\u0440\u043E\u0435\u043A)"
+  _passiveId: 5
+  _destructibleBuildingHpBonus: 0
+  _nonEconomyBuildingHpBonus: -0.25
+  _economyBuildingHpFlatBonus: 25
+  _economySpeedBonus: 0.3
+  _unitMaxHpBonus: 0
+  _unitAggroBonus: 0
+  _mageCooldownReduction: 0
+  _supportEffectivenessBonus: 0
+  _explosiveDamageBonus: 0
+  _explosiveRadiusBonus: 0
+  _piercingCooldownSpeedBonus: 0
+  _piercingRangeBonus: 0
+  _builderRepairSpeedBonus: 0
+  _builderRangeBonus: 0
+  _trapDamageBonus: 0
+  _trapUsesBonus: 0
+  _controlSlowPercent: 0
+  _controlSlowDuration: 0
+  _rangedUnitDamageBonus: 0
+  _hunterStealthBonusSeconds: 0
+  _bonusCoinPerKill: 1
+  _unlockedByDefault: 0
+  _diamondCost: 30

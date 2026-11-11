@@ -36,7 +36,10 @@ namespace Game.Core
             }
 
             Instance = this;
-            _coins = _initialCoins;
+            int metaStartingCoins = RunConfig.Instance != null
+                ? Mathf.RoundToInt(MetaBonusCatalog.GetTotalBonus(MetaBonusType.StartingCoinsFlat))
+                : 0;
+            _coins = _initialCoins + metaStartingCoins;
             _diamonds = _initialDiamonds;
             IsInitialized = true;
             ForceRefresh();

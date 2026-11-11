@@ -47,10 +47,16 @@ namespace Game.Projectiles
             _pool?.Clear();
         }
 
-        public Projectile Spawn(Vector3 position, Vector2 direction, ProjectileData data, int damageOverride = -1)
+        public Projectile Spawn(
+            Vector3 position,
+            Vector2 direction,
+            ProjectileData data,
+            int damageOverride = -1,
+            int pierceOverride = -1,
+            float knockbackOverride = -1f)
         {
             Projectile projectile = _pool.Get();
-            projectile.Initialize(position, direction, data, damageOverride, Release);
+            projectile.Initialize(position, direction, data, damageOverride, Release, pierceOverride, knockbackOverride);
             return projectile;
         }
 

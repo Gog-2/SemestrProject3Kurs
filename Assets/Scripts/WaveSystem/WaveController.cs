@@ -7,6 +7,7 @@ using Alchemy.Inspector;
 using Game.Buildings;
 using Game.Core;
 using Game.Enemies.Spawning;
+using Game.UI.Shop;
 
 namespace Game.WaveSystem
 {
@@ -22,6 +23,8 @@ namespace Game.WaveSystem
 
     public class WaveController : MonoBehaviour
     {
+        public static WaveController Instance { get; private set; }
+
         [Title("References")]
         [SerializeField] private List<WaveConfig> _waveConfigs = new();
         [SerializeField] private WaveConfig _initialWaveConfig;
@@ -73,6 +76,7 @@ namespace Game.WaveSystem
 
         private void Awake()
         {
+            Instance = this;
             EnsureWaveConfigsPopulated();
             if (_castle == null)
             {
@@ -124,6 +128,10 @@ namespace Game.WaveSystem
             if (_castle != null)
             {
                 _castle.Destroyed -= OnCastleDestroyed;
+            }
+            if (Instance == this)
+            {
+                Instance = null;
             }
         }
 
@@ -241,11 +249,22 @@ namespace Game.WaveSystem
             OnBuildingPhaseStarted?.Invoke();
             BuildingPhaseTimeChanged?.Invoke(_buildingPhaseRemainingTime);
 
+            // GIG-43 / GIG-44: Present any queued Castle level-up chest(s) when entering pause
+            if (RunProgressionManager.Instance != null)
+            {
+                RunProgressionManager.Instance.TryPresentNextPendingUpgrade(viaChest: true);
+            }
+
             while (_buildingPhaseRemainingTime > 0f && !_skipBuildingPhaseRequested && !ct.IsCancellationRequested)
             {
                 await UniTask.Yield(PlayerLoopTiming.Update, ct);
                 if (_currentState == WaveState.GameOver) return;
                 if (_skipBuildingPhaseRequested) break;
+
+                // Pause countdown while in-run shop or chest/upgrade modal is open
+                bool pauseTimer = InRunShopUI.IsAnyShopOpen ||
+                    (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing);
+                if (pauseTimer) continue;
 
                 _buildingPhaseRemainingTime -= Time.deltaTime;
                 if (_buildingPhaseRemainingTime < 0f) _buildingPhaseRemainingTime = 0f;
@@ -268,10 +287,22 @@ namespace Game.WaveSystem
                 SetState(WaveState.WaveActive);
                 OnWaveStarted?.Invoke();
 
+                // D-4 Option A / GIG-46: When timer hits 00:00, stop spawning immediately and order survivors to retreat
+                using var spawnCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
                 UniTask timerTask = _waveTimer.RunAsync(config.DurationSeconds, ct);
-                UniTask spawnTask = RunEnemySpawningAsync(config, ct);
+                UniTask spawnTask = RunEnemySpawningAsync(config, spawnCts.Token);
 
-                await UniTask.WhenAll(timerTask, spawnTask);
+                await timerTask;
+                spawnCts.Cancel();
+
+                try
+                {
+                    await spawnTask;
+                }
+                catch (OperationCanceledException)
+                {
+                    // Expected when wave timer ends mid-spawn interval
+                }
 
                 if (ct.IsCancellationRequested || _currentState == WaveState.GameOver)
                 {
@@ -280,10 +311,23 @@ namespace Game.WaveSystem
 
                 SetState(WaveState.WaveClearing);
 
-                while (_spawner != null && _spawner.ActiveEnemyCount > 0)
+                if (_spawner != null && _spawner.ActiveEnemyCount > 0)
+                {
+                    _spawner.RetreatAllActiveEnemies();
+                }
+
+                float retreatGraceRemaining = 15f;
+                while (_spawner != null && _spawner.ActiveEnemyCount > 0 && retreatGraceRemaining > 0f)
                 {
                     await UniTask.Delay(200, cancellationToken: ct);
                     if (_currentState == WaveState.GameOver) return;
+                    retreatGraceRemaining -= 0.2f;
+                }
+
+                // Force-release any stuck retreating enemies silently without granting coins/XP
+                if (_spawner != null && _spawner.ActiveEnemyCount > 0)
+                {
+                    _spawner.ClearAllEnemies();
                 }
 
                 if (ct.IsCancellationRequested || _currentState == WaveState.GameOver)
@@ -294,6 +338,17 @@ namespace Game.WaveSystem
                 SetState(WaveState.WaveCompleted);
                 OnWaveCleared?.Invoke();
 
+                // GIG-112: Award +15 CombatXP to surviving buildings at end of wave
+                var activeBuildings = Building.ActiveBuildings;
+                for (int i = activeBuildings.Count - 1; i >= 0; i--)
+                {
+                    Building b = activeBuildings[i];
+                    if (b != null && !b.IsDead)
+                    {
+                        b.AddWaveSurvivalXP();
+                    }
+                }
+
                 RunStatistics.Instance?.RecordWaveCleared(_currentWaveNumber);
 
                 bool isLastAuthoredWave = _waveConfigs != null && _waveConfigs.Count > 0 && _currentWaveIndex >= _waveConfigs.Count - 1;
@@ -301,11 +356,6 @@ namespace Game.WaveSystem
                 {
                     GameManager.Instance.SetState(GameState.Victory);
                     return;
-                }
-
-                if (RunProgressionManager.Instance != null)
-                {
-                    RunProgressionManager.Instance.RequestUpgradeSelection();
                 }
 
                 while (GameManager.Instance != null && GameManager.Instance.CurrentState == GameState.UpgradeSelection)

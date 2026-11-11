@@ -1,0 +1,219 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89994f693ce663340bcbc5d7a55cfdda, type: 3}
+  m_Name: BuildingPoolConfig
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Buildings.BuildingPoolConfig
+  _buildingEntries:
+  - Data: {fileID: 11400000, guid: d96c98ae0dc59f74e9df195c507ff3f1, type: 2}
+    Weight: 1.5
+    MinCastleLevel: 1
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: 0a4ea93fb90b9184f93aeb60dde2bf6f, type: 2}
+    Weight: 1.3
+    MinCastleLevel: 1
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: 7ff4412ba544b1044b6854f8aff25308, type: 2}
+    Weight: 1.2
+    MinCastleLevel: 1
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: 07120de15c4fc85469fb1bfae222ab6b, type: 2}
+    Weight: 1.5
+    MinCastleLevel: 1
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: d588df7fe98cae0479b9ebc504f455aa, type: 2}
+    Weight: 1.5
+    MinCastleLevel: 1
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: b8eb79a183c4ef74d912c8c2f77e89f5, type: 2}
+    Weight: 1.2
+    MinCastleLevel: 1
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: d5cf3baf1c486fd4689dc1aacb3eab45, type: 2}
+    Weight: 1.1
+    MinCastleLevel: 1
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: b0831342723a9454ab60b74e805686ea, type: 2}
+    Weight: 1
+    MinCastleLevel: 1
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: 74b9aa17f373abb4c97f9d51108e16d9, type: 2}
+    Weight: 1.3
+    MinCastleLevel: 1
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: 5ffd1829552f4a540919dc8f036804e8, type: 2}
+    Weight: 1.3
+    MinCastleLevel: 1
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: 429e973d93b566e44b906d97b1dc1981, type: 2}
+    Weight: 1.1
+    MinCastleLevel: 1
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: 02021150314f8304385ffedc046f4641, type: 2}
+    Weight: 1
+    MinCastleLevel: 1
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: 2d2d8a39dbc5e014c8419d00d6383ca9, type: 2}
+    Weight: 1
+    MinCastleLevel: 1
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: 2e49eee5fb8b01e4884364592d5d3b0d, type: 2}
+    Weight: 1
+    MinCastleLevel: 1
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: 849bcfba3d0675b4e93365ab75509635, type: 2}
+    Weight: 0.95
+    MinCastleLevel: 2
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: ae3a8343ea5f53e4b8ba2ed1e1b70f2a, type: 2}
+    Weight: 0.9
+    MinCastleLevel: 2
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: f4f70b463674a2848af08bf70b7e542b, type: 2}
+    Weight: 0.9
+    MinCastleLevel: 2
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: f1c373c482ca57042998d48489e130c3, type: 2}
+    Weight: 0.85
+    MinCastleLevel: 2
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: 88e8b675c7eb1b74aa39c857abda5d9f, type: 2}
+    Weight: 1
+    MinCastleLevel: 2
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: 5e8af09340862d34ca8b9fe47e539ca9, type: 2}
+    Weight: 1.1
+    MinCastleLevel: 1
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: c61ac35f0a575574e9dee7b7f7d3e9ee, type: 2}
+    Weight: 0.9
+    MinCastleLevel: 2
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: b1ee57122b83d22469a8eb4761078619, type: 2}
+    Weight: 0.85
+    MinCastleLevel: 2
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: 921dce356cfa9a8409e7dafee5c32903, type: 2}
+    Weight: 0.85
+    MinCastleLevel: 2
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: b64cee99a66ec0146b2cffcc254f45ef, type: 2}
+    Weight: 0.9
+    MinCastleLevel: 2
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  - Data: {fileID: 11400000, guid: 2eec9941db178bd43ba592518f1efd28, type: 2}
+    Weight: 0.55
+    MinCastleLevel: 3
+    RequiredKnightId: 
+    OverrideShopPrice: 0
+  _minorBonuses:
+  - Id: shop_repair
+    Title: "\u041F\u043E\u043B\u0435\u0432\u043E\u0439 \u0440\u0435\u043C\u043E\u043D\u0442"
+    Description: "\u041C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u043E \u0447\u0438\u043D\u0438\u0442
+      \u0432\u0441\u0435 \u043F\u043E\u0441\u0442\u0440\u043E\u0439\u043A\u0438 \u043D\u0430
+      25%"
+    EffectType: 22
+    Value: 0.25
+    Cost: 30
+    Weight: 1.3
+  - Id: shop_discount
+    Title: "\u041B\u043E\u0433\u0438\u0441\u0442\u0438\u043A\u0430"
+    Description: "\u041F\u043E\u0441\u0442\u0440\u043E\u0439\u043A\u0438 \u0434\u0435\u0448\u0435\u0432\u043B\u0435
+      \u043D\u0430 10%"
+    EffectType: 19
+    Value: 0.1
+    Cost: 45
+    Weight: 1
+  - Id: shop_ranged
+    Title: "\u0422\u043E\u0447\u0435\u043D\u044B\u0439 \u043D\u0430\u043A\u043E\u043D\u0435\u0447\u043D\u0438\u043A"
+    Description: "+10% \u0443\u0440\u043E\u043D\u0430 \u0441\u0442\u0440\u0435\u043B\u043A\u043E\u0432
+      \u0438 \u0431\u0430\u0448\u0435\u043D"
+    EffectType: 4
+    Value: 0.1
+    Cost: 35
+    Weight: 1.2
+  - Id: shop_melee
+    Title: "\u0417\u0430\u0442\u043E\u0447\u043A\u0430 \u043A\u043B\u0438\u043D\u043A\u043E\u0432"
+    Description: "+10% \u0443\u0440\u043E\u043D\u0430 \u0431\u043B\u0438\u0436\u043D\u0435\u0433\u043E
+      \u0431\u043E\u044F"
+    EffectType: 5
+    Value: 0.1
+    Cost: 35
+    Weight: 1.2
+  - Id: shop_spell
+    Title: "\u0427\u0430\u0440\u043E\u0434\u0435\u0439\u0441\u043A\u0430\u044F \u043F\u044B\u043B\u044C"
+    Description: "+15% \u0443\u0440\u043E\u043D\u0430 \u0437\u0430\u043A\u043B\u0438\u043D\u0430\u043D\u0438\u0439"
+    EffectType: 18
+    Value: 0.15
+    Cost: 40
+    Weight: 1
+  - Id: shop_support
+    Title: "\u041F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430 \u0430\u0432\u0430\u043D\u0433\u0430\u0440\u0434\u0430"
+    Description: "+15% \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u0438
+      \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438"
+    EffectType: 20
+    Value: 0.15
+    Cost: 40
+    Weight: 1
+  - Id: shop_trap
+    Title: "\u041E\u0442\u0440\u0430\u0432\u043B\u0435\u043D\u043D\u044B\u0435 \u0448\u0438\u043F\u044B"
+    Description: "+20% \u0443\u0440\u043E\u043D\u0430 \u043B\u043E\u0432\u0443\u0448\u0435\u043A
+      \u0438 \u0431\u043E\u043C\u0431"
+    EffectType: 16
+    Value: 0.2
+    Cost: 35
+    Weight: 1.1
+  - Id: shop_econ
+    Title: "\u041A\u0438\u0440\u043A\u0430 \u043C\u0430\u0441\u0442\u0435\u0440\u0430"
+    Description: "+15% \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u0438 \u0434\u043E\u0431\u044B\u0447\u0438"
+    EffectType: 14
+    Value: 0.15
+    Cost: 40
+    Weight: 1.1
+  - Id: shop_aggro
+    Title: "\u041A\u043B\u0438\u0447 \u0430\u0432\u0430\u043D\u0433\u0430\u0440\u0434\u0430"
+    Description: "+1 \u043A \u043B\u0438\u043C\u0438\u0442\u0443 \u0443\u0434\u0435\u0440\u0436\u0430\u043D\u0438\u044F
+      \u0432\u0440\u0430\u0433\u043E\u0432 \u044E\u043D\u0438\u0442\u0430\u043C\u0438"
+    EffectType: 21
+    Value: 1
+    Cost: 55
+    Weight: 0.7
+  - Id: shop_slot
+    Title: "\u041A\u0430\u0440\u0442\u0430 \u0437\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438"
+    Description: "+1 \u0441\u043B\u043E\u0442 \u0434\u043B\u044F \u043F\u043E\u0441\u0442\u0440\u043E\u0435\u043A"
+    EffectType: 3
+    Value: 1
+    Cost: 75
+    Weight: 0.5
