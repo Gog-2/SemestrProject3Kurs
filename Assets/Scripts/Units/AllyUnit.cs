@@ -167,7 +167,7 @@ namespace Game.Units
             }
             _renderer.sprite = HazardZone.GetOrCreateCircleSprite();
             _renderer.color = _baseColor;
-            _renderer.sortingLayerName = "Default";
+            _renderer.sortingLayerName = "Enemies";
             _renderer.sortingOrder = 9;
             transform.localScale = new Vector3(0.42f, 0.42f, 1f);
         }

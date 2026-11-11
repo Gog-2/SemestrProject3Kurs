@@ -81,6 +81,13 @@ namespace Game.Spells
                 return;
             }
 
+            Game.Buildings.BuildingManager.Instance?.CancelAction();
+            var weapon = FindAnyObjectByType<Game.Weapons.CastleWeapon>();
+            if (weapon != null && weapon.IsAiming)
+            {
+                weapon.CancelAiming();
+            }
+
             _selectedIndex = index;
             SelectionChanged?.Invoke(_selectedIndex);
         }

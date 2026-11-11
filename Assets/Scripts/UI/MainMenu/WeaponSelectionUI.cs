@@ -42,7 +42,23 @@ namespace Game.UI.MainMenu
         private void OnEnable()
         {
             MetaSaveManager.UnlocksChanged += RefreshDisplay;
+            SyncIndexToSavedWeapon();
             RefreshDisplay();
+        }
+
+        private void SyncIndexToSavedWeapon()
+        {
+            string selectedId = MetaSaveManager.Data?.SelectedWeaponId;
+            if (string.IsNullOrEmpty(selectedId)) return;
+
+            for (int i = 0; i < _allWeapons.Count; i++)
+            {
+                if (_allWeapons[i] != null && _allWeapons[i].Id == selectedId)
+                {
+                    _currentIndex = i;
+                    return;
+                }
+            }
         }
 
         private void OnDisable()

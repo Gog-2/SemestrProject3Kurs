@@ -106,7 +106,7 @@ namespace Game.Projectiles
             _renderer = gameObject.AddComponent<SpriteRenderer>();
             _renderer.sprite = GetOrCreateCircleSprite();
             _renderer.color = color;
-            _renderer.sortingLayerName = "Default";
+            _renderer.sortingLayerName = "Effects";
             _renderer.sortingOrder = 2;
 
             float diameter = _radius * 2f;

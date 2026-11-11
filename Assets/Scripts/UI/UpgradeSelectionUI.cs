@@ -180,10 +180,10 @@ namespace Game.UI
                 return;
             }
 
-            if (_panelRoot == null) return;
+            Transform parent = _panelRoot != null ? _panelRoot.transform : transform;
 
             var chestGo = new GameObject("ChestRewardStage", typeof(RectTransform), typeof(Image), typeof(Button));
-            chestGo.transform.SetParent(_panelRoot.transform, false);
+            chestGo.transform.SetParent(parent, false);
             var rt = chestGo.GetComponent<RectTransform>();
             rt.anchorMin = new Vector2(0.5f, 0.5f);
             rt.anchorMax = new Vector2(0.5f, 0.5f);

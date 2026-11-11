@@ -276,6 +276,7 @@ namespace Game.Spells
             _previewCircle.positionCount = 36;
             _previewCircle.startWidth = 0.06f;
             _previewCircle.endWidth = 0.06f;
+            _previewCircle.sortingLayerName = "Effects";
             _previewCircle.sortingOrder = 102;
 
             Shader shader = Shader.Find("Sprites/Default") ?? Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default");

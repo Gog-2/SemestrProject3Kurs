@@ -88,7 +88,7 @@ namespace Game.Projectiles
             _renderer = gameObject.AddComponent<SpriteRenderer>();
             _renderer.sprite = sprite != null ? sprite : HazardZone.GetOrCreateCircleSprite();
             _renderer.color = tint;
-            _renderer.sortingLayerName = "Default";
+            _renderer.sortingLayerName = "Projectiles";
             _renderer.sortingOrder = 15;
             transform.localScale = visualScale.sqrMagnitude > 0.001f ? visualScale : new Vector3(0.35f, 0.35f, 1f);
 

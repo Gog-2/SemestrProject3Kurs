@@ -48,7 +48,23 @@ namespace Game.UI.MainMenu
         private void OnEnable()
         {
             MetaSaveManager.UnlocksChanged += RefreshDisplay;
+            SyncIndexToSavedKnight();
             RefreshDisplay();
+        }
+
+        private void SyncIndexToSavedKnight()
+        {
+            string selectedId = MetaSaveManager.Data?.SelectedKnightId;
+            if (string.IsNullOrEmpty(selectedId)) return;
+
+            for (int i = 0; i < _allKnights.Count; i++)
+            {
+                if (_allKnights[i] != null && _allKnights[i].Id == selectedId)
+                {
+                    _currentIndex = i;
+                    return;
+                }
+            }
         }
 
         private void OnDisable()

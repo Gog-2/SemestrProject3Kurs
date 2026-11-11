@@ -44,6 +44,11 @@ namespace Game.UI
             {
                 _weapon = FindAnyObjectByType<CastleWeapon>();
             }
+
+            if (_cooldownText != null)
+            {
+                _cooldownText.raycastTarget = false;
+            }
         }
 
         private void Start()
@@ -89,6 +94,11 @@ namespace Game.UI
                 _weapon.CooldownChanged += OnCooldownChanged;
                 _weapon.AimingToggled -= SetAimVisuals;
                 _weapon.AimingToggled += SetAimVisuals;
+            }
+
+            if (_cooldownText != null)
+            {
+                _cooldownText.raycastTarget = false;
             }
 
             EnsureAimVisuals();
@@ -219,6 +229,11 @@ namespace Game.UI
             if (_weapon == null) return;
 
             _weapon.ToggleAiming();
+            if (_weapon.IsAiming)
+            {
+                Game.Buildings.BuildingManager.Instance?.CancelAction();
+                Game.Spells.SpellScrollManager.Instance?.CancelSelection();
+            }
         }
 
         private void OnCancelPressed()
@@ -377,13 +392,24 @@ namespace Game.UI
 
         private void EnsureAimVisuals()
         {
-            if (_aimLine != null && _aimReticle != null) return;
             if (_weapon == null) return;
+            if (_aimLine != null && _aimReticle != null && _reticleLine != null && _rangeLine != null) return;
 
             if (_aimVisualsRoot == null)
             {
-                _aimVisualsRoot = new GameObject("WeaponAimVisuals");
-                _aimVisualsRoot.transform.SetParent(_weapon.transform, false);
+                if (_aimLine != null && _aimLine.transform.parent != null)
+                {
+                    _aimVisualsRoot = _aimLine.transform.parent.gameObject;
+                }
+                else if (_aimReticle != null && _aimReticle.parent != null)
+                {
+                    _aimVisualsRoot = _aimReticle.parent.gameObject;
+                }
+                else
+                {
+                    _aimVisualsRoot = new GameObject("WeaponAimVisuals");
+                    _aimVisualsRoot.transform.SetParent(_weapon.transform, false);
+                }
             }
 
             if (_aimMaterial == null)
@@ -418,14 +444,15 @@ namespace Game.UI
                 _aimLine.endColor = _aimColor;
                 _aimLine.numCapVertices = 4;
                 _aimLine.numCornerVertices = 4;
-                _aimLine.sortingLayerName = "Default";
-                _aimLine.sortingOrder = 100;
 
                 if (_aimMaterial != null)
                 {
                     _aimLine.material = _aimMaterial;
                 }
             }
+
+            _aimLine.sortingLayerName = "Effects";
+            _aimLine.sortingOrder = 100;
 
             if (_aimReticle == null)
             {
@@ -443,8 +470,6 @@ namespace Game.UI
                 reticleLine.endColor = _aimColor;
                 reticleLine.numCapVertices = 4;
                 reticleLine.numCornerVertices = 4;
-                reticleLine.sortingLayerName = "Default";
-                reticleLine.sortingOrder = 101;
 
                 if (_aimMaterial != null)
                 {
@@ -455,28 +480,66 @@ namespace Game.UI
                 BuildCirclePoints(_reticleLine, _reticleRadius);
                 _lastBuiltReticleRadius = _reticleRadius;
             }
+            else if (_reticleLine == null)
+            {
+                _reticleLine = _aimReticle.GetComponent<LineRenderer>();
+                if (_reticleLine == null)
+                {
+                    _reticleLine = _aimReticle.gameObject.AddComponent<LineRenderer>();
+                    _reticleLine.useWorldSpace = false;
+                    _reticleLine.loop = true;
+                    _reticleLine.positionCount = Mathf.Max(12, _reticleSegments);
+                    _reticleLine.startWidth = 0.05f;
+                    _reticleLine.endWidth = 0.05f;
+                    _reticleLine.startColor = _aimColor;
+                    _reticleLine.endColor = _aimColor;
+                    _reticleLine.numCapVertices = 4;
+                    _reticleLine.numCornerVertices = 4;
+                    if (_aimMaterial != null) _reticleLine.material = _aimMaterial;
+                    BuildCirclePoints(_reticleLine, _reticleRadius);
+                    _lastBuiltReticleRadius = _reticleRadius;
+                }
+            }
+
+            if (_reticleLine != null)
+            {
+                _reticleLine.sortingLayerName = "Effects";
+                _reticleLine.sortingOrder = 101;
+            }
 
             if (_rangeLine == null)
             {
-                var rangeGo = new GameObject("AimRangeCircle");
-                rangeGo.transform.SetParent(_aimVisualsRoot.transform, false);
+                Transform existingRange = _aimVisualsRoot.transform.Find("AimRangeCircle");
+                if (existingRange != null)
+                {
+                    _rangeLine = existingRange.GetComponent<LineRenderer>();
+                }
 
-                _rangeLine = rangeGo.AddComponent<LineRenderer>();
-                _rangeLine.useWorldSpace = false;
-                _rangeLine.loop = true;
-                _rangeLine.positionCount = Mathf.Max(24, _reticleSegments);
-                _rangeLine.startWidth = 0.04f;
-                _rangeLine.endWidth = 0.04f;
-                Color rangeCol = new Color(_aimColor.r, _aimColor.g, _aimColor.b, 0.35f);
-                _rangeLine.startColor = rangeCol;
-                _rangeLine.endColor = rangeCol;
-                _rangeLine.sortingLayerName = "Default";
-                _rangeLine.sortingOrder = 99;
-                if (_aimMaterial != null) _rangeLine.material = _aimMaterial;
-                _rangeLine.enabled = false;
+                if (_rangeLine == null)
+                {
+                    var rangeGo = existingRange != null ? existingRange.gameObject : new GameObject("AimRangeCircle");
+                    if (existingRange == null)
+                    {
+                        rangeGo.transform.SetParent(_aimVisualsRoot.transform, false);
+                    }
+
+                    _rangeLine = rangeGo.AddComponent<LineRenderer>();
+                    _rangeLine.useWorldSpace = false;
+                    _rangeLine.loop = true;
+                    _rangeLine.positionCount = Mathf.Max(24, _reticleSegments);
+                    _rangeLine.startWidth = 0.04f;
+                    _rangeLine.endWidth = 0.04f;
+                    Color rangeCol = new Color(_aimColor.r, _aimColor.g, _aimColor.b, 0.35f);
+                    _rangeLine.startColor = rangeCol;
+                    _rangeLine.endColor = rangeCol;
+                    if (_aimMaterial != null) _rangeLine.material = _aimMaterial;
+                }
             }
 
-            SetAimVisuals(false);
+            _rangeLine.sortingLayerName = "Effects";
+            _rangeLine.sortingOrder = 99;
+
+            SetAimVisuals(_weapon.IsAiming);
         }
 
         private static void BuildCirclePoints(LineRenderer line, float radius)

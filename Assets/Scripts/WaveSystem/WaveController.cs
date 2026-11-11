@@ -32,7 +32,7 @@ namespace Game.WaveSystem
         [SerializeField] private Castle _castle;
 
         [Title("Settings")]
-        [SerializeField] private bool _autoStartFirstWave = true;
+        [SerializeField] private bool _autoStartFirstWave = false;
         [SerializeField, Min(0f)] private float _delayBeforeFirstWave = 1f;
 
         [Title("Debug")]

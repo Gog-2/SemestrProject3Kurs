@@ -15,6 +15,45 @@ namespace Game.Editor
 {
     internal static class GigaContentDataGenerator
     {
+        private const string PoolConfigAssetPath = "Assets/ScriptbleObjects/Buildings/BuildingPoolConfig.asset";
+
+        private static readonly string[] KnightAssetPaths =
+        {
+            "Assets/ScriptbleObjects/Data/DefaultKnight.asset",
+            "Assets/ScriptbleObjects/Data/Knight_Finrod.asset",
+            "Assets/ScriptbleObjects/Data/Knight_Borin.asset",
+            "Assets/ScriptbleObjects/Data/Knight_Aradan.asset",
+            "Assets/ScriptbleObjects/Data/Knight_Baron.asset"
+        };
+
+        private static readonly string[] WeaponAssetPaths =
+        {
+            "Assets/ScriptbleObjects/Data/DefaultWeapon.asset",
+            "Assets/ScriptbleObjects/Data/Weapon_Mortar.asset",
+            "Assets/ScriptbleObjects/Data/Weapon_TarCannon.asset",
+            "Assets/ScriptbleObjects/Data/Weapon_Orthanc.asset",
+            "Assets/ScriptbleObjects/Data/Weapon_ArcherVolley.asset"
+        };
+
+        public static BuildingPoolConfig LoadPoolConfig()
+        {
+            return AssetDatabase.LoadAssetAtPath<BuildingPoolConfig>(PoolConfigAssetPath);
+        }
+
+        public static List<KnightData> LoadAllKnights() => LoadAssetList<KnightData>(KnightAssetPaths);
+        public static List<WeaponSelectionData> LoadAllWeapons() => LoadAssetList<WeaponSelectionData>(WeaponAssetPaths);
+
+        private static List<T> LoadAssetList<T>(string[] paths) where T : Object
+        {
+            var result = new List<T>(paths.Length);
+            for (int i = 0; i < paths.Length; i++)
+            {
+                T asset = AssetDatabase.LoadAssetAtPath<T>(paths[i]);
+                if (asset != null) result.Add(asset);
+            }
+            return result;
+        }
+
         public struct GeneratedContent
         {
             public List<BuildingData> AllBuildings;

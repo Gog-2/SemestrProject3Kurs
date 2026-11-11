@@ -60,7 +60,7 @@ namespace Game.Units
             _renderer = gameObject.AddComponent<SpriteRenderer>();
             _renderer.sprite = HazardZone.GetOrCreateCircleSprite();
             _renderer.color = new Color(0.98f, 0.96f, 0.9f, 1f);
-            _renderer.sortingLayerName = "Default";
+            _renderer.sortingLayerName = "Enemies";
             _renderer.sortingOrder = 9;
             transform.localScale = new Vector3(0.38f, 0.32f, 1f);
         }

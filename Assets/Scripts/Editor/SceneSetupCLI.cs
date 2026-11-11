@@ -1252,7 +1252,7 @@ namespace Game.Editor
                         Color aimCol = new Color(1f, 0.85f, 0.2f, 0.9f);
                         lineRenderer.startColor = aimCol;
                         lineRenderer.endColor = aimCol;
-                        lineRenderer.sortingLayerName = "Default";
+                        lineRenderer.sortingLayerName = "Effects";
                         lineRenderer.sortingOrder = 100;
                         Shader shader = Shader.Find("Sprites/Default") ?? Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default");
                         if (shader != null) lineRenderer.material = new Material(shader) { color = aimCol };
@@ -1260,6 +1260,11 @@ namespace Game.Editor
                     else
                     {
                         lineRenderer = lineTransform.GetComponent<LineRenderer>();
+                        if (lineRenderer != null)
+                        {
+                            lineRenderer.sortingLayerName = "Effects";
+                            lineRenderer.sortingOrder = 100;
+                        }
                     }
 
                     Transform reticleTransform = visualsRoot.Find("AimReticle");
@@ -1277,7 +1282,7 @@ namespace Game.Editor
                         Color aimCol = new Color(1f, 0.85f, 0.2f, 0.9f);
                         reticleLine.startColor = aimCol;
                         reticleLine.endColor = aimCol;
-                        reticleLine.sortingLayerName = "Default";
+                        reticleLine.sortingLayerName = "Effects";
                         reticleLine.sortingOrder = 101;
                         Shader shader = Shader.Find("Sprites/Default") ?? Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default");
                         if (shader != null) reticleLine.material = new Material(shader) { color = aimCol };
@@ -1286,6 +1291,15 @@ namespace Game.Editor
                         {
                             float angle = (i / (float)segs) * Mathf.PI * 2f;
                             reticleLine.SetPosition(i, new Vector3(Mathf.Cos(angle) * 0.45f, Mathf.Sin(angle) * 0.45f, 0f));
+                        }
+                    }
+                    else
+                    {
+                        var existingReticleLine = reticleTransform.GetComponent<LineRenderer>();
+                        if (existingReticleLine != null)
+                        {
+                            existingReticleLine.sortingLayerName = "Effects";
+                            existingReticleLine.sortingOrder = 101;
                         }
                     }
 

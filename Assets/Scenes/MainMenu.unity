@@ -965,7 +965,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -3332,10 +3332,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.UI.MainMenu.KnightSelectionUI
   _allKnights:
   - {fileID: 11400000, guid: 24b648d758caadf43bf903b86da8ddd4, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: e7a34a158ca9be746ba89dad191273b0, type: 2}
+  - {fileID: 11400000, guid: af059ccbdd10cc848ba91fa8996b8627, type: 2}
+  - {fileID: 11400000, guid: f14082c66e49be247bdbba2218590766, type: 2}
+  - {fileID: 11400000, guid: 4e906d78af6e3eb489948946c76af203, type: 2}
   _nameText: {fileID: 1749219704}
   _titleText: {fileID: 1457169195}
   _quoteText: {fileID: 881785117}
@@ -8218,10 +8218,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.UI.MainMenu.WeaponSelectionUI
   _allWeapons:
   - {fileID: 11400000, guid: 8bbad9c1ba2171d43a5a8fba0bf6857e, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: e91a72e799d8fa54294246a661e452bc, type: 2}
+  - {fileID: 11400000, guid: 336fd94e91bb01e43b741994c40b43dc, type: 2}
+  - {fileID: 11400000, guid: 01960d03734073547ac2882880524f74, type: 2}
+  - {fileID: 11400000, guid: 281ac79f1947c9145838670c0bfe854c, type: 2}
   _nameText: {fileID: 818261655}
   _descriptionText: {fileID: 1854614493}
   _prevButton: {fileID: 890373877}
@@ -11051,16 +11051,16 @@ MonoBehaviour:
   _itemsContainer: {fileID: 16300496}
   _allKnights:
   - {fileID: 11400000, guid: 24b648d758caadf43bf903b86da8ddd4, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: e7a34a158ca9be746ba89dad191273b0, type: 2}
+  - {fileID: 11400000, guid: af059ccbdd10cc848ba91fa8996b8627, type: 2}
+  - {fileID: 11400000, guid: f14082c66e49be247bdbba2218590766, type: 2}
+  - {fileID: 11400000, guid: 4e906d78af6e3eb489948946c76af203, type: 2}
   _allWeapons:
   - {fileID: 11400000, guid: 8bbad9c1ba2171d43a5a8fba0bf6857e, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: e91a72e799d8fa54294246a661e452bc, type: 2}
+  - {fileID: 11400000, guid: 336fd94e91bb01e43b741994c40b43dc, type: 2}
+  - {fileID: 11400000, guid: 01960d03734073547ac2882880524f74, type: 2}
+  - {fileID: 11400000, guid: 281ac79f1947c9145838670c0bfe854c, type: 2}
 --- !u!1 &1999060230
 GameObject:
   m_ObjectHideFlags: 0

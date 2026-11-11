@@ -235,6 +235,15 @@ namespace Game.Core
             float scroll = _sheme.Player.Scroll.ReadValue<float>();
             ZoomDelta = scroll + _touchPinchDelta;
             _touchPinchDelta = 0f; // Reset pinch delta after consumption
+
+            // Hotkeys 6-9 for expanded slot bars
+            if (_sheme.Player.enabled && Keyboard.current != null)
+            {
+                if (Keyboard.current.digit6Key.wasPressedThisFrame) SlotSelected?.Invoke(5);
+                else if (Keyboard.current.digit7Key.wasPressedThisFrame) SlotSelected?.Invoke(6);
+                else if (Keyboard.current.digit8Key.wasPressedThisFrame) SlotSelected?.Invoke(7);
+                else if (Keyboard.current.digit9Key.wasPressedThisFrame) SlotSelected?.Invoke(8);
+            }
         }
 
         private void HandleTouchGestures()

@@ -11,9 +11,12 @@ using Game.Core;
 using Game.Data;
 using Game.Spells;
 using Game.UI;
+using Game.UI.BuildingUI;
 using Game.UI.MainMenu;
 using Game.UI.Shop;
 using Game.Upgrades;
+using Game.WaveSystem;
+using Game.Weapons;
 
 namespace Game.Editor
 {
@@ -31,6 +34,7 @@ namespace Game.Editor
             AssetDatabase.Refresh();
 
             WireHudPrefab(data, log);
+            WireMainGamePrefab(log);
             AssetDatabase.SaveAssets();
 
             WireSampleScene(data, log);
@@ -67,7 +71,8 @@ namespace Game.Editor
                 WireUpgradeSelectionModal(ui, font, log);
                 WirePauseAudioSliders(ui, font, log);
                 WireSpellPanel(ui, font, log);
-                WireInRunShopModal(ui, data.PoolConfig, font, log);
+                WireInRunShopModal(ui, data.PoolConfig != null ? data.PoolConfig : GigaContentDataGenerator.LoadPoolConfig(), font, log);
+                WireBottomHudLayout(ui, log);
 
                 PrefabUtility.SaveAsPrefabAsset(hudRoot, hudPath);
                 log.AppendLine("[HUD] Saved updated HUD.prefab.");
@@ -111,13 +116,12 @@ namespace Game.Editor
             if (selUi == null) return;
 
             // Keep UpgradeSelectionPanel active at root, controlled cleanly via CanvasGroup (alpha=0 when closed)
-            var cg = panel.GetComponent<CanvasGroup>();
-            if (cg != null)
-            {
-                cg.alpha = 0f;
-                cg.interactable = false;
-                cg.blocksRaycasts = false;
-            }
+            panel.gameObject.SetActive(true);
+            var cg = GigaAssetUtility.GetOrAddComponent<CanvasGroup>(panel);
+            cg.alpha = 0f;
+            cg.interactable = false;
+            cg.blocksRaycasts = false;
+            EditorUtility.SetDirty(panel.gameObject);
 
             RectTransform cardsStage = GigaAssetUtility.GetOrCreateRect(panel, "CardsStage");
             cardsStage.anchorMin = Vector2.zero;
@@ -370,18 +374,184 @@ namespace Game.Editor
                 log.AppendLine("[SampleScene] Added SpellCaster.");
             }
 
+            BuildingPoolConfig poolConfig = data.PoolConfig != null
+                ? data.PoolConfig
+                : GigaContentDataGenerator.LoadPoolConfig();
             var inRunShop = Object.FindFirstObjectByType<InRunShopUI>(FindObjectsInactive.Include);
-            if (inRunShop != null && data.PoolConfig != null && inRunShop.PoolConfig == null)
+            if (inRunShop != null && poolConfig != null && inRunShop.PoolConfig == null)
             {
                 var so = new SerializedObject(inRunShop);
-                so.FindProperty("_poolConfig").objectReferenceValue = data.PoolConfig;
+                so.FindProperty("_poolConfig").objectReferenceValue = poolConfig;
                 so.ApplyModifiedPropertiesWithoutUndo();
                 EditorUtility.SetDirty(inRunShop);
+            }
+
+            var waveCtrl = Object.FindFirstObjectByType<WaveController>(FindObjectsInactive.Include);
+            if (waveCtrl != null)
+            {
+                var so = new SerializedObject(waveCtrl);
+                SerializedProperty autoStart = so.FindProperty("_autoStartFirstWave");
+                if (autoStart != null)
+                {
+                    if (PrefabUtility.IsPartOfPrefabInstance(waveCtrl) && autoStart.prefabOverride)
+                    {
+                        PrefabUtility.RevertPropertyOverride(autoStart, InteractionMode.AutomatedAction);
+                    }
+                    so.Update();
+                    autoStart.boolValue = false;
+                    so.ApplyModifiedPropertiesWithoutUndo();
+                }
+                EditorUtility.SetDirty(waveCtrl);
+                log.AppendLine("[SampleScene] Ensured WaveController._autoStartFirstWave = false.");
+            }
+
+            var selUi = Object.FindFirstObjectByType<UpgradeSelectionUI>(FindObjectsInactive.Include);
+            if (selUi != null)
+            {
+                if (PrefabUtility.IsPartOfPrefabInstance(selUi.gameObject))
+                {
+                    var goSo = new SerializedObject(selUi.gameObject);
+                    SerializedProperty activeProp = goSo.FindProperty("m_IsActive");
+                    if (activeProp != null && activeProp.prefabOverride)
+                    {
+                        PrefabUtility.RevertPropertyOverride(activeProp, InteractionMode.AutomatedAction);
+                    }
+                }
+                selUi.gameObject.SetActive(true);
+                var cg = selUi.GetComponent<CanvasGroup>();
+                if (cg != null)
+                {
+                    cg.alpha = 0f;
+                    cg.interactable = false;
+                    cg.blocksRaycasts = false;
+                }
+                EditorUtility.SetDirty(selUi.gameObject);
+                log.AppendLine("[SampleScene] Activated UpgradeSelectionPanel in scene.");
+            }
+
+            var castle = Object.FindFirstObjectByType<Castle>(FindObjectsInactive.Include);
+            if (castle != null)
+            {
+                SetAimVisualSortingLayers(castle.transform, revertPrefabOverrides: true);
+                log.AppendLine("[SampleScene] Updated Castle WeaponAimVisuals sorting layers to Effects.");
             }
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
             log.AppendLine("[SampleScene] Saved SampleScene.unity.");
+        }
+
+        private static void WireBottomHudLayout(Transform ui, System.Text.StringBuilder log)
+        {
+            var aimUi = ui.GetComponentInChildren<WeaponAimUI>(true);
+            if (aimUi != null)
+            {
+                var aimRt = aimUi.GetComponent<RectTransform>();
+                aimRt.anchorMin = new Vector2(1f, 0f);
+                aimRt.anchorMax = new Vector2(1f, 0f);
+                aimRt.pivot = new Vector2(1f, 0f);
+                aimRt.anchoredPosition = new Vector2(-20f, 88f);
+                aimRt.sizeDelta = new Vector2(220f, 56f);
+
+                var aimBg = aimUi.GetComponent<Image>();
+                if (aimBg != null) aimBg.raycastTarget = true;
+
+                TMP_Text[] texts = aimUi.GetComponentsInChildren<TMP_Text>(true);
+                for (int i = 0; i < texts.Length; i++)
+                {
+                    texts[i].raycastTarget = false;
+                }
+
+                EditorUtility.SetDirty(aimUi);
+                EditorUtility.SetDirty(aimRt);
+                log.AppendLine("[HUD] Moved WeaponAimUI to bottom-right (-20, 88) above SpellPanel.");
+            }
+
+            var slotBar = ui.GetComponentInChildren<BuildingSlotBarUI>(true);
+            if (slotBar != null)
+            {
+                var barRt = slotBar.GetComponent<RectTransform>();
+                barRt.anchorMin = new Vector2(0f, 0f);
+                barRt.anchorMax = new Vector2(0f, 0f);
+                barRt.pivot = new Vector2(0f, 0f);
+                barRt.anchoredPosition = new Vector2(14f, 10f);
+
+                var hlg = GigaAssetUtility.GetOrAddComponent<HorizontalLayoutGroup>(barRt);
+                hlg.padding = new RectOffset(10, 10, 8, 8);
+                hlg.spacing = 8f;
+                hlg.childAlignment = TextAnchor.MiddleLeft;
+                hlg.childControlWidth = false;
+                hlg.childControlHeight = false;
+                hlg.childForceExpandWidth = false;
+                hlg.childForceExpandHeight = false;
+
+                var csf = GigaAssetUtility.GetOrAddComponent<ContentSizeFitter>(barRt);
+                csf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+                csf.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
+
+                EditorUtility.SetDirty(slotBar);
+                EditorUtility.SetDirty(barRt);
+                log.AppendLine("[HUD] Configured BuildingSlotBar HorizontalLayoutGroup + ContentSizeFitter.");
+            }
+        }
+
+        private static void WireMainGamePrefab(System.Text.StringBuilder log)
+        {
+            const string mainGamePath = "Assets/Prefabs/MainGame.prefab";
+            GameObject root = PrefabUtility.LoadPrefabContents(mainGamePath);
+            if (root == null)
+            {
+                log.AppendLine($"[WARN] Could not load {mainGamePath}");
+                return;
+            }
+
+            try
+            {
+                var waveCtrl = root.GetComponentInChildren<WaveController>(true);
+                if (waveCtrl != null)
+                {
+                    var so = new SerializedObject(waveCtrl);
+                    SerializedProperty autoStart = so.FindProperty("_autoStartFirstWave");
+                    if (autoStart != null)
+                    {
+                        autoStart.boolValue = false;
+                        so.ApplyModifiedPropertiesWithoutUndo();
+                        EditorUtility.SetDirty(waveCtrl);
+                    }
+                }
+
+                SetAimVisualSortingLayers(root.transform, revertPrefabOverrides: false);
+
+                PrefabUtility.SaveAsPrefabAsset(root, mainGamePath);
+                log.AppendLine("[MainGame] Saved MainGame.prefab (_autoStartFirstWave=false, AimVisuals=Effects).");
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        private static void SetAimVisualSortingLayers(Transform searchRoot, bool revertPrefabOverrides)
+        {
+            if (searchRoot == null) return;
+            Transform[] all = searchRoot.GetComponentsInChildren<Transform>(true);
+            for (int i = 0; i < all.Length; i++)
+            {
+                Transform t = all[i];
+                if (t.name != "AimLine" && t.name != "AimReticle" && t.name != "AimRangeCircle") continue;
+
+                var lr = t.GetComponent<LineRenderer>();
+                if (lr == null) continue;
+
+                if (revertPrefabOverrides && PrefabUtility.IsPartOfPrefabInstance(lr))
+                {
+                    PrefabUtility.RevertObjectOverride(lr, InteractionMode.AutomatedAction);
+                }
+
+                lr.sortingLayerName = "Effects";
+                lr.sortingOrder = t.name == "AimLine" ? 100 : (t.name == "AimReticle" ? 101 : 99);
+                EditorUtility.SetDirty(lr);
+            }
         }
 
         private static void WireMainMenuScene(GigaContentDataGenerator.GeneratedContent data, System.Text.StringBuilder log)
@@ -398,17 +568,21 @@ namespace Game.Editor
             TMP_FontAsset font = GigaAssetUtility.FindCyrillicFont(canvas);
             var menuMgr = canvasGo.GetComponent<MainMenuManager>();
 
+            // Reload after OpenScene(Single) because scene switching can unload unreferenced SOs from memory.
+            List<KnightData> knights = GigaContentDataGenerator.LoadAllKnights();
+            List<WeaponSelectionData> weapons = GigaContentDataGenerator.LoadAllWeapons();
+
             // 1. Update Knight & Weapon lists in Selection UIs
             var kui = canvas.GetComponentInChildren<KnightSelectionUI>(true);
             if (kui != null)
             {
-                SetObjectListProperty(kui, "_allKnights", data.Knights);
+                SetObjectListProperty(kui, "_allKnights", knights, log);
                 EditorUtility.SetDirty(kui);
             }
             var wui = canvas.GetComponentInChildren<WeaponSelectionUI>(true);
             if (wui != null)
             {
-                SetObjectListProperty(wui, "_allWeapons", data.Weapons);
+                SetObjectListProperty(wui, "_allWeapons", weapons, log);
                 EditorUtility.SetDirty(wui);
             }
 
@@ -470,14 +644,14 @@ namespace Game.Editor
             }
 
             // 4. ShopPanel 3-tab rebuild
-            WireMainMenuShopPanel(canvas.Find("ShopPanel"), data, menuMgr, font, log);
+            WireMainMenuShopPanel(canvas.Find("ShopPanel"), knights, weapons, menuMgr, font, log);
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
             log.AppendLine("[MainMenu] Saved MainMenu.unity.");
         }
 
-        private static void WireMainMenuShopPanel(Transform shopPanel, GigaContentDataGenerator.GeneratedContent data, MainMenuManager mgr, TMP_FontAsset font, System.Text.StringBuilder log)
+        private static void WireMainMenuShopPanel(Transform shopPanel, List<KnightData> knights, List<WeaponSelectionData> weapons, MainMenuManager mgr, TMP_FontAsset font, System.Text.StringBuilder log)
         {
             if (shopPanel == null) return;
             var shopUi = shopPanel.GetComponent<ShopUI>();
@@ -544,25 +718,30 @@ namespace Game.Editor
             if (mgr != null) so.FindProperty("_mainMenuManager").objectReferenceValue = mgr;
             so.ApplyModifiedPropertiesWithoutUndo();
 
-            SetObjectListProperty(shopUi, "_allKnights", data.Knights);
-            SetObjectListProperty(shopUi, "_allWeapons", data.Weapons);
+            SetObjectListProperty(shopUi, "_allKnights", knights, log);
+            SetObjectListProperty(shopUi, "_allWeapons", weapons, log);
             EditorUtility.SetDirty(shopUi);
-            log.AppendLine("[MainMenu] Wired ShopUI 3 tabs + ScrollView + 5 Knights & 5 Weapons.");
+            log.AppendLine($"[MainMenu] Wired ShopUI 3 tabs + ScrollView + {knights.Count} Knights & {weapons.Count} Weapons.");
         }
 
-        private static void SetObjectListProperty<T>(Object target, string propertyName, List<T> items) where T : Object
+        private static void SetObjectListProperty<T>(Object target, string propertyName, List<T> items, System.Text.StringBuilder log = null) where T : Object
         {
             var so = new SerializedObject(target);
             var prop = so.FindProperty(propertyName);
             if (prop != null && prop.isArray)
             {
                 prop.ClearArray();
+                prop.arraySize = items.Count;
+                int nullCount = 0;
                 for (int i = 0; i < items.Count; i++)
                 {
-                    prop.InsertArrayElementAtIndex(i);
+                    if (items[i] == null) nullCount++;
                     prop.GetArrayElementAtIndex(i).objectReferenceValue = items[i];
                 }
                 so.ApplyModifiedPropertiesWithoutUndo();
+                EditorUtility.SetDirty(target);
+                if (nullCount > 0)
+                    log?.AppendLine($"[WARN] {target.name}.{propertyName}: {nullCount}/{items.Count} entries were null!");
             }
         }
     }

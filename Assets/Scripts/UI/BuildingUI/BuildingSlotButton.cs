@@ -11,7 +11,7 @@ namespace Game.UI.BuildingUI
 {
     public class BuildingSlotButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        private const float DoubleClickMaxInterval = 0.38f;
+        private const float DoubleClickMaxInterval = 0.20f;
 
         [Title("UI Elements")]
         [SerializeField] private TMP_Text _hotkeyText;
@@ -69,7 +69,11 @@ namespace Game.UI.BuildingUI
             if (existing != null)
             {
                 _countText = existing.GetComponent<TMP_Text>();
-                if (_countText != null) return;
+                if (_countText != null)
+                {
+                    _countText.raycastTarget = false;
+                    return;
+                }
             }
 
             var go = new GameObject("Count", typeof(RectTransform));
@@ -86,6 +90,7 @@ namespace Game.UI.BuildingUI
             tmp.fontSize = 15f;
             tmp.fontStyle = FontStyles.Bold;
             tmp.color = new Color(1f, 0.9f, 0.35f, 1f);
+            tmp.raycastTarget = false;
             if (_costText != null && _costText.font != null)
             {
                 tmp.font = _costText.font;
@@ -120,6 +125,7 @@ namespace Game.UI.BuildingUI
             _onRightClicked = onRightClicked;
             _onPointerEnter = onPointerEnter;
             _onPointerExit = onPointerExit;
+            _lastLeftClickTime = -10f;
 
             _hotkeyText.text = (slotIndex + 1).ToString();
             EnsureCountText();

@@ -530,6 +530,7 @@ namespace Game.Buildings
         {
             if (data == null) return;
 
+            CancelConflictingTools();
             DeselectBuilding();
 
             _placingData = data;
@@ -637,6 +638,8 @@ namespace Game.Buildings
             if (!IsBuildingManagementAllowed()) return;
             if (building == null) return;
 
+            CancelConflictingTools();
+
             _movingBuilding = building;
             _movingOriginalCell = building.Origin;
             SetMode(ActionMode.Moving);
@@ -672,10 +675,26 @@ namespace Game.Buildings
             if (!IsBuildingManagementAllowed()) return;
             if (_selectedBuilding == building) return;
 
+            if (building != null)
+            {
+                CancelConflictingTools();
+            }
+
             _selectedBuilding = building;
             SetMode(_selectedBuilding != null ? ActionMode.Selected : ActionMode.None);
             _contextMenuUI?.OnBuildingSelected(_selectedBuilding);
             SelectedBuildingChanged?.Invoke(_selectedBuilding);
+        }
+
+        private void CancelConflictingTools()
+        {
+            var weapon = FindAnyObjectByType<Game.Weapons.CastleWeapon>();
+            if (weapon != null && weapon.IsAiming)
+            {
+                weapon.CancelAiming();
+            }
+
+            Game.Spells.SpellScrollManager.Instance?.CancelSelection();
         }
 
         public void DeselectBuilding()
