@@ -22,10 +22,10 @@ namespace Game.Weapons
         [SerializeField]
         private LevelStats[] _levels = new LevelStats[4]
         {
-            new() { dps = 3f, radius = 1.0f, duration = 4f, cooldown = 20f, pullSpeed = 1.4f },
-            new() { dps = 4f, radius = 1.0f, duration = 6f, cooldown = 20f, pullSpeed = 1.6f },
-            new() { dps = 6f, radius = 1.5f, duration = 8f, cooldown = 20f, pullSpeed = 1.8f },
-            new() { dps = 8f, radius = 2.0f, duration = 10f, cooldown = 20f, pullSpeed = 2.1f }
+            new() { dps = 9f, radius = 1.8f, duration = 4.5f, cooldown = 8f, pullSpeed = 1.8f },
+            new() { dps = 13f, radius = 2.0f, duration = 5.5f, cooldown = 7f, pullSpeed = 2.0f },
+            new() { dps = 18f, radius = 2.3f, duration = 6.5f, cooldown = 6f, pullSpeed = 2.3f },
+            new() { dps = 25f, radius = 2.6f, duration = 8.0f, cooldown = 5f, pullSpeed = 2.6f }
         };
 
         public LevelStats CurrentStats => _levels[Mathf.Clamp(_currentLevel - 1, 0, _levels.Length - 1)];
@@ -38,8 +38,8 @@ namespace Game.Weapons
             if (!IsReady) return false;
 
             LevelStats stats = CurrentStats;
-            float dmgMult = RunProgressionManager.Instance != null
-                ? RunProgressionManager.Instance.GetEffectiveWeaponDamageMultiplier()
+            float dmgMult = Modifiers != null
+                ? Modifiers.GetEffectiveWeaponDamageMultiplier()
                 : 1f;
 
             HazardZone.Spawn(

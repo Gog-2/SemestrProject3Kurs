@@ -213,6 +213,46 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
                     ""priority"": 0
                 },
                 {
+                    ""name"": ""SelectSlot6"",
+                    ""type"": ""Button"",
+                    ""id"": ""0a85e49c-a19e-436f-87d2-7c3905cfd601"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""SelectSlot7"",
+                    ""type"": ""Button"",
+                    ""id"": ""0a85e49c-a19e-436f-87d2-7c3905cfd702"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""SelectSlot8"",
+                    ""type"": ""Button"",
+                    ""id"": ""0a85e49c-a19e-436f-87d2-7c3905cfd803"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""SelectSlot9"",
+                    ""type"": ""Button"",
+                    ""id"": ""0a85e49c-a19e-436f-87d2-7c3905cfd904"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
                     ""name"": ""Sell"",
                     ""type"": ""Button"",
                     ""id"": ""0685e49c-a19e-436f-87d2-7c3905cfd666"",
@@ -573,6 +613,50 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""413e590f-07ec-44f2-95f2-491959828601"",
+                    ""path"": ""<Keyboard>/6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectSlot6"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""413e590f-07ec-44f2-95f2-491959828702"",
+                    ""path"": ""<Keyboard>/7"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectSlot7"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""413e590f-07ec-44f2-95f2-491959828803"",
+                    ""path"": ""<Keyboard>/8"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectSlot8"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""413e590f-07ec-44f2-95f2-491959828904"",
+                    ""path"": ""<Keyboard>/9"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectSlot9"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""513e590f-07ec-44f2-95f2-491959828564"",
                     ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
@@ -656,6 +740,10 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
         m_Player_SelectSlot3 = m_Player.FindAction("SelectSlot3", throwIfNotFound: true);
         m_Player_SelectSlot4 = m_Player.FindAction("SelectSlot4", throwIfNotFound: true);
         m_Player_SelectSlot5 = m_Player.FindAction("SelectSlot5", throwIfNotFound: true);
+        m_Player_SelectSlot6 = m_Player.FindAction("SelectSlot6", throwIfNotFound: true);
+        m_Player_SelectSlot7 = m_Player.FindAction("SelectSlot7", throwIfNotFound: true);
+        m_Player_SelectSlot8 = m_Player.FindAction("SelectSlot8", throwIfNotFound: true);
+        m_Player_SelectSlot9 = m_Player.FindAction("SelectSlot9", throwIfNotFound: true);
         m_Player_Sell = m_Player.FindAction("Sell", throwIfNotFound: true);
         m_Player_MoveBuilding = m_Player.FindAction("MoveBuilding", throwIfNotFound: true);
         m_Player_Upgrade = m_Player.FindAction("Upgrade", throwIfNotFound: true);
@@ -754,6 +842,10 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SelectSlot3;
     private readonly InputAction m_Player_SelectSlot4;
     private readonly InputAction m_Player_SelectSlot5;
+    private readonly InputAction m_Player_SelectSlot6;
+    private readonly InputAction m_Player_SelectSlot7;
+    private readonly InputAction m_Player_SelectSlot8;
+    private readonly InputAction m_Player_SelectSlot9;
     private readonly InputAction m_Player_Sell;
     private readonly InputAction m_Player_MoveBuilding;
     private readonly InputAction m_Player_Upgrade;
@@ -819,6 +911,22 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/SelectSlot5".
         /// </summary>
         public InputAction @SelectSlot5 => m_Wrapper.m_Player_SelectSlot5;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SelectSlot6".
+        /// </summary>
+        public InputAction @SelectSlot6 => m_Wrapper.m_Player_SelectSlot6;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SelectSlot7".
+        /// </summary>
+        public InputAction @SelectSlot7 => m_Wrapper.m_Player_SelectSlot7;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SelectSlot8".
+        /// </summary>
+        public InputAction @SelectSlot8 => m_Wrapper.m_Player_SelectSlot8;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SelectSlot9".
+        /// </summary>
+        public InputAction @SelectSlot9 => m_Wrapper.m_Player_SelectSlot9;
         /// <summary>
         /// Provides access to the underlying input action "Player/Sell".
         /// </summary>
@@ -905,6 +1013,18 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
             @SelectSlot5.started += instance.OnSelectSlot5;
             @SelectSlot5.performed += instance.OnSelectSlot5;
             @SelectSlot5.canceled += instance.OnSelectSlot5;
+            @SelectSlot6.started += instance.OnSelectSlot6;
+            @SelectSlot6.performed += instance.OnSelectSlot6;
+            @SelectSlot6.canceled += instance.OnSelectSlot6;
+            @SelectSlot7.started += instance.OnSelectSlot7;
+            @SelectSlot7.performed += instance.OnSelectSlot7;
+            @SelectSlot7.canceled += instance.OnSelectSlot7;
+            @SelectSlot8.started += instance.OnSelectSlot8;
+            @SelectSlot8.performed += instance.OnSelectSlot8;
+            @SelectSlot8.canceled += instance.OnSelectSlot8;
+            @SelectSlot9.started += instance.OnSelectSlot9;
+            @SelectSlot9.performed += instance.OnSelectSlot9;
+            @SelectSlot9.canceled += instance.OnSelectSlot9;
             @Sell.started += instance.OnSell;
             @Sell.performed += instance.OnSell;
             @Sell.canceled += instance.OnSell;
@@ -970,6 +1090,18 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
             @SelectSlot5.started -= instance.OnSelectSlot5;
             @SelectSlot5.performed -= instance.OnSelectSlot5;
             @SelectSlot5.canceled -= instance.OnSelectSlot5;
+            @SelectSlot6.started -= instance.OnSelectSlot6;
+            @SelectSlot6.performed -= instance.OnSelectSlot6;
+            @SelectSlot6.canceled -= instance.OnSelectSlot6;
+            @SelectSlot7.started -= instance.OnSelectSlot7;
+            @SelectSlot7.performed -= instance.OnSelectSlot7;
+            @SelectSlot7.canceled -= instance.OnSelectSlot7;
+            @SelectSlot8.started -= instance.OnSelectSlot8;
+            @SelectSlot8.performed -= instance.OnSelectSlot8;
+            @SelectSlot8.canceled -= instance.OnSelectSlot8;
+            @SelectSlot9.started -= instance.OnSelectSlot9;
+            @SelectSlot9.performed -= instance.OnSelectSlot9;
+            @SelectSlot9.canceled -= instance.OnSelectSlot9;
             @Sell.started -= instance.OnSell;
             @Sell.performed -= instance.OnSell;
             @Sell.canceled -= instance.OnSell;
@@ -1112,6 +1244,34 @@ public partial class @Sheme: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSelectSlot5(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectSlot6" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectSlot6(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectSlot7" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectSlot7(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectSlot8" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectSlot8(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectSlot9" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectSlot9(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "Sell" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

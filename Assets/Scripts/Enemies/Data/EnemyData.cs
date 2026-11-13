@@ -78,5 +78,15 @@ namespace Game.Enemies.Data
             _damageResistance = Mathf.Clamp(damageResistance, 0f, 0.8f);
             _hpGrowthPerWave = Mathf.Max(0f, hpGrowthPerWave);
         }
+
+        public void SetVisuals(Sprite sprite, Color tintColor, Vector3? visualScale = null)
+        {
+            if (sprite != null) _sprite = sprite;
+            _tintColor = tintColor;
+            if (visualScale.HasValue && visualScale.Value.sqrMagnitude > 0.001f)
+            {
+                _visualScale = visualScale.Value;
+            }
+        }
     }
 }

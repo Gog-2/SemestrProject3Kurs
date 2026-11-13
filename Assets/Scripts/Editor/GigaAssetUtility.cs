@@ -199,8 +199,7 @@ namespace Game.Editor
                 // Scale visual child cleanly for 2x2 vs 1x1 without distorting colliders (or scale sprite root cleanly)
                 float visualScale = size.x > 1 || size.y > 1 ? 1.85f : 0.92f;
                 workingRoot.transform.localScale = Vector3.one;
-                sr.drawMode = SpriteDrawMode.Sliced;
-                sr.size = new Vector2(visualScale, visualScale);
+                sr.drawMode = SpriteDrawMode.Simple;
 
                 configureComponent?.Invoke(buildingComp);
 

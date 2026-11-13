@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76ebddd847785aa4ea113053657105de, type: 3}
   m_Name: Projectile_BallistaBolt
   m_EditorClassIdentifier: Assembly-CSharp::Game.Projectiles.ProjectileData
-  _damage: 15
-  _speed: 15
+  _damage: 24
+  _speed: 18
   _pierceCount: 999
-  _knockbackCells: 1
+  _knockbackCells: 1.2
   _maxLifetime: 5
   _sprite: {fileID: 0}
   _color: {r: 1, g: 1, b: 1, a: 1}

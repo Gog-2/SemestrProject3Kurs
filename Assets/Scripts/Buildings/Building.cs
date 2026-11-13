@@ -70,6 +70,11 @@ namespace Game.Buildings
         public int MaxHP => CalculateEffectiveMaxHP();
         public bool IsDead => _currentHP <= 0;
 
+        private IRunModifiers _modifiers;
+        private IRunModifiers _subscribedModifiers;
+
+        protected IRunModifiers Modifiers => _modifiers ??= RunProgressionManager.Instance;
+
         public event Action<IDamageable> HealthChanged;
         public event Action<IDamageable> Destroyed;
         public event Action<IBuilding> BuildingHealthChanged;
@@ -84,20 +89,30 @@ namespace Game.Buildings
                 s_activeBuildings.Add(this);
             }
 
-            if (RunProgressionManager.Instance != null)
-            {
-                RunProgressionManager.Instance.UpgradeApplied -= OnGlobalUpgradeApplied;
-                RunProgressionManager.Instance.UpgradeApplied += OnGlobalUpgradeApplied;
-            }
+            BindModifierEvents(Modifiers);
         }
 
         protected virtual void OnDisable()
         {
             s_activeBuildings.Remove(this);
+            UnbindModifierEvents();
+        }
 
-            if (RunProgressionManager.Instance != null)
+        private void BindModifierEvents(IRunModifiers modifiers)
+        {
+            if (modifiers == null || _subscribedModifiers == modifiers) return;
+            UnbindModifierEvents();
+            _subscribedModifiers = modifiers;
+            _subscribedModifiers.UpgradeApplied -= OnGlobalUpgradeApplied;
+            _subscribedModifiers.UpgradeApplied += OnGlobalUpgradeApplied;
+        }
+
+        private void UnbindModifierEvents()
+        {
+            if (_subscribedModifiers != null)
             {
-                RunProgressionManager.Instance.UpgradeApplied -= OnGlobalUpgradeApplied;
+                _subscribedModifiers.UpgradeApplied -= OnGlobalUpgradeApplied;
+                _subscribedModifiers = null;
             }
         }
 
@@ -119,8 +134,17 @@ namespace Game.Buildings
             _originalColor = _spriteRenderer.color;
         }
 
-        public virtual void Initialize(BuildingData data, GridMap map, Vector2Int origin, int level = 1)
+        public virtual void Initialize(BuildingData data, GridMap map, Vector2Int origin, int level = 1, IRunModifiers modifiers = null)
         {
+            if (modifiers != null)
+            {
+                _modifiers = modifiers;
+                if (isActiveAndEnabled)
+                {
+                    BindModifierEvents(_modifiers);
+                }
+            }
+
             _data = data;
             _gridMap = map;
             _originCell = origin;
@@ -139,10 +163,11 @@ namespace Game.Buildings
             int baseHp = CurrentStats.maxHP;
             if (baseHp <= 0) return 0;
 
-            if (RunProgressionManager.Instance != null)
+            IRunModifiers mods = Modifiers;
+            if (mods != null)
             {
-                float mult = RunProgressionManager.Instance.GetBuildingMaxHpMultiplier(_data);
-                int flat = RunProgressionManager.Instance.GetBuildingMaxHpFlatBonus(_data);
+                float mult = mods.GetBuildingMaxHpMultiplier(_data);
+                int flat = mods.GetBuildingMaxHpFlatBonus(_data);
                 return Mathf.Max(1, Mathf.RoundToInt(baseHp * mult) + flat);
             }
 
@@ -170,7 +195,11 @@ namespace Game.Buildings
 
         public void UpdateWorldPosition()
         {
-            if (_gridMap == null) return;
+            if (_gridMap == null)
+            {
+                Debug.LogWarning($"[{nameof(Building)}] '{name}' cannot update world position: _gridMap is null!", this);
+                return;
+            }
 
             Vector2Int size = Size;
             Vector3 worldCenter = _gridMap.CellToWorld(_originCell.x, _originCell.y) +
@@ -249,8 +278,9 @@ namespace Game.Buildings
             if (_data == null || _currentLevel >= 4) return false;
 
             BuildingLevelStats nextStats = _data.GetStats(_currentLevel + 1);
-            float discountMult = RunProgressionManager.Instance != null
-                ? RunProgressionManager.Instance.GetEffectiveUpgradeCostMultiplier()
+            IRunModifiers mods = Modifiers;
+            float discountMult = mods != null
+                ? mods.GetEffectiveUpgradeCostMultiplier()
                 : 1f;
             cost = Mathf.RoundToInt(nextStats.cost * discountMult);
 

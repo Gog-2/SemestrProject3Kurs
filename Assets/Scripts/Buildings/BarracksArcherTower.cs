@@ -17,10 +17,10 @@ namespace Game.Buildings
         private float _thornsTimer;
 
         private static readonly int[] s_archerCounts = { 2, 2, 3, 3 };
-        private static readonly float[] s_archerDamages = { 7.5f, 7.5f, 7.5f, 10f };
+        private static readonly float[] s_archerDamages = { 10f, 12f, 14f, 18f };
 
         public int ArcherCount => s_archerCounts[Mathf.Clamp(_currentLevel - 1, 0, 3)];
-        public float AttackRange => 2.5f;
+        public float AttackRange => 4.5f;
 
         private void Update()
         {

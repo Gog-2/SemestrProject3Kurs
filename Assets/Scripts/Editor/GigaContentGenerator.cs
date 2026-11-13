@@ -22,7 +22,7 @@ namespace Game.Editor
 {
     public static class GigaContentGenerator
     {
-        [MenuItem("Tools/GIGA Generate All Content")]
+        [MenuItem("Tools/GIGA Generate All Content", false, 201)]
         public static string GenerateAllContent()
         {
             var log = new System.Text.StringBuilder();

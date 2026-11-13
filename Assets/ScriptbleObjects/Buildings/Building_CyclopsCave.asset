@@ -17,7 +17,7 @@ MonoBehaviour:
   _description: "\u0422\u044F\u0436\u0451\u043B\u044B\u0439 \u0431\u043E\u0435\u0446
     \u0441 \u043C\u043E\u0449\u043D\u044B\u043C \u043E\u0442\u043A\u0438\u0434\u044B\u0432\u0430\u043D\u0438\u0435\u043C
     \u0438 \u0432\u044B\u0441\u043E\u043A\u0438\u043C \u0430\u0433\u0433\u0440\u043E."
-  _icon: {fileID: 21300000, guid: f89f651266507ae4a87d56bf047f8e07, type: 3}
+  _icon: {fileID: 21300000, guid: 4dbcd645be14db5189673dd458d48020, type: 3}
   _prefab: {fileID: 3111414384390991277, guid: 2bc94d6a9b777374d8bee4437714a3f6, type: 3}
   _category: 1
   _size: {x: 1, y: 1}
@@ -26,43 +26,43 @@ MonoBehaviour:
   _placedSaleRefundRatio: 0.5
   _unplacedSaleRefundRatio: 0.5
   _levels:
-  - cost: 90
+  - cost: 75
     maxHP: 100
-    damage: 25
-    attackRange: 1
-    attackInterval: 8
-    productionInterval: 0
-    productionAmount: 0
-    spawnInterval: 20
-    unitCount: 1
-    combatXpRequirement: 0
-  - cost: 160
-    maxHP: 100
-    damage: 40
-    attackRange: 1
-    attackInterval: 7
-    productionInterval: 0
-    productionAmount: 0
-    spawnInterval: 18
-    unitCount: 1
-    combatXpRequirement: 150
-  - cost: 250
-    maxHP: 100
-    damage: 70
-    attackRange: 1
-    attackInterval: 6
+    damage: 28
+    attackRange: 1.25
+    attackInterval: 2.8
     productionInterval: 0
     productionAmount: 0
     spawnInterval: 14
     unitCount: 1
-    combatXpRequirement: 320
-  - cost: 380
+    combatXpRequirement: 0
+  - cost: 135
     maxHP: 100
-    damage: 100
-    attackRange: 1
-    attackInterval: 5
+    damage: 45
+    attackRange: 1.25
+    attackInterval: 2.5
     productionInterval: 0
     productionAmount: 0
     spawnInterval: 12
+    unitCount: 1
+    combatXpRequirement: 150
+  - cost: 210
+    maxHP: 100
+    damage: 70
+    attackRange: 1.25
+    attackInterval: 2.2
+    productionInterval: 0
+    productionAmount: 0
+    spawnInterval: 10
+    unitCount: 1
+    combatXpRequirement: 320
+  - cost: 310
+    maxHP: 100
+    damage: 100
+    attackRange: 1.25
+    attackInterval: 1.8
+    productionInterval: 0
+    productionAmount: 0
+    spawnInterval: 8
     unitCount: 2
     combatXpRequirement: 550

@@ -41647,7 +41647,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 670c439640b98a04eaadc85a9a83fcef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Core.PlayerWallet
-  _initialCoins: 100
+  _initialCoins: 180
   _initialDiamonds: 0
 --- !u!114 &6865963113146385924
 MonoBehaviour:

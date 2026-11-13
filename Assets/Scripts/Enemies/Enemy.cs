@@ -7,6 +7,7 @@ using Game.Buildings;
 using Game.Pathfinding;
 using Game.Enemies.Data;
 using Game.Units;
+using Game.Enemies.States;
 
 namespace Game.Enemies
 {
@@ -117,6 +118,17 @@ namespace Game.Enemies
         private const int MaxSlowDebuffs = 4;
         private readonly SlowDebuff[] _activeSlows = new SlowDebuff[MaxSlowDebuffs];
 
+        private readonly EnemyAdvanceState _advanceState = new();
+        private readonly EnemyAttackState _attackState = new();
+        private readonly EnemyRetreatState _retreatState = new();
+        private readonly EnemyDisabledState _disabledState = new();
+        private IEnemyState _currentState;
+
+        internal EnemyAdvanceState AdvanceState => _advanceState;
+        internal EnemyAttackState AttackState => _attackState;
+        internal EnemyRetreatState RetreatState => _retreatState;
+        internal EnemyDisabledState DisabledState => _disabledState;
+
         private void Awake()
         {
             int enemyLayer = LayerMask.NameToLayer("Enemy");
@@ -194,6 +206,16 @@ namespace Game.Enemies
             {
                 _circleCollider.radius = _baseColliderRadius * Mathf.Max(0.5f, scale.x);
             }
+
+            TransitionTo(_advanceState);
+        }
+
+        internal void TransitionTo(IEnemyState newState)
+        {
+            if (_currentState == newState) return;
+            _currentState?.Exit(this);
+            _currentState = newState;
+            _currentState?.Enter(this);
         }
 
         private void Update()
@@ -204,61 +226,104 @@ namespace Game.Enemies
             UpdateStatusesAndDots(dt);
             if (IsDead) return;
 
+            _currentState?.Tick(this, dt);
+        }
+
+        internal bool HasExitedRetreatBounds()
+        {
+            if (_gridMap == null) return false;
             Vector3 pos = transform.position;
+            Bounds b = _gridMap.Bounds;
+            return pos.x < b.min.x - 1.5f || pos.x > b.max.x + 1.5f ||
+                   pos.y < b.min.y - 1.5f || pos.y > b.max.y + 1.5f;
+        }
 
-            if (_isRetreating)
+        internal void CompleteRetreat()
+        {
+            _isRetreating = false;
+            _currentState = null;
+            Retreated?.Invoke(this);
+        }
+
+        internal Vector2 GetRetreatDirection()
+        {
+            return _flowfield != null
+                ? _flowfield.GetRetreatDirection(transform.position)
+                : Vector2.right;
+        }
+
+        internal Vector2 GetFlowDirection()
+        {
+            return _flowfield != null
+                ? _flowfield.GetDirection(transform.position)
+                : Vector2.zero;
+        }
+
+        internal void MoveByDirection(Vector2 direction, float speed, float dt)
+        {
+            transform.position += (Vector3)(direction * (speed * dt));
+            if (direction.x > 0.05f) _spriteRenderer.flipX = false;
+            else if (direction.x < -0.05f) _spriteRenderer.flipX = true;
+        }
+
+        internal void MoveTowardsPoint(Vector3 targetPoint, float dt)
+        {
+            _currentTarget = null;
+            Vector2 moveDir = targetPoint - transform.position;
+            if (moveDir.sqrMagnitude > 0.0001f)
             {
-                if (IsFrozen || IsStunned) return;
-
-                if (_gridMap != null)
-                {
-                    Bounds b = _gridMap.Bounds;
-                    if (pos.x < b.min.x - 1.5f || pos.x > b.max.x + 1.5f ||
-                        pos.y < b.min.y - 1.5f || pos.y > b.max.y + 1.5f)
-                    {
-                        _isRetreating = false;
-                        Retreated?.Invoke(this);
-                        return;
-                    }
-                }
-
-                Vector2 retreatDir = _flowfield != null
-                    ? _flowfield.GetRetreatDirection(pos)
-                    : Vector2.right;
-                if (retreatDir.sqrMagnitude > 0.0001f)
-                {
-                    transform.position += (Vector3)(retreatDir * (_currentSpeed * 1.15f * dt));
-                    if (retreatDir.x > 0.05f) _spriteRenderer.flipX = false;
-                    else if (retreatDir.x < -0.05f) _spriteRenderer.flipX = true;
-                }
-                return;
+                moveDir.Normalize();
+                MoveByDirection(moveDir, _currentSpeed, dt);
             }
+        }
 
-            if (IsFrozen || IsStunned) return;
+        internal bool IsInAttackRange(Vector3 targetPoint)
+        {
+            return Vector2.Distance(transform.position, targetPoint) <= _attackRange + 0.1f;
+        }
+
+        internal void ClearTarget()
+        {
+            _currentTarget = null;
+        }
+
+        internal void SetCombatTarget(IDamageable target, Vector3 targetPoint, bool isPointTarget)
+        {
+            _currentTarget = target;
+        }
+
+        internal bool TryResolveCombatTarget(out IDamageable target, out Vector3 targetPoint, out bool isPointTarget)
+        {
+            Vector3 pos = transform.position;
 
             // Priority 0: DecoySheep taunt within 3 cells (GIG-94 New Life spell)
             DecoySheep tauntSheep = FindNearestTauntSheep(pos);
             if (tauntSheep != null)
             {
-                MoveOrAttackPointTarget(tauntSheep, tauntSheep.transform.position, pos, dt);
-                return;
+                target = tauntSheep;
+                targetPoint = tauntSheep.transform.position;
+                isPointTarget = true;
+                return true;
             }
 
             // Priority 1: AllyUnits with available aggro slots (GIG-59 / GIG-64)
             AllyUnit allyTarget = ResolveAllyUnitTarget(pos);
             if (allyTarget != null)
             {
-                MoveOrAttackPointTarget(allyTarget, allyTarget.transform.position, pos, dt);
-                return;
+                target = allyTarget;
+                targetPoint = allyTarget.transform.position;
+                isPointTarget = true;
+                return true;
             }
 
             // Priority 2: Combat/Defense Buildings in 2 cells, locked until destroyed or knocked back (GIG-59)
             Building combatBuilding = ResolveCombatBuildingTarget(pos);
             if (combatBuilding != null)
             {
-                Vector3 closest = GetClosestPointOnBuilding(combatBuilding, pos);
-                MoveOrAttackPointTarget(combatBuilding, closest, pos, dt);
-                return;
+                target = combatBuilding;
+                targetPoint = GetClosestPointOnBuilding(combatBuilding, pos);
+                isPointTarget = true;
+                return true;
             }
 
             // Priority 3: Castle or Support/Economy building ONLY if blocking path (GIG-59)
@@ -267,8 +332,10 @@ namespace Game.Enemies
                 float sqrDistToCastle = _castleBounds.SqrDistance(pos);
                 if (sqrDistToCastle <= _sqrAttackRange)
                 {
-                    TickCombat(dt, _castle);
-                    return;
+                    target = _castle;
+                    targetPoint = _castle.transform.position;
+                    isPointTarget = false;
+                    return true;
                 }
             }
 
@@ -297,24 +364,17 @@ namespace Game.Enemies
 
                 if (CanEnemyAttackBuilding(occupant) && !ReferenceEquals(occupant, _castle))
                 {
-                    TickCombat(dt, occupant);
-                    return;
+                    target = occupant;
+                    targetPoint = pos;
+                    isPointTarget = false;
+                    return true;
                 }
             }
 
-            _currentTarget = null;
-
-            if (_flowfield != null)
-            {
-                Vector2 direction = _flowfield.GetDirection(pos);
-                if (direction.sqrMagnitude > 0.0001f)
-                {
-                    transform.position += (Vector3)(direction * (_currentSpeed * dt));
-
-                    if (direction.x > 0.05f) _spriteRenderer.flipX = false;
-                    else if (direction.x < -0.05f) _spriteRenderer.flipX = true;
-                }
-            }
+            target = null;
+            targetPoint = default;
+            isPointTarget = false;
+            return false;
         }
 
         private static bool CanEnemyAttackBuilding(IBuilding b)
@@ -436,26 +496,6 @@ namespace Game.Enemies
             return bounds.ClosestPoint(pos);
         }
 
-        private void MoveOrAttackPointTarget(IDamageable target, Vector3 targetPoint, Vector3 pos, float dt)
-        {
-            float dist = Vector2.Distance(pos, targetPoint);
-            if (dist <= _attackRange + 0.1f)
-            {
-                TickCombat(dt, target);
-                return;
-            }
-
-            _currentTarget = null;
-            Vector2 moveDir = targetPoint - pos;
-            if (moveDir.sqrMagnitude > 0.0001f)
-            {
-                moveDir.Normalize();
-                transform.position += (Vector3)(moveDir * (_currentSpeed * dt));
-                if (moveDir.x > 0.05f) _spriteRenderer.flipX = false;
-                else if (moveDir.x < -0.05f) _spriteRenderer.flipX = true;
-            }
-        }
-
         private void ReleaseCombatLocks()
         {
             if (_lockedUnitTarget != null)
@@ -511,6 +551,7 @@ namespace Game.Enemies
             _currentTarget = null;
             ReleaseCombatLocks();
             _attackTimer = 0f;
+            TransitionTo(_retreatState);
         }
 
         public void PolymorphOut()
@@ -518,6 +559,7 @@ namespace Game.Enemies
             if (IsDead) return;
             _isRetreating = false;
             _currentTarget = null;
+            _currentState = null;
             ReleaseCombatLocks();
             Retreated?.Invoke(this);
         }
@@ -708,7 +750,7 @@ namespace Game.Enemies
             }
         }
 
-        private void TickCombat(float deltaTime, IDamageable target)
+        internal void TickCombat(float deltaTime, IDamageable target)
         {
             if (!IsTargetValid(target))
             {
@@ -752,9 +794,12 @@ namespace Game.Enemies
 #endif
         }
 
-        public void OnSpawnFromPool()
+        private void ResetToBaseState()
         {
-            gameObject.SetActive(true);
+            if (_modelTransform == null)
+            {
+                _modelTransform = transform;
+            }
 
             _currentHP = _maxHP;
             _currentSpeed = _baseSpeed;
@@ -768,25 +813,23 @@ namespace Game.Enemies
             _punchTween?.Kill();
             Vector3 currentScale = _data != null ? _data.VisualScale : Vector3.one;
             _modelTransform.localScale = currentScale;
-            _spriteRenderer.color = _originalColor;
+            if (_spriteRenderer != null)
+            {
+                _spriteRenderer.color = _originalColor;
+            }
+        }
+
+        public void OnSpawnFromPool()
+        {
+            gameObject.SetActive(true);
+            ResetToBaseState();
+            TransitionTo(_advanceState);
         }
 
         public void OnReturnToPool()
         {
-            _flashTween?.Kill();
-            _punchTween?.Kill();
-            Vector3 currentScale = _data != null ? _data.VisualScale : Vector3.one;
-            _modelTransform.localScale = currentScale;
-            _spriteRenderer.color = _originalColor;
-
-            _currentHP = _maxHP;
-            _currentSpeed = _baseSpeed;
-            _isRetreating = false;
-            ReleaseCombatLocks();
-            ClearAllStatuses();
-            _currentTarget = null;
-            _attackTimer = 0f;
-
+            ResetToBaseState();
+            _currentState = null;
             gameObject.SetActive(false);
         }
     }

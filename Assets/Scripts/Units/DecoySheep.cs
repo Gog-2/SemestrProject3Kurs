@@ -40,6 +40,9 @@ namespace Game.Units
             ActiveSheep.Remove(this);
         }
 
+        private static Sprite s_sheepSprite;
+        public static void SetSheepSprite(Sprite sprite) => s_sheepSprite = sprite;
+
         public static DecoySheep Spawn(Vector3 worldPos, int hp = 40, float tauntRadius = 3f)
         {
             var go = new GameObject("Polymorphed_Sheep");
@@ -58,11 +61,20 @@ namespace Game.Units
             _wanderTarget = origin;
 
             _renderer = gameObject.AddComponent<SpriteRenderer>();
-            _renderer.sprite = HazardZone.GetOrCreateCircleSprite();
-            _renderer.color = new Color(0.98f, 0.96f, 0.9f, 1f);
+            if (s_sheepSprite != null)
+            {
+                _renderer.sprite = s_sheepSprite;
+                _renderer.color = Color.white;
+                transform.localScale = Vector3.one;
+            }
+            else
+            {
+                _renderer.sprite = HazardZone.GetOrCreateCircleSprite();
+                _renderer.color = new Color(0.98f, 0.96f, 0.9f, 1f);
+                transform.localScale = new Vector3(0.38f, 0.32f, 1f);
+            }
             _renderer.sortingLayerName = "Enemies";
             _renderer.sortingOrder = 9;
-            transform.localScale = new Vector3(0.38f, 0.32f, 1f);
         }
 
         public void TakeDamage(int amount)
@@ -92,6 +104,12 @@ namespace Game.Units
 
             if (Vector2.Distance(transform.position, _wanderTarget) > 0.05f)
             {
+                float dx = _wanderTarget.x - transform.position.x;
+                if (_renderer != null)
+                {
+                    if (dx > 0.05f) _renderer.flipX = false;
+                    else if (dx < -0.05f) _renderer.flipX = true;
+                }
                 transform.position = Vector3.MoveTowards(transform.position, _wanderTarget, _moveSpeed * Time.deltaTime);
             }
         }

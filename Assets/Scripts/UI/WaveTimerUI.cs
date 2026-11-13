@@ -28,11 +28,6 @@ namespace Game.UI
 
         private void Awake()
         {
-            if (_waveController == null)
-            {
-                _waveController = FindAnyObjectByType<WaveController>();
-            }
-
             Debug.Assert(_timerText != null, "[WaveTimerUI] _timerText is not assigned!", this);
 
             if (_startWaveButton != null)
@@ -44,11 +39,6 @@ namespace Game.UI
 
         private void OnEnable()
         {
-            if (_waveController == null)
-            {
-                _waveController = FindAnyObjectByType<WaveController>();
-            }
-
             if (_waveController != null)
             {
                 BindWaveController(_waveController);
@@ -65,13 +55,12 @@ namespace Game.UI
         {
             if (_waveController == null)
             {
-                _waveController = FindAnyObjectByType<WaveController>();
+                Debug.LogError($"[{nameof(WaveTimerUI)}] '_waveController' is not assigned in Inspector or bound via SceneBootstrapper!", this);
+                enabled = false;
+                return;
             }
 
-            if (_waveController != null)
-            {
-                BindWaveController(_waveController);
-            }
+            BindWaveController(_waveController);
         }
 
         public void BindWaveController(WaveController controller)

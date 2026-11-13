@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 10
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -5356574185940491189, guid: 9eb8b343ef90a1444bd1d0c69e533c67, type: 3}
+  m_Sprite: {fileID: 21300000, guid: df58f2851ca87b056957b88978ab5310, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -157,7 +157,8 @@ MonoBehaviour:
   _modelTransform: {fileID: 1112426411027428535}
   _damageColor: {r: 1, g: 0.3, b: 0.3, a: 1}
   _punchStrength: {x: 0.12, y: 0.12, z: 0}
-  _singleSprite: {fileID: -5356574185940491189, guid: 9eb8b343ef90a1444bd1d0c69e533c67, type: 3}
-  _horizontalSprite: {fileID: -5356574185940491189, guid: 9eb8b343ef90a1444bd1d0c69e533c67, type: 3}
-  _verticalSprite: {fileID: -5356574185940491189, guid: 9eb8b343ef90a1444bd1d0c69e533c67, type: 3}
-  _crossSprite: {fileID: -5356574185940491189, guid: 9eb8b343ef90a1444bd1d0c69e533c67, type: 3}
+  _xpHighlightRenderer: {fileID: 0}
+  _singleSprite: {fileID: 21300000, guid: df58f2851ca87b056957b88978ab5310, type: 3}
+  _horizontalSprite: {fileID: 21300000, guid: be2f2978dacf577a0810cf82bb32a384, type: 3}
+  _verticalSprite: {fileID: 21300000, guid: 137d11520d0bc19c0a94afa0abb27b6a, type: 3}
+  _crossSprite: {fileID: 21300000, guid: ccfd9145d61bc454caf8b735529afed1, type: 3}

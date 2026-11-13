@@ -30,6 +30,7 @@ namespace Game.Spells
     {
         [Title("Identity")]
         [SerializeField] private SpellKind _spellKind = SpellKind.Meteor;
+        [SerializeField] private SpellEffect _effect;
         [SerializeField] private string _spellName = "Метеор";
         [TextArea(2, 3)]
         [SerializeField] private string _description = "Огромный метеор падает в выбранную зону и оставляет горящую область.";
@@ -40,6 +41,7 @@ namespace Game.Spells
         [SerializeField] private SpellLevelStats[] _levels = new SpellLevelStats[4];
 
         public SpellKind Kind => _spellKind;
+        public SpellEffect Effect => _effect;
         public string SpellName => _spellName;
         public string Description => _description;
         public Sprite Icon => _icon;
@@ -52,7 +54,14 @@ namespace Game.Spells
             return _levels[idx];
         }
 
-        public void InitializeRuntime(SpellKind kind, string name, string description, Color color, SpellLevelStats[] levels, Sprite icon = null)
+        public void InitializeRuntime(
+            SpellKind kind,
+            string name,
+            string description,
+            Color color,
+            SpellLevelStats[] levels,
+            Sprite icon = null,
+            SpellEffect effect = null)
         {
             _spellKind = kind;
             _spellName = name;
@@ -60,6 +69,10 @@ namespace Game.Spells
             _accentColor = color;
             _levels = levels;
             _icon = icon;
+            if (effect != null)
+            {
+                _effect = effect;
+            }
         }
     }
 }

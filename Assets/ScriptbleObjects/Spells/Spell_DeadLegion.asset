@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Spell_DeadLegion
   m_EditorClassIdentifier: Assembly-CSharp::Game.Spells.SpellData
   _spellKind: 3
+  _effect: {fileID: 11400000, guid: 8574910e7f49852f9909edd6ca2f8e20, type: 2}
   _spellName: "\u041C\u0451\u0440\u0442\u0432\u044B\u0439 \u043B\u0435\u0433\u0438\u043E\u043D"
   _description: "\u041D\u0430\u043D\u043E\u0441\u0438\u0442 \u0443\u0440\u043E\u043D
     \u0432 \u0437\u043E\u043D\u0435, \u043F\u0440\u0438\u0437\u044B\u0432\u0430\u0435\u0442

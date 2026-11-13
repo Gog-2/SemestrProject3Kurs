@@ -19,7 +19,7 @@ MonoBehaviour:
     \u0432\u0440\u0430\u0433\u0430\u043C \u0434\u043E \u0438\u0441\u0447\u0435\u0440\u043F\u0430\u043D\u0438\u044F
     \u0437\u0430\u0440\u044F\u0434\u043E\u0432. \u0413\u043B\u043E\u0431\u0430\u043B\u044C\u043D\u0430\u044F
     \u043F\u0440\u043E\u043A\u0430\u0447\u043A\u0430."
-  _icon: {fileID: 21300000, guid: f89f651266507ae4a87d56bf047f8e07, type: 3}
+  _icon: {fileID: 21300000, guid: 626de7230593f0761b326ff64ed3efc3, type: 3}
   _prefab: {fileID: 6347131536359254954, guid: 6aa3c70ce72d7db4989f547115742fcb, type: 3}
   _category: 6
   _size: {x: 1, y: 1}
@@ -28,9 +28,9 @@ MonoBehaviour:
   _placedSaleRefundRatio: 0.5
   _unplacedSaleRefundRatio: 0.5
   _levels:
-  - cost: 40
+  - cost: 30
     maxHP: 1
-    damage: 3
+    damage: 6
     attackRange: 0
     attackInterval: 1
     productionInterval: 0
@@ -38,29 +38,29 @@ MonoBehaviour:
     spawnInterval: 0
     unitCount: 0
     combatXpRequirement: 0
-  - cost: 75
-    maxHP: 1
-    damage: 5
-    attackRange: 0
-    attackInterval: 1
-    productionInterval: 0
-    productionAmount: 0
-    spawnInterval: 0
-    unitCount: 0
-    combatXpRequirement: 0
-  - cost: 120
-    maxHP: 1
-    damage: 7
-    attackRange: 0
-    attackInterval: 1
-    productionInterval: 0
-    productionAmount: 0
-    spawnInterval: 0
-    unitCount: 0
-    combatXpRequirement: 0
-  - cost: 180
+  - cost: 55
     maxHP: 1
     damage: 10
+    attackRange: 0
+    attackInterval: 1
+    productionInterval: 0
+    productionAmount: 0
+    spawnInterval: 0
+    unitCount: 0
+    combatXpRequirement: 0
+  - cost: 90
+    maxHP: 1
+    damage: 14
+    attackRange: 0
+    attackInterval: 1
+    productionInterval: 0
+    productionAmount: 0
+    spawnInterval: 0
+    unitCount: 0
+    combatXpRequirement: 0
+  - cost: 135
+    maxHP: 1
+    damage: 20
     attackRange: 0
     attackInterval: 1
     productionInterval: 0

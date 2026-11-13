@@ -23,15 +23,15 @@ namespace Game.Weapons
         [SerializeField]
         private LevelStats[] _levels = new LevelStats[4]
         {
-            new() { impactDamage = 20, splashRadius = 1.0f, flightTimePerCell = 0.5f, puddleDuration = 3f, puddleDps = 5f, cooldown = 10f },
-            new() { impactDamage = 35, splashRadius = 1.0f, flightTimePerCell = 0.4f, puddleDuration = 4f, puddleDps = 5f, cooldown = 8f },
-            new() { impactDamage = 50, splashRadius = 1.0f, flightTimePerCell = 0.3f, puddleDuration = 5f, puddleDps = 5f, cooldown = 6f },
-            new() { impactDamage = 75, splashRadius = 1.0f, flightTimePerCell = 0.2f, puddleDuration = 5f, puddleDps = 6f, cooldown = 4f }
+            new() { impactDamage = 24, splashRadius = 1.6f, flightTimePerCell = 0.14f, puddleDuration = 4f, puddleDps = 8f, cooldown = 5.5f },
+            new() { impactDamage = 36, splashRadius = 1.8f, flightTimePerCell = 0.12f, puddleDuration = 4.5f, puddleDps = 10f, cooldown = 4.5f },
+            new() { impactDamage = 52, splashRadius = 2.0f, flightTimePerCell = 0.10f, puddleDuration = 5f, puddleDps = 13f, cooldown = 3.8f },
+            new() { impactDamage = 75, splashRadius = 2.3f, flightTimePerCell = 0.08f, puddleDuration = 6f, puddleDps = 16f, cooldown = 3.0f }
         };
 
         public LevelStats CurrentStats => _levels[Mathf.Clamp(_currentLevel - 1, 0, _levels.Length - 1)];
         public override float MaxCooldown => ApplyWeaponCooldownModifiers(CurrentStats.cooldown);
-        public override float AoERadius => CurrentStats.splashRadius + (RunProgressionManager.Instance != null ? RunProgressionManager.Instance.GetExplosiveRadiusBonus() * 0.5f : 0f);
+        public override float AoERadius => CurrentStats.splashRadius + (Modifiers != null ? Modifiers.GetExplosiveRadiusBonus() * 0.5f : 0f);
 
         public override bool TryFire(Vector3 targetWorldPosition)
         {
@@ -46,8 +46,8 @@ namespace Game.Weapons
             float flightDuration = Mathf.Max(0.35f, dist * stats.flightTimePerCell);
             int effectiveDmg = ApplyWeaponDamageModifiers(stats.impactDamage, isExplosive: true);
             float effectiveRadius = AoERadius;
-            float effectiveDps = stats.puddleDps * (RunProgressionManager.Instance != null
-                ? RunProgressionManager.Instance.GetEffectiveWeaponDamageMultiplier()
+            float effectiveDps = stats.puddleDps * (Modifiers != null
+                ? Modifiers.GetEffectiveWeaponDamageMultiplier()
                 : 1f);
 
             Projectile_Lobbed.Spawn(

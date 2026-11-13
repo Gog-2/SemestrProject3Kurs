@@ -25,6 +25,7 @@ namespace Game.Core
         [SerializeField, Min(0.001f)] private float _pinchSensitivity = 0.01f;
 
         private Sheme _sheme;
+        private readonly List<(InputAction action, Action<InputAction.CallbackContext> handler)> _slotBindings = new(9);
 
         // Touch tracking
         private bool _touchStartedOverUI;
@@ -127,17 +128,32 @@ namespace Game.Core
             _sheme.Player.Cancel.performed += OnCancelActionPerformed;
             _sheme.Player.Pause.performed += OnPauseActionPerformed;
 
-            _sheme.Player.SelectSlot1.performed += OnSelectSlot1;
-            _sheme.Player.SelectSlot2.performed += OnSelectSlot2;
-            _sheme.Player.SelectSlot3.performed += OnSelectSlot3;
-            _sheme.Player.SelectSlot4.performed += OnSelectSlot4;
-            _sheme.Player.SelectSlot5.performed += OnSelectSlot5;
+            RegisterSlotActions();
 
             _sheme.Player.Sell.performed += OnSell;
             _sheme.Player.MoveBuilding.performed += OnMoveBuilding;
             _sheme.Player.Upgrade.performed += OnUpgrade;
             _sheme.Player.ToggleAim.performed += OnToggleAim;
             _sheme.Player.Skip.performed += OnSkip;
+        }
+
+        private void RegisterSlotActions()
+        {
+            InputActionMap playerMap = _sheme.Player.Get();
+            for (int i = 0; i < 9; i++)
+            {
+                int slotIndex = i;
+                InputAction action = playerMap.FindAction($"SelectSlot{slotIndex + 1}", throwIfNotFound: false);
+                if (action == null)
+                {
+                    Debug.LogError($"[InputManager] Input action 'SelectSlot{slotIndex + 1}' was not found in Sheme.", this);
+                    continue;
+                }
+
+                Action<InputAction.CallbackContext> handler = _ => SlotSelected?.Invoke(slotIndex);
+                action.performed += handler;
+                _slotBindings.Add((action, handler));
+            }
         }
 
         private void UnregisterActions()
@@ -149,11 +165,11 @@ namespace Game.Core
             _sheme.Player.Cancel.performed -= OnCancelActionPerformed;
             _sheme.Player.Pause.performed -= OnPauseActionPerformed;
 
-            _sheme.Player.SelectSlot1.performed -= OnSelectSlot1;
-            _sheme.Player.SelectSlot2.performed -= OnSelectSlot2;
-            _sheme.Player.SelectSlot3.performed -= OnSelectSlot3;
-            _sheme.Player.SelectSlot4.performed -= OnSelectSlot4;
-            _sheme.Player.SelectSlot5.performed -= OnSelectSlot5;
+            for (int i = 0; i < _slotBindings.Count; i++)
+            {
+                _slotBindings[i].action.performed -= _slotBindings[i].handler;
+            }
+            _slotBindings.Clear();
 
             _sheme.Player.Sell.performed -= OnSell;
             _sheme.Player.MoveBuilding.performed -= OnMoveBuilding;
@@ -162,11 +178,6 @@ namespace Game.Core
             _sheme.Player.Skip.performed -= OnSkip;
         }
 
-        private void OnSelectSlot1(InputAction.CallbackContext ctx) => SlotSelected?.Invoke(0);
-        private void OnSelectSlot2(InputAction.CallbackContext ctx) => SlotSelected?.Invoke(1);
-        private void OnSelectSlot3(InputAction.CallbackContext ctx) => SlotSelected?.Invoke(2);
-        private void OnSelectSlot4(InputAction.CallbackContext ctx) => SlotSelected?.Invoke(3);
-        private void OnSelectSlot5(InputAction.CallbackContext ctx) => SlotSelected?.Invoke(4);
         private void OnSell(InputAction.CallbackContext ctx) => SellPressed?.Invoke();
         private void OnMoveBuilding(InputAction.CallbackContext ctx) => MoveBuildingPressed?.Invoke();
         private void OnUpgrade(InputAction.CallbackContext ctx) => UpgradePressed?.Invoke();
@@ -235,15 +246,6 @@ namespace Game.Core
             float scroll = _sheme.Player.Scroll.ReadValue<float>();
             ZoomDelta = scroll + _touchPinchDelta;
             _touchPinchDelta = 0f; // Reset pinch delta after consumption
-
-            // Hotkeys 6-9 for expanded slot bars
-            if (_sheme.Player.enabled && Keyboard.current != null)
-            {
-                if (Keyboard.current.digit6Key.wasPressedThisFrame) SlotSelected?.Invoke(5);
-                else if (Keyboard.current.digit7Key.wasPressedThisFrame) SlotSelected?.Invoke(6);
-                else if (Keyboard.current.digit8Key.wasPressedThisFrame) SlotSelected?.Invoke(7);
-                else if (Keyboard.current.digit9Key.wasPressedThisFrame) SlotSelected?.Invoke(8);
-            }
         }
 
         private void HandleTouchGestures()

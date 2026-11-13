@@ -30,6 +30,7 @@ namespace Game.Buildings
         }
 
         [Title("Unit Spawner Config")]
+        [SerializeField] private Sprite _unitSprite;
         [SerializeField] private bool _isRanged;
         [SerializeField] private bool _isArcherUnit;
         [SerializeField] private bool _isBerserker;
@@ -66,7 +67,8 @@ namespace Game.Buildings
             bool usesStealth,
             float stealthSeconds,
             Color tint,
-            LevelUnitConfig[] levels)
+            LevelUnitConfig[] levels,
+            Sprite unitSprite = null)
         {
             _isRanged = isRanged;
             _isArcherUnit = isArcherUnit;
@@ -75,6 +77,7 @@ namespace Game.Buildings
             _stealthSeconds = stealthSeconds;
             _unitTint = tint;
             _levels = levels;
+            if (unitSprite != null) _unitSprite = unitSprite;
         }
 
         protected override void OnPlaced()
@@ -140,11 +143,17 @@ namespace Game.Buildings
         {
             for (int i = _spawnedUnits.Count - 1; i >= 0; i--)
             {
-                if (_spawnedUnits[i] == null || _spawnedUnits[i].IsDead)
+                AllyUnit unit = _spawnedUnits[i];
+                if (unit == null || unit.IsDead || !unit.gameObject.activeInHierarchy || unit.SpawnerBuilding != this)
                 {
                     _spawnedUnits.RemoveAt(i);
                 }
             }
+        }
+
+        private void OnSpawnedUnitDied(AllyUnit unit)
+        {
+            _spawnedUnits.Remove(unit);
         }
 
         private void SpawnMissingUnitsToCount(int targetCount)
@@ -163,9 +172,9 @@ namespace Game.Buildings
             Vector3 offset = new Vector3(Mathf.Cos(angle) * 0.6f, Mathf.Sin(angle) * 0.6f, 0f);
             Vector3 spawnPos = transform.position + offset;
 
-            var unitGo = new GameObject($"{(Data != null ? Data.Id : "Unit")}_{index}");
-            unitGo.transform.position = spawnPos;
-            var unit = unitGo.AddComponent<AllyUnit>();
+            string unitName = $"{(Data != null ? Data.Id : "Unit")}_{index}";
+            AllyUnit unit = AllyUnitPool.GetOrCreate().Spawn(spawnPos, unitName);
+            unit.Died += OnSpawnedUnitDied;
             unit.Initialize(
                 this,
                 transform.position,
@@ -186,7 +195,10 @@ namespace Game.Buildings
                 Mathf.Max(1, cfg.meleeDamage),
                 Mathf.Max(0.25f, cfg.meleeInterval),
                 cfg.bleedDps,
-                cfg.bleedDuration);
+                cfg.bleedDuration,
+                false,
+                0f,
+                _unitSprite);
 
             _spawnedUnits.Add(unit);
         }
@@ -195,9 +207,11 @@ namespace Game.Buildings
         {
             for (int i = _spawnedUnits.Count - 1; i >= 0; i--)
             {
-                if (_spawnedUnits[i] != null)
+                AllyUnit unit = _spawnedUnits[i];
+                if (unit != null && unit.gameObject.activeInHierarchy && unit.SpawnerBuilding == this)
                 {
-                    Destroy(_spawnedUnits[i].gameObject);
+                    unit.Died -= OnSpawnedUnitDied;
+                    unit.Despawn();
                 }
             }
             _spawnedUnits.Clear();

@@ -23,10 +23,10 @@ namespace Game.Weapons
         [SerializeField]
         private LevelStats[] _levels = new LevelStats[4]
         {
-            new() { arrowCount = 6, damagePerArrow = 12, splashRadius = 1.0f, maxRange = 10f, flightTimePerCell = 0.4f, cooldown = 14f },
-            new() { arrowCount = 10, damagePerArrow = 15, splashRadius = 1.0f, maxRange = 12f, flightTimePerCell = 0.3f, cooldown = 12f },
-            new() { arrowCount = 12, damagePerArrow = 17, splashRadius = 1.5f, maxRange = 14f, flightTimePerCell = 0.2f, cooldown = 10f },
-            new() { arrowCount = 15, damagePerArrow = 20, splashRadius = 2.0f, maxRange = 16f, flightTimePerCell = 0.1f, cooldown = 7f }
+            new() { arrowCount = 8, damagePerArrow = 14, splashRadius = 1.6f, maxRange = 15f, flightTimePerCell = 0.12f, cooldown = 6f },
+            new() { arrowCount = 11, damagePerArrow = 18, splashRadius = 1.8f, maxRange = 17f, flightTimePerCell = 0.10f, cooldown = 5f },
+            new() { arrowCount = 14, damagePerArrow = 22, splashRadius = 2.0f, maxRange = 19f, flightTimePerCell = 0.09f, cooldown = 4.2f },
+            new() { arrowCount = 18, damagePerArrow = 28, splashRadius = 2.4f, maxRange = 22f, flightTimePerCell = 0.08f, cooldown = 3.5f }
         };
 
         public LevelStats CurrentStats => _levels[Mathf.Clamp(_currentLevel - 1, 0, _levels.Length - 1)];

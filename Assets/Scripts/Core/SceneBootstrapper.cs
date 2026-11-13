@@ -8,6 +8,7 @@ using Game.Pathfinding;
 using Game.Projectiles;
 using Game.Spells;
 using Game.UI;
+using Game.Units;
 using Game.WaveSystem;
 using Game.Weapons;
 
@@ -65,6 +66,7 @@ namespace Game.Core
             var stats = RunStatistics.Instance ?? FindAnyObjectByType<RunStatistics>();
             var buildingManager = FindAnyObjectByType<BuildingManager>();
             var projectilePool = FindAnyObjectByType<ProjectilePool>();
+            var allyUnitPool = AllyUnitPool.Instance ?? FindAnyObjectByType<AllyUnitPool>();
 
             // 2. World & Castle
             var castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
@@ -116,11 +118,21 @@ namespace Game.Core
             if (buildingManager != null)
             {
                 buildingManager.RegisterPlacementValidator(MageTowerBuilding.CanPlaceMageTower);
+                buildingManager.BindWeapon(activeWeapon);
                 log.AppendLine("[PASS] BuildingManager ready (MageTower cap validator registered)");
             }
             else
             {
                 log.AppendLine("[WARN] BuildingManager not found in scene!");
+            }
+
+            if (allyUnitPool != null)
+            {
+                log.AppendLine("[PASS] AllyUnitPool ready");
+            }
+            else
+            {
+                log.AppendLine("[WARN] AllyUnitPool not found in scene (will auto-create on first unit spawn)");
             }
 
             EnsureSpellSystems(log);
@@ -171,12 +183,13 @@ namespace Game.Core
                 ? RunConfig.Instance.SelectedWeapon.Id
                 : null;
 
-            if (string.IsNullOrEmpty(selectedId) || selectedId == "heavy_ballista")
+            if (string.IsNullOrEmpty(selectedId) || selectedId == GameConstants.DefaultWeaponId)
             {
                 if (existing is HeavyBallista hb && RunConfig.Instance?.SelectedWeapon?.BallistaData != null)
                 {
                     hb.Configure(RunConfig.Instance.SelectedWeapon.BallistaData);
                 }
+                existing?.SetModifiers(progression);
                 progression?.BindWeapon(existing);
                 return existing;
             }
@@ -198,7 +211,7 @@ namespace Game.Core
                 "tar_cannon" => mountGo.AddComponent<TarCannon>(),
                 "orthanc" => mountGo.AddComponent<OrthancTower>(),
                 "archer_volley" => mountGo.AddComponent<ArcherVolley>(),
-                _ => mountGo.AddComponent<HeavyBallista>()
+                _ => SpawnFallbackBallista(mountGo, selectedId)
             };
 
             if (spawned is HeavyBallista newHb && RunConfig.Instance?.SelectedWeapon?.BallistaData != null)
@@ -206,8 +219,15 @@ namespace Game.Core
                 newHb.Configure(RunConfig.Instance.SelectedWeapon.BallistaData);
             }
 
+            spawned?.SetModifiers(progression);
             progression?.BindWeapon(spawned);
             return spawned;
+        }
+
+        private static CastleWeapon SpawnFallbackBallista(GameObject mountGo, string unknownWeaponId)
+        {
+            Debug.LogWarning($"[SceneBootstrapper] Unknown weapon id='{unknownWeaponId}'. Falling back to HeavyBallista!");
+            return mountGo.AddComponent<HeavyBallista>();
         }
 
         private void EnsureSpellSystems(System.Text.StringBuilder log)
@@ -215,13 +235,25 @@ namespace Game.Core
             var scrollMgr = SpellScrollManager.Instance ?? FindAnyObjectByType<SpellScrollManager>();
             if (scrollMgr == null)
             {
+                Debug.LogWarning("[SceneBootstrapper] SpellScrollManager missing from scene! Auto-creating fallback component. Add it to the scene prefab.", this);
                 scrollMgr = gameObject.AddComponent<SpellScrollManager>();
+                log.AppendLine($"[WARN] SpellScrollManager auto-created (missing from scene prefab, max={scrollMgr.MaxScrolls})");
+            }
+            else
+            {
+                log.AppendLine($"[PASS] SpellScrollManager found (max={scrollMgr.MaxScrolls})");
             }
 
             var caster = FindAnyObjectByType<SpellCaster>();
             if (caster == null)
             {
+                Debug.LogWarning("[SceneBootstrapper] SpellCaster missing from scene! Auto-creating fallback component. Add it to the scene prefab.", this);
                 caster = gameObject.AddComponent<SpellCaster>();
+                log.AppendLine("[WARN] SpellCaster auto-created (missing from scene prefab)");
+            }
+            else
+            {
+                log.AppendLine("[PASS] SpellCaster found");
             }
 
             var panel = FindAnyObjectByType<SpellPanelUI>(FindObjectsInactive.Include);
@@ -229,8 +261,6 @@ namespace Game.Core
             {
                 panel.Bind(scrollMgr);
             }
-
-            log.AppendLine($"[PASS] Spell systems ready (ScrollManager max={scrollMgr.MaxScrolls})");
         }
     }
 }

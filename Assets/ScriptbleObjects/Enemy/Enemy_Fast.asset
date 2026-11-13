@@ -15,14 +15,14 @@ MonoBehaviour:
   _id: fast_goblin
   _displayName: "\u0413\u043E\u0431\u043B\u0438\u043D-\u0431\u0435\u0433\u0443\u043D"
   _isBoss: 0
-  _sprite: {fileID: 6229824873125743247, guid: a6e8952ed209c444bbd6bb5a1cdf870f, type: 3}
-  _tintColor: {r: 0.75, g: 1, b: 0.45, a: 1}
+  _sprite: {fileID: 21300000, guid: 88d912fa166b51f02a7ce6cd6e4956ee, type: 3}
+  _tintColor: {r: 1, g: 1, b: 1, a: 1}
   _visualScale: {x: 0.85, y: 0.85, z: 1}
-  _maxHP: 16
+  _maxHP: 14
   _defense: 0
   _damageResistance: 0
-  _hpGrowthPerWave: 0.08
-  _moveSpeed: 3.2
+  _hpGrowthPerWave: 0.1
+  _moveSpeed: 2.8
   _minSpeedRatio: 0.8
   _damage: 3
   _attackInterval: 0.9
@@ -30,8 +30,8 @@ MonoBehaviour:
   _isRanged: 0
   _honorReward: 8
   _lootTable:
-    _minCoins: 1
-    _maxCoins: 2
+    _minCoins: 3
+    _maxCoins: 5
     _coinDropChance: 1
     _diamondDropChance: 0.01
     _minDiamondAmount: 1

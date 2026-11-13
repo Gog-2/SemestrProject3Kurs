@@ -12,6 +12,7 @@ namespace Game.UI.MainMenu
     {
         [Title("References")]
         [SerializeField] private List<KnightData> _allKnights = new();
+        [SerializeField] private Image _portraitImage;
         [SerializeField] private TMP_Text _nameText;
         [SerializeField] private TMP_Text _titleText;
         [SerializeField] private TMP_Text _quoteText;
@@ -84,6 +85,12 @@ namespace Game.UI.MainMenu
             _titleText.text = knight.Title;
             _quoteText.text = knight.Quote;
 
+            if (_portraitImage != null)
+            {
+                _portraitImage.sprite = knight.Portrait;
+                _portraitImage.enabled = knight.Portrait != null;
+            }
+
             _statsText.text = $"Прочность замка: {knight.CastleMaxHP} (+{knight.HPPerLevel}/ур.)\nСлотов для построек: {knight.InitialBuildSlots}";
 
             string bld = knight.StartingBuildings != null ? string.Join(", ", knight.StartingBuildings) : "-";
@@ -136,7 +143,7 @@ namespace Game.UI.MainMenu
                 }
                 else
                 {
-                    Debug.Log("[KnightSelectionUI] Недостаточно алмазов для открытия!");
+                    Debug.LogWarning("[KnightSelectionUI] Недостаточно алмазов для открытия!", this);
                 }
             }
             else

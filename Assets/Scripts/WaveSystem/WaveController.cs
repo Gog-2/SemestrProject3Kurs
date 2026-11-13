@@ -78,27 +78,24 @@ namespace Game.WaveSystem
         {
             Instance = this;
             EnsureWaveConfigsPopulated();
+
             if (_castle == null)
             {
-                _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
+                Debug.LogError($"[{nameof(WaveController)}] '_castle' is not assigned in Inspector!", this);
+                enabled = false;
+                return;
             }
+
             if (_spawner == null)
             {
-                _spawner = GetComponentInChildren<EnemySpawner>() ?? FindAnyObjectByType<EnemySpawner>();
+                Debug.LogError($"[{nameof(WaveController)}] '_spawner' is not assigned in Inspector!", this);
+                enabled = false;
+                return;
             }
         }
 
         private void Start()
         {
-            if (_castle == null)
-            {
-                _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
-            }
-            if (_spawner == null)
-            {
-                _spawner = GetComponentInChildren<EnemySpawner>() ?? FindAnyObjectByType<EnemySpawner>();
-            }
-
             if (_castle != null)
             {
                 _castle.Destroyed -= OnCastleDestroyed;
@@ -159,8 +156,11 @@ namespace Game.WaveSystem
         [Button]
         public void StartWave()
         {
-            if (_castle == null) _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
-            if (_spawner == null) _spawner = GetComponentInChildren<EnemySpawner>() ?? FindAnyObjectByType<EnemySpawner>();
+            if (_castle == null || _spawner == null)
+            {
+                Debug.LogError($"[{nameof(WaveController)}] Cannot start wave: missing '_castle' or '_spawner' reference!", this);
+                return;
+            }
 
             if (_currentState == WaveState.GameOver)
             {
@@ -218,7 +218,9 @@ namespace Game.WaveSystem
             }
             catch (OperationCanceledException)
             {
-                // Clean cancellation on destroy
+#if UNITY_EDITOR
+                Debug.Log($"[{nameof(WaveController)}] StartWaveWithDelayAsync cancelled (expected on destroy/reset).", this);
+#endif
             }
         }
 
@@ -237,7 +239,9 @@ namespace Game.WaveSystem
             }
             catch (OperationCanceledException)
             {
-                // Clean cancellation
+#if UNITY_EDITOR
+                Debug.Log($"[{nameof(WaveController)}] RunFirstBuildingPhaseAsync cancelled (expected on skip/destroy).", this);
+#endif
             }
         }
 
@@ -301,7 +305,9 @@ namespace Game.WaveSystem
                 }
                 catch (OperationCanceledException)
                 {
-                    // Expected when wave timer ends mid-spawn interval
+#if UNITY_EDITOR
+                    Debug.Log($"[{nameof(WaveController)}] Enemy spawning cancelled on wave timer end.", this);
+#endif
                 }
 
                 if (ct.IsCancellationRequested || _currentState == WaveState.GameOver)
@@ -378,7 +384,9 @@ namespace Game.WaveSystem
             }
             catch (OperationCanceledException)
             {
-                // Clean cancellation on wave cancel or game over
+#if UNITY_EDITOR
+                Debug.Log($"[{nameof(WaveController)}] RunWaveLifecycleAsync cancelled (expected on wave cancel or game over).", this);
+#endif
             }
         }
 

@@ -11,7 +11,7 @@ using Game.Weapons;
 namespace Game.Core
 {
     [DefaultExecutionOrder(-50)]
-    public class RunProgressionManager : MonoBehaviour
+    public class RunProgressionManager : MonoBehaviour, IRunModifiers
     {
         public static RunProgressionManager Instance { get; private set; }
 
@@ -31,25 +31,32 @@ namespace Game.Core
         [ShowInInspector, ReadOnly] private int _pendingUpgradeSelections = 0;
 
         [Title("Modifiers Stack")]
-        [ShowInInspector, ReadOnly] public int BonusCoinsPerKill { get; private set; } = 0;
-        [ShowInInspector, ReadOnly] public float ExtraDiamondDropChance { get; private set; } = 0f;
-        [ShowInInspector, ReadOnly] public float RangedDamageMultiplier { get; private set; } = 1f;
-        [ShowInInspector, ReadOnly] public float MeleeDamageMultiplier { get; private set; } = 1f;
-        [ShowInInspector, ReadOnly] public float AttackSpeedMultiplier { get; private set; } = 1f;
-        [ShowInInspector, ReadOnly] public float WeaponDamageMultiplier { get; private set; } = 1f;
-        [ShowInInspector, ReadOnly] public float WeaponCooldownMultiplier { get; private set; } = 1f;
-        [ShowInInspector, ReadOnly] public float UnitHealthMultiplier { get; private set; } = 1f;
-        [ShowInInspector, ReadOnly] public float UnitRespawnMultiplier { get; private set; } = 1f;
-        [ShowInInspector, ReadOnly] public float BuildingHealthMultiplier { get; private set; } = 1f;
-        [ShowInInspector, ReadOnly] public float SlowOnHitPercent { get; private set; } = 0f;
-        [ShowInInspector, ReadOnly] public float TrapDamageMultiplier { get; private set; } = 1f;
-        [ShowInInspector, ReadOnly] public float BombDamageMultiplier { get; private set; } = 1f;
-        [ShowInInspector, ReadOnly] public float EconomicSpeedMultiplier { get; private set; } = 1f;
-        [ShowInInspector, ReadOnly] public float SpellDamageMultiplier { get; private set; } = 1f;
-        [ShowInInspector, ReadOnly] public float BuildingCostDiscountPercent { get; private set; } = 0f;
-        [ShowInInspector, ReadOnly] public float SupportEffectivenessMultiplier { get; private set; } = 1f;
-        [ShowInInspector, ReadOnly] public int BonusAggroLimit { get; private set; } = 0;
-        [ShowInInspector, ReadOnly] public int ExtraBuildSlots { get; private set; } = 0;
+        [ShowInInspector, ReadOnly] public int BonusCoinsPerKill => ModifierState.BonusCoinsPerKill;
+        [ShowInInspector, ReadOnly] public float ExtraDiamondDropChance => ModifierState.ExtraDiamondDropChance;
+        [ShowInInspector, ReadOnly] public float RangedDamageMultiplier => ModifierState.RangedDamageMultiplier;
+        [ShowInInspector, ReadOnly] public float MeleeDamageMultiplier => ModifierState.MeleeDamageMultiplier;
+        [ShowInInspector, ReadOnly] public float AttackSpeedMultiplier => ModifierState.AttackSpeedMultiplier;
+        [ShowInInspector, ReadOnly] public float WeaponDamageMultiplier => ModifierState.WeaponDamageMultiplier;
+        [ShowInInspector, ReadOnly] public float WeaponCooldownMultiplier => ModifierState.WeaponCooldownMultiplier;
+        [ShowInInspector, ReadOnly] public float UnitHealthMultiplier => ModifierState.UnitHealthMultiplier;
+        [ShowInInspector, ReadOnly] public float UnitRespawnMultiplier => ModifierState.UnitRespawnMultiplier;
+        [ShowInInspector, ReadOnly] public float BuildingHealthMultiplier => ModifierState.BuildingHealthMultiplier;
+        [ShowInInspector, ReadOnly] public float SlowOnHitPercent => ModifierState.SlowOnHitPercent;
+        [ShowInInspector, ReadOnly] public float TrapDamageMultiplier => ModifierState.TrapDamageMultiplier;
+        [ShowInInspector, ReadOnly] public float BombDamageMultiplier => ModifierState.BombDamageMultiplier;
+        [ShowInInspector, ReadOnly] public float EconomicSpeedMultiplier => ModifierState.EconomicSpeedMultiplier;
+        [ShowInInspector, ReadOnly] public float SpellDamageMultiplier => ModifierState.SpellDamageMultiplier;
+        [ShowInInspector, ReadOnly] public float BuildingCostDiscountPercent => ModifierState.BuildingCostDiscountPercent;
+        [ShowInInspector, ReadOnly] public float SupportEffectivenessMultiplier => ModifierState.SupportEffectivenessMultiplier;
+        [ShowInInspector, ReadOnly] public int BonusAggroLimit => ModifierState.BonusAggroLimit;
+        [ShowInInspector, ReadOnly] public int ExtraBuildSlots => ModifierState.ExtraBuildSlots;
+
+        private RunModifierState _modifierState;
+        private readonly UpgradeEffectRegistry _effectRegistry = new();
+
+        private RunModifierState ModifierState => _modifierState ??= new RunModifierState(
+            getCastle: () => CastleInstance,
+            onBuildSlotsChanged: totalSlots => BuildSlotsCountChanged?.Invoke(totalSlots));
 
         private float _metaCombatDamageBonus;
         private float _metaEconomySpeedBonus;
@@ -141,8 +148,7 @@ namespace Game.Core
                 // +1 building slot every 5 castle levels (GIG-31)
                 if (_currentLevel % 5 == 0)
                 {
-                    ExtraBuildSlots++;
-                    BuildSlotsCountChanged?.Invoke(ExtraBuildSlots);
+                    ModifierState.AddExtraBuildSlots(1);
                 }
 
                 // Auto-upgrade CastleWeapon every 4 castle levels up to Lv 4 (GIG-85, GIG-93)
@@ -288,119 +294,7 @@ namespace Game.Core
 
         private void ApplyUpgradeEffect(UpgradeEffectType effectType, float value)
         {
-            switch (effectType)
-            {
-                case UpgradeEffectType.CastleMaxHealthPercent:
-                    if (CastleInstance != null)
-                    {
-                        int hpBonus = Mathf.RoundToInt(CastleInstance.MaxHP * value);
-                        CastleInstance.IncreaseMaxHealth(hpBonus, healAmount: true);
-                    }
-                    break;
-
-                case UpgradeEffectType.CastleMaxHealthFlat:
-                    if (CastleInstance != null)
-                    {
-                        CastleInstance.IncreaseMaxHealth(Mathf.RoundToInt(value), healAmount: true);
-                    }
-                    break;
-
-                case UpgradeEffectType.CastleHealPercent:
-                    if (CastleInstance != null)
-                    {
-                        CastleInstance.HealPercent(value);
-                    }
-                    break;
-
-                case UpgradeEffectType.BuildSlotAdd:
-                    ExtraBuildSlots += Mathf.RoundToInt(value);
-                    BuildSlotsCountChanged?.Invoke(ExtraBuildSlots);
-                    break;
-
-                case UpgradeEffectType.RangedDamagePercent:
-                    RangedDamageMultiplier += value;
-                    break;
-
-                case UpgradeEffectType.MeleeDamagePercent:
-                    MeleeDamageMultiplier += value;
-                    break;
-
-                case UpgradeEffectType.AttackSpeedPercent:
-                    AttackSpeedMultiplier += value;
-                    break;
-
-                case UpgradeEffectType.WeaponDamagePercent:
-                    WeaponDamageMultiplier += value;
-                    break;
-
-                case UpgradeEffectType.WeaponCooldownPercent:
-                    WeaponCooldownMultiplier = Mathf.Max(0.2f, WeaponCooldownMultiplier - value);
-                    break;
-
-                case UpgradeEffectType.UnitHealthPercent:
-                    UnitHealthMultiplier += value;
-                    break;
-
-                case UpgradeEffectType.UnitRespawnPercent:
-                    UnitRespawnMultiplier = Mathf.Max(0.2f, UnitRespawnMultiplier - value);
-                    break;
-
-                case UpgradeEffectType.BuildingHealthPercent:
-                    BuildingHealthMultiplier += value;
-                    break;
-
-                case UpgradeEffectType.CoinPerKill:
-                    BonusCoinsPerKill += Mathf.RoundToInt(value);
-                    break;
-
-                case UpgradeEffectType.DiamondDropChanceAdd:
-                    ExtraDiamondDropChance += value;
-                    break;
-
-                case UpgradeEffectType.SlowOnHitPercent:
-                    SlowOnHitPercent = Mathf.Max(SlowOnHitPercent, value);
-                    break;
-
-                case UpgradeEffectType.TrapDamagePercent:
-                    TrapDamageMultiplier += value;
-                    break;
-
-                case UpgradeEffectType.BombDamagePercent:
-                    BombDamageMultiplier += value;
-                    break;
-
-                case UpgradeEffectType.EconomicSpeedPercent:
-                    EconomicSpeedMultiplier += value;
-                    break;
-
-                case UpgradeEffectType.SpellDamagePercent:
-                    SpellDamageMultiplier += value;
-                    break;
-
-                case UpgradeEffectType.BuildingCostDiscountPercent:
-                    BuildingCostDiscountPercent = Mathf.Min(0.5f, BuildingCostDiscountPercent + value);
-                    break;
-
-                case UpgradeEffectType.SupportEffectivenessPercent:
-                    SupportEffectivenessMultiplier += value;
-                    break;
-
-                case UpgradeEffectType.AggroLimitAdd:
-                    BonusAggroLimit += Mathf.RoundToInt(value);
-                    break;
-
-                case UpgradeEffectType.RepairAllBuildingsPercent:
-                    var active = Building.ActiveBuildings;
-                    for (int i = 0; i < active.Count; i++)
-                    {
-                        Building b = active[i];
-                        if (b != null && !b.IsDead)
-                        {
-                            b.Repair(Mathf.RoundToInt(b.MaxHP * value));
-                        }
-                    }
-                    break;
-            }
+            _effectRegistry.TryApply(effectType, value, ModifierState);
         }
 
         // --- Unified Modifier Helpers (Upgrades + Meta + Selected Knight Passives) ---

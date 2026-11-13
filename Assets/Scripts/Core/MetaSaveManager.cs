@@ -85,9 +85,9 @@ namespace Game.Core
             _data.UnlockedDifficulties ??= new System.Collections.Generic.List<DifficultyMode>();
             _data.PurchasedBonuses ??= new System.Collections.Generic.List<MetaBonusEntry>();
 
-            if (!_data.UnlockedKnightIds.Contains("hador_oplot")) _data.UnlockedKnightIds.Add("hador_oplot");
-            if (!_data.UnlockedArenaIds.Contains("arena_plains")) _data.UnlockedArenaIds.Add("arena_plains");
-            if (!_data.UnlockedWeaponIds.Contains("heavy_ballista")) _data.UnlockedWeaponIds.Add("heavy_ballista");
+            if (!_data.UnlockedKnightIds.Contains(GameConstants.DefaultKnightId)) _data.UnlockedKnightIds.Add(GameConstants.DefaultKnightId);
+            if (!_data.UnlockedArenaIds.Contains(GameConstants.DefaultArenaId)) _data.UnlockedArenaIds.Add(GameConstants.DefaultArenaId);
+            if (!_data.UnlockedWeaponIds.Contains(GameConstants.DefaultWeaponId)) _data.UnlockedWeaponIds.Add(GameConstants.DefaultWeaponId);
             if (!_data.UnlockedDifficulties.Contains(DifficultyMode.Base)) _data.UnlockedDifficulties.Add(DifficultyMode.Base);
 
             if (!_data.UnlockedDifficulties.Contains(_data.SelectedDifficulty))

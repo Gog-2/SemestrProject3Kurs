@@ -10,7 +10,7 @@ using Game.WaveSystem;
 
 namespace Game.Units
 {
-    public class AllyUnit : MonoBehaviour, IDamageable
+    public class AllyUnit : MonoBehaviour, IDamageable, IPoolable
     {
         public static readonly List<AllyUnit> ActiveUnits = new(32);
 
@@ -47,6 +47,8 @@ namespace Game.Units
         private SpriteRenderer _renderer;
         private Tweener _flashTween;
         private Color _baseColor = Color.white;
+        private Sprite _customSprite;
+        private static Sprite s_skeletonSprite;
 
         private float _attackTimer;
         private float _patrolWaitTimer;
@@ -55,7 +57,9 @@ namespace Game.Units
         private Enemy _currentTarget;
 
         private readonly List<Enemy> _engagedEnemies = new(8);
+        private Action<AllyUnit> _releaseCallback;
 
+        public Building SpawnerBuilding => _spawnerBuilding;
         public int CurrentHP => _currentHP;
         public int MaxHP => _maxHP;
         public bool IsDead => _currentHP <= 0;
@@ -111,10 +115,12 @@ namespace Game.Units
             float bleedDps = 0f,
             float bleedDuration = 0f,
             bool isTemporary = false,
-            float lifetimeSeconds = 0f)
+            float lifetimeSeconds = 0f,
+            Sprite unitSprite = null)
         {
             _spawnerBuilding = spawner;
             _homePosition = homePos;
+            _customSprite = unitSprite;
 
             float hpMult = RunProgressionManager.Instance != null
                 ? RunProgressionManager.Instance.GetEffectiveUnitMaxHpMultiplier()
@@ -165,11 +171,22 @@ namespace Game.Units
                     _renderer = gameObject.AddComponent<SpriteRenderer>();
                 }
             }
-            _renderer.sprite = HazardZone.GetOrCreateCircleSprite();
-            _renderer.color = _baseColor;
-            _renderer.sortingLayerName = "Enemies";
-            _renderer.sortingOrder = 9;
-            transform.localScale = new Vector3(0.42f, 0.42f, 1f);
+            if (_customSprite != null)
+            {
+                _renderer.sprite = _customSprite;
+                _renderer.color = _baseColor;
+                _renderer.sortingLayerName = "Enemies";
+                _renderer.sortingOrder = 9;
+                transform.localScale = Vector3.one;
+            }
+            else
+            {
+                _renderer.sprite = HazardZone.GetOrCreateCircleSprite();
+                _renderer.color = _baseColor;
+                _renderer.sortingLayerName = "Enemies";
+                _renderer.sortingOrder = 9;
+                transform.localScale = new Vector3(0.42f, 0.42f, 1f);
+            }
         }
 
         public int ActiveAggroCount
@@ -240,13 +257,69 @@ namespace Game.Units
             }
         }
 
+        public void SetReleaseCallback(Action<AllyUnit> releaseCallback)
+        {
+            _releaseCallback = releaseCallback;
+        }
+
+        public void OnSpawnFromPool()
+        {
+            ResetPooledState();
+            gameObject.SetActive(true);
+        }
+
+        public void OnReturnToPool()
+        {
+            ResetPooledState();
+            _currentHP = 0;
+            _spawnerBuilding = null;
+            HealthChanged = null;
+            Destroyed = null;
+            Died = null;
+            gameObject.SetActive(false);
+        }
+
+        public void Despawn()
+        {
+            if (!gameObject.activeSelf)
+            {
+                return;
+            }
+
+            if (_releaseCallback != null)
+            {
+                _releaseCallback(this);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        private void ResetPooledState()
+        {
+            _flashTween?.Kill();
+            _flashTween = null;
+            _engagedEnemies.Clear();
+            _currentTarget = null;
+            _attackTimer = 0f;
+            _patrolWaitTimer = 0f;
+            _hasPatrolTarget = false;
+            _patrolTarget = Vector3.zero;
+            _isTemporarySummon = false;
+            _lifetimeRemaining = 0f;
+            _usesStealth = false;
+            _stealthRemaining = 0f;
+        }
+
         private void Die()
         {
+            _currentHP = 0;
             _flashTween?.Kill();
             _engagedEnemies.Clear();
             Destroyed?.Invoke(this);
             Died?.Invoke(this);
-            Destroy(gameObject);
+            Despawn();
         }
 
         private void Update()
@@ -521,11 +594,11 @@ namespace Game.Units
             else if (dx < -0.05f) _renderer.flipX = true;
         }
 
+        public static void SetSkeletonSprite(Sprite sprite) => s_skeletonSprite = sprite;
+
         public static AllyUnit SpawnTemporarySkeleton(Vector3 worldPos, int damage = 20, int maxHp = 50, float lifetimeSeconds = 3f)
         {
-            var go = new GameObject("Skeleton_Summon");
-            go.transform.position = worldPos;
-            var unit = go.AddComponent<AllyUnit>();
+            AllyUnit unit = AllyUnitPool.GetOrCreate().Spawn(worldPos, "Skeleton_Summon");
             unit.Initialize(
                 spawner: null,
                 homePos: worldPos,
@@ -537,9 +610,10 @@ namespace Game.Units
                 patrolRadius: 2.5f,
                 isRanged: false,
                 isArcherUnit: false,
-                tint: new Color(0.85f, 0.95f, 0.85f, 1f),
+                tint: s_skeletonSprite != null ? Color.white : new Color(0.85f, 0.95f, 0.85f, 1f),
                 isTemporary: true,
-                lifetimeSeconds: lifetimeSeconds);
+                lifetimeSeconds: lifetimeSeconds,
+                unitSprite: s_skeletonSprite);
             return unit;
         }
     }

@@ -8,7 +8,7 @@ namespace Game.Core
     public class PlayerWallet : MonoBehaviour
     {
         [Title("Starting Currency")]
-        [SerializeField, Min(0)] private int _initialCoins = 100;
+        [SerializeField, Min(0)] private int _initialCoins = 180;
         [SerializeField, Min(0)] private int _initialDiamonds = 0;
 
         [Title("Debug")]

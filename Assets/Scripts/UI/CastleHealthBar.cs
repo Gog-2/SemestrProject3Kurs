@@ -33,19 +33,10 @@ namespace Game.UI
         private void Awake()
         {
             if (_fillImage != null) _originalFillColor = _fillImage.color;
-            if (_castle == null)
-            {
-                _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
-            }
         }
 
         private void OnEnable()
         {
-            if (_castle == null)
-            {
-                _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
-            }
-
             if (_castle != null)
             {
                 _castle.HealthChanged -= OnHealthChanged;
@@ -58,13 +49,9 @@ namespace Game.UI
         {
             if (_castle == null)
             {
-                _castle = Castle.Instance ?? FindAnyObjectByType<Castle>();
-                if (_castle != null)
-                {
-                    _castle.HealthChanged -= OnHealthChanged;
-                    _castle.HealthChanged += OnHealthChanged;
-                    UpdateVisualsInstant();
-                }
+                Debug.LogError($"[{nameof(CastleHealthBar)}] '_castle' is not assigned in Inspector!", this);
+                enabled = false;
+                return;
             }
         }
 

@@ -20,7 +20,7 @@ namespace Game.Buildings
         public int GetPrice(float discountMultiplier = 1f)
         {
             if (Data == null) return 0;
-            int raw = OverrideShopPrice > 0 ? OverrideShopPrice : Data.GetStats(1).cost;
+            int raw = OverrideShopPrice > 0 ? OverrideShopPrice : Mathf.RoundToInt(Data.GetStats(1).cost * 0.5f);
             return Mathf.Max(5, Mathf.RoundToInt(raw * discountMultiplier));
         }
 

@@ -36,5 +36,10 @@ namespace Game.Data
             _diamondCost = cost;
             _ballistaData = data;
         }
+
+        public void SetIcon(Sprite icon)
+        {
+            _icon = icon;
+        }
     }
 }

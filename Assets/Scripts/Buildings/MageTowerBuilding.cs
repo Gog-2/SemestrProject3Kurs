@@ -10,11 +10,12 @@ namespace Game.Buildings
     {
         [Title("Mage Tower Config (GIG-94 / GIG-95)")]
         [SerializeField] private SpellData _spellData;
-        [SerializeField] private float[] _craftCooldowns = new float[4] { 60f, 55f, 50f, 45f };
+        [SerializeField] private float[] _craftCooldowns = new float[4] { 22f, 19f, 16f, 13f };
 
         private float _elapsed;
         private float _progress01;
         private bool _isFrozenAtCap;
+        private bool _warnedMissingScrollManager;
 
         public SpellData SpellData => _spellData;
         public float Progress01 => _progress01;
@@ -63,7 +64,15 @@ namespace Game.Buildings
             if (_progress01 >= 1f)
             {
                 SpellScrollManager mgr = SpellScrollManager.Instance;
-                if (mgr == null) return;
+                if (mgr == null)
+                {
+                    if (!_warnedMissingScrollManager)
+                    {
+                        _warnedMissingScrollManager = true;
+                        Debug.LogWarning($"[{nameof(MageTowerBuilding)}] SpellScrollManager.Instance is null; crafted scroll cannot be added.", this);
+                    }
+                    return;
+                }
 
                 if (mgr.IsFull)
                 {

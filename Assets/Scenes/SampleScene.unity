@@ -252,6 +252,7 @@ GameObject:
   - component: {fileID: 1059899316}
   - component: {fileID: 1059899318}
   - component: {fileID: 1059899317}
+  - component: {fileID: 1059899319}
   m_Layer: 0
   m_Name: '[GameSystems]'
   m_TagString: Untagged
@@ -300,7 +301,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Core.RunProgressionManager
   _castle: {fileID: 75240530}
   _upgradeDatabase: {fileID: 11400000, guid: 92201469f02fab3448fe7a70654a53b2, type: 2}
-  _castleWeapon: {fileID: 0}
+  _castleWeapon: {fileID: 8517314257513837282}
 --- !u!114 &1059899313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,6 +348,7 @@ MonoBehaviour:
   _ghostView: {fileID: 855084390}
   _wallet: {fileID: 8517314257513837285}
   _mainCamera: {fileID: 3628190760565267360}
+  _castleWeapon: {fileID: 8517314257513837282}
   _contextMenuUI: {fileID: 812149281}
   _slots:
   - {fileID: 11400000, guid: d96c98ae0dc59f74e9df195c507ff3f1, type: 2}
@@ -378,7 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83ddb449935dfad40ab40042ea94b52a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Spells.SpellCaster
-  _mainCamera: {fileID: 0}
+  _mainCamera: {fileID: 3628190760565267360}
 --- !u!114 &1059899318
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -392,6 +394,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Spells.SpellScrollManager
   _maxScrolls: 5
+--- !u!114 &1059899319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1059899309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2977fdd4d8fc532b90dda363d4dd95d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Units.AllyUnitPool
+  _prefab: {fileID: 0}
+  _defaultCapacity: 16
+  _maxPoolSize: 100
 --- !u!1 &1130518309
 GameObject:
   m_ObjectHideFlags: 0

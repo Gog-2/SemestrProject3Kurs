@@ -14,6 +14,15 @@ namespace Game.Weapons
         [SerializeField, ReadOnly] protected int _currentLevel = 1;
         [SerializeField, ReadOnly] protected float _cooldownTimer = 0f;
 
+        private IRunModifiers _modifiers;
+
+        protected IRunModifiers Modifiers => _modifiers ??= RunProgressionManager.Instance;
+
+        public void SetModifiers(IRunModifiers modifiers)
+        {
+            _modifiers = modifiers;
+        }
+
         public int CurrentLevel => _currentLevel;
         public float CooldownTimer => _cooldownTimer;
         public abstract float MaxCooldown { get; }
@@ -64,24 +73,26 @@ namespace Game.Weapons
 
         protected int ApplyWeaponDamageModifiers(int baseDamage, bool isExplosive = false)
         {
-            if (RunProgressionManager.Instance == null) return baseDamage;
+            IRunModifiers mods = Modifiers;
+            if (mods == null) return baseDamage;
 
-            float mult = RunProgressionManager.Instance.GetEffectiveWeaponDamageMultiplier();
-            if (isExplosive && RunProgressionManager.Instance.ActiveKnight != null)
+            float mult = mods.GetEffectiveWeaponDamageMultiplier();
+            if (isExplosive && mods.ActiveKnight != null)
             {
-                mult += RunProgressionManager.Instance.ActiveKnight.ExplosiveDamageBonus;
+                mult += mods.ActiveKnight.ExplosiveDamageBonus;
             }
             return Mathf.Max(1, Mathf.RoundToInt(baseDamage * mult));
         }
 
         protected float ApplyWeaponCooldownModifiers(float baseCooldown, bool isPiercing = false)
         {
-            if (RunProgressionManager.Instance == null) return baseCooldown;
+            IRunModifiers mods = Modifiers;
+            if (mods == null) return baseCooldown;
 
-            float mult = RunProgressionManager.Instance.GetEffectiveWeaponCooldownMultiplier();
+            float mult = mods.GetEffectiveWeaponCooldownMultiplier();
             if (isPiercing)
             {
-                mult *= RunProgressionManager.Instance.GetEffectivePiercingCooldownMultiplier();
+                mult *= mods.GetEffectivePiercingCooldownMultiplier();
             }
             return Mathf.Max(0.25f, baseCooldown * mult);
         }

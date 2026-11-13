@@ -12,6 +12,7 @@ namespace Game.UI.MainMenu
     {
         [Title("References")]
         [SerializeField] private List<WeaponSelectionData> _allWeapons = new();
+        [SerializeField] private Image _iconImage;
         [SerializeField] private TMP_Text _nameText;
         [SerializeField] private TMP_Text _descriptionText;
 
@@ -76,6 +77,12 @@ namespace Game.UI.MainMenu
 
             _nameText.text = weapon.WeaponName;
             _descriptionText.text = weapon.Description;
+
+            if (_iconImage != null)
+            {
+                _iconImage.sprite = weapon.Icon;
+                _iconImage.enabled = weapon.Icon != null;
+            }
 
             bool isUnlocked = MetaSaveManager.IsWeaponUnlocked(weapon.Id);
 

@@ -7,8 +7,8 @@ namespace Game.Buildings
 {
     public class TrapBuilding : Building
     {
-        private static readonly int[] s_damagePerSec = { 3, 5, 7, 10 };
-        private static readonly int[] s_baseUses = { 30, 50, 75, 100 };
+        private static readonly int[] s_damagePerSec = { 6, 10, 14, 20 };
+        private static readonly int[] s_baseUses = { 35, 55, 80, 110 };
 
         private int _remainingUses = 30;
         private int _maxUses = 30;

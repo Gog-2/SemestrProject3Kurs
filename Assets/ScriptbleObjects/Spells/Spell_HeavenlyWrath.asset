@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Spell_HeavenlyWrath
   m_EditorClassIdentifier: Assembly-CSharp::Game.Spells.SpellData
   _spellKind: 2
+  _effect: {fileID: 11400000, guid: 43a7b66432f1a9f4b94227e45efce20e, type: 2}
   _spellName: "\u041D\u0435\u0431\u0435\u0441\u043D\u0430\u044F \u043A\u0430\u0440\u0430"
   _description: "\u041C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u044B\u0439 \u0443\u0434\u0430\u0440
     \u043C\u043E\u043B\u043D\u0438\u0435\u0439, \u0446\u0435\u043F\u044C \u043F\u043E

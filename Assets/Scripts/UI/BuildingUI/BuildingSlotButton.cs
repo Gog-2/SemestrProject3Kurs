@@ -163,7 +163,10 @@ namespace Game.UI.BuildingUI
         {
             if (_data == null || _count <= 0) return;
 
-            int cost = _data.GetStats(1).cost;
+            float discountMult = RunProgressionManager.Instance != null
+                ? RunProgressionManager.Instance.GetEffectiveUpgradeCostMultiplier()
+                : 1f;
+            int cost = Mathf.Max(1, Mathf.RoundToInt(_data.GetStats(1).cost * discountMult));
             _costText.text = $"{cost} м.";
 
             var wallet = PlayerWallet.Instance;

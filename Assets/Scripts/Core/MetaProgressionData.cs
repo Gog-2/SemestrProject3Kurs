@@ -14,15 +14,15 @@ namespace Game.Core
     public class MetaProgressionData
     {
         public int Diamonds = 0;
-        public List<string> UnlockedKnightIds = new() { "hador_oplot" };
-        public List<string> UnlockedArenaIds = new() { "arena_plains" };
-        public List<string> UnlockedWeaponIds = new() { "heavy_ballista" };
+        public List<string> UnlockedKnightIds = new() { GameConstants.DefaultKnightId };
+        public List<string> UnlockedArenaIds = new() { GameConstants.DefaultArenaId };
+        public List<string> UnlockedWeaponIds = new() { GameConstants.DefaultWeaponId };
         public List<DifficultyMode> UnlockedDifficulties = new() { DifficultyMode.Base };
         public List<MetaBonusEntry> PurchasedBonuses = new();
 
-        public string SelectedKnightId = "hador_oplot";
-        public string SelectedArenaId = "arena_plains";
-        public string SelectedWeaponId = "heavy_ballista";
+        public string SelectedKnightId = GameConstants.DefaultKnightId;
+        public string SelectedArenaId = GameConstants.DefaultArenaId;
+        public string SelectedWeaponId = GameConstants.DefaultWeaponId;
         public DifficultyMode SelectedDifficulty = DifficultyMode.Base;
     }
 }

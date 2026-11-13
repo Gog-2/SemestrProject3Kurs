@@ -40,11 +40,6 @@ namespace Game.UI
                 _mainCamera = Camera.main;
             }
 
-            if (_weapon == null)
-            {
-                _weapon = FindAnyObjectByType<CastleWeapon>();
-            }
-
             if (_cooldownText != null)
             {
                 _cooldownText.raycastTarget = false;
@@ -55,10 +50,9 @@ namespace Game.UI
         {
             if (_weapon == null)
             {
-                _weapon = FindAnyObjectByType<CastleWeapon>();
+                Debug.LogError($"[{nameof(WeaponAimUI)}] '_weapon' is not assigned in Inspector or bound via SceneBootstrapper!", this);
             }
-
-            if (_weapon != null)
+            else
             {
                 _weapon.CooldownChanged -= OnCooldownChanged;
                 _weapon.CooldownChanged += OnCooldownChanged;
@@ -111,11 +105,6 @@ namespace Game.UI
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.StateChanged += OnGameStateChanged;
-            }
-
-            if (_weapon == null)
-            {
-                _weapon = FindAnyObjectByType<CastleWeapon>();
             }
 
             if (_weapon != null)

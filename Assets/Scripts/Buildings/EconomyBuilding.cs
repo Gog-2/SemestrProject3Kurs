@@ -43,7 +43,11 @@ namespace Game.Buildings
 
         private void SubscribeToUpgrades()
         {
-            if (RunProgressionManager.Instance == null) return;
+            if (RunProgressionManager.Instance == null)
+            {
+                Debug.LogWarning($"[{nameof(EconomyBuilding)}] RunProgressionManager.Instance is null; upgrade subscription skipped.", this);
+                return;
+            }
             RunProgressionManager.Instance.UpgradeApplied -= OnUpgradeApplied;
             RunProgressionManager.Instance.UpgradeApplied += OnUpgradeApplied;
         }

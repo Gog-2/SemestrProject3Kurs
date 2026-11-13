@@ -24,10 +24,10 @@ namespace Game.Weapons
         [SerializeField]
         private LevelStats[] _levels = new LevelStats[4]
         {
-            new() { impactDamage = 25, splashRadius = 1.0f, maxRange = 10f, puddleDuration = 4f, slowPercent = 0.30f, cooldown = 9f, flightTimePerCell = 0.14f },
-            new() { impactDamage = 40, splashRadius = 1.0f, maxRange = 12f, puddleDuration = 5f, slowPercent = 0.40f, cooldown = 8f, flightTimePerCell = 0.12f },
-            new() { impactDamage = 60, splashRadius = 1.0f, maxRange = 15f, puddleDuration = 6f, slowPercent = 0.50f, cooldown = 6f, flightTimePerCell = 0.10f },
-            new() { impactDamage = 85, splashRadius = 1.5f, maxRange = 20f, puddleDuration = 8f, slowPercent = 0.80f, cooldown = 4f, flightTimePerCell = 0.08f }
+            new() { impactDamage = 25, splashRadius = 1.5f, maxRange = 14f, puddleDuration = 5f, slowPercent = 0.35f, cooldown = 5.0f, flightTimePerCell = 0.10f },
+            new() { impactDamage = 38, splashRadius = 1.7f, maxRange = 16f, puddleDuration = 5.5f, slowPercent = 0.45f, cooldown = 4.2f, flightTimePerCell = 0.09f },
+            new() { impactDamage = 55, splashRadius = 2.0f, maxRange = 18f, puddleDuration = 6f, slowPercent = 0.55f, cooldown = 3.5f, flightTimePerCell = 0.08f },
+            new() { impactDamage = 80, splashRadius = 2.3f, maxRange = 22f, puddleDuration = 8f, slowPercent = 0.70f, cooldown = 2.8f, flightTimePerCell = 0.07f }
         };
 
         public LevelStats CurrentStats => _levels[Mathf.Clamp(_currentLevel - 1, 0, _levels.Length - 1)];

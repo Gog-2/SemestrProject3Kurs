@@ -20,18 +20,34 @@ using Game.UI.MainMenu;
 using Game.CameraSystem;
 using Game.WaveSystem;
 using Game.Enemies.Data;
+using Game.Enemies.Spawning;
+using Game.Spells;
+using Game.Units;
 
 namespace Game.Editor
 {
     public static class SceneSetupCLI
     {
-        [MenuItem("Tools/Run Scene Setup & Assignment")]
+        [MenuItem("Tools/Run Scene Setup & Assignment", false, 200)]
         public static void RunSetupMenu()
         {
             RunSetup();
         }
 
-        [MenuItem("Tools/Validate SampleScene")]
+        public static string ReconfigureSampleSceneOnly()
+        {
+            var log = new System.Text.StringBuilder();
+            log.AppendLine("=== Reconfiguring SampleScene & Links ===");
+            SpellEffectAssetMigrator.EnsureAllSpellEffectsLinked();
+            SetupSampleScene(log);
+            AssetDatabase.SaveAssets();
+            string validation = ValidateScene();
+            log.AppendLine(validation);
+            string result = log.ToString();
+            Debug.Log(result);
+            return result;
+        }
+
         public static void ValidateSceneMenu()
         {
             string report = ValidateScene();
@@ -143,6 +159,32 @@ namespace Game.Editor
             }
             else Check("ProjectilePool", false, "Not found");
 
+            var allyPool = UnityEngine.Object.FindFirstObjectByType<AllyUnitPool>();
+            Check("AllyUnitPool", allyPool != null, allyPool != null ? "Assigned in scene" : "MISSING");
+
+            var scrollMgr = UnityEngine.Object.FindFirstObjectByType<SpellScrollManager>();
+            Check("SpellScrollManager", scrollMgr != null, scrollMgr != null ? "Assigned in scene" : "MISSING");
+
+            var spellCaster = UnityEngine.Object.FindFirstObjectByType<SpellCaster>();
+            if (spellCaster != null)
+            {
+                var so = new SerializedObject(spellCaster);
+                Check("SpellCaster._mainCamera", so.FindProperty("_mainCamera").objectReferenceValue != null, "Assigned");
+            }
+            else Check("SpellCaster", false, "Not found");
+
+            string[] spellGuids = AssetDatabase.FindAssets("t:SpellData", new[] { "Assets/ScriptbleObjects/Spells" });
+            Check("SpellData assets", spellGuids.Length >= 5, $"Found {spellGuids.Length}");
+            foreach (string guid in spellGuids)
+            {
+                string spPath = AssetDatabase.GUIDToAssetPath(guid);
+                SpellData spData = AssetDatabase.LoadAssetAtPath<SpellData>(spPath);
+                if (spData != null)
+                {
+                    Check($"SpellData.{spData.name}.Effect", spData.Effect != null, spData.Effect != null ? spData.Effect.GetType().Name : "MISSING");
+                }
+            }
+
             var prog = UnityEngine.Object.FindFirstObjectByType<RunProgressionManager>();
             if (prog != null)
             {
@@ -221,6 +263,9 @@ namespace Game.Editor
                 var so = new SerializedObject(waveCtrl);
                 var waveConfigsProp = so.FindProperty("_waveConfigs");
                 Check("WaveController._waveConfigs", waveConfigsProp != null && waveConfigsProp.arraySize >= 5, $"Configured with {waveConfigsProp?.arraySize ?? 0} waves");
+                Check("WaveController._castle", so.FindProperty("_castle").objectReferenceValue != null, "Assigned");
+                Check("WaveController._spawner", so.FindProperty("_spawner").objectReferenceValue != null, "Assigned");
+                Check("WaveController._initialWaveConfig", so.FindProperty("_initialWaveConfig").objectReferenceValue != null, "Assigned");
             }
 
             log.AppendLine(hasErrors ? "=== VALIDATION FAILED ===" : "=== ALL SCENE CHECKS PASSED ===");
@@ -506,10 +551,10 @@ namespace Game.Editor
                 id: "regular_enemy",
                 displayName: "Пехотинец",
                 isBoss: false,
-                maxHP: 30,
-                speed: 2.0f,
+                maxHP: 22,
+                speed: 1.75f,
                 minSpeedRatio: 0.8f,
-                damage: 5,
+                damage: 4,
                 attackInterval: 1.5f,
                 attackRange: 0.8f,
                 isRanged: false,
@@ -517,8 +562,8 @@ namespace Game.Editor
                 tintColor: Color.white,
                 honorReward: 10,
                 sprite: regularSprite,
-                minCoins: 1,
-                maxCoins: 3,
+                minCoins: 4,
+                maxCoins: 6,
                 coinDropChance: 1.0f,
                 diamondDropChance: 0.01f,
                 minDiamonds: 1,
@@ -531,8 +576,8 @@ namespace Game.Editor
                 id: "fast_goblin",
                 displayName: "Гоблин-бегун",
                 isBoss: false,
-                maxHP: 16,
-                speed: 3.2f,
+                maxHP: 14,
+                speed: 2.8f,
                 minSpeedRatio: 0.8f,
                 damage: 3,
                 attackInterval: 0.9f,
@@ -542,8 +587,8 @@ namespace Game.Editor
                 tintColor: new Color(0.75f, 1f, 0.45f, 1f),
                 honorReward: 8,
                 sprite: fastSprite != null ? fastSprite : regularSprite,
-                minCoins: 1,
-                maxCoins: 2,
+                minCoins: 3,
+                maxCoins: 5,
                 coinDropChance: 1.0f,
                 diamondDropChance: 0.01f,
                 minDiamonds: 1,
@@ -556,10 +601,10 @@ namespace Game.Editor
                 id: "armored_tank",
                 displayName: "Тяжелый латник",
                 isBoss: false,
-                maxHP: 140,
-                speed: 1.2f,
+                maxHP: 115,
+                speed: 1.15f,
                 minSpeedRatio: 0.8f,
-                damage: 16,
+                damage: 12,
                 attackInterval: 2.2f,
                 attackRange: 1.0f,
                 isRanged: false,
@@ -567,8 +612,8 @@ namespace Game.Editor
                 tintColor: new Color(0.9f, 0.45f, 0.45f, 1f),
                 honorReward: 25,
                 sprite: tankSprite != null ? tankSprite : regularSprite,
-                minCoins: 4,
-                maxCoins: 8,
+                minCoins: 12,
+                maxCoins: 18,
                 coinDropChance: 1.0f,
                 diamondDropChance: 0.01f,
                 minDiamonds: 1,
@@ -582,9 +627,9 @@ namespace Game.Editor
                 displayName: "Лучник тьмы",
                 isBoss: false,
                 maxHP: 24,
-                speed: 1.7f,
+                speed: 1.6f,
                 minSpeedRatio: 0.8f,
-                damage: 6,
+                damage: 5,
                 attackInterval: 2.0f,
                 attackRange: 3.5f,
                 isRanged: true,
@@ -592,8 +637,8 @@ namespace Game.Editor
                 tintColor: new Color(0.75f, 0.5f, 1f, 1f),
                 honorReward: 14,
                 sprite: archerSprite != null ? archerSprite : regularSprite,
-                minCoins: 2,
-                maxCoins: 4,
+                minCoins: 6,
+                maxCoins: 9,
                 coinDropChance: 1.0f,
                 diamondDropChance: 0.01f,
                 minDiamonds: 1,
@@ -606,10 +651,10 @@ namespace Game.Editor
                 id: "arena_boss",
                 displayName: "Владыка рейда",
                 isBoss: true,
-                maxHP: 1200,
-                speed: 1.3f,
+                maxHP: 950,
+                speed: 1.2f,
                 minSpeedRatio: 0.9f,
-                damage: 40,
+                damage: 30,
                 attackInterval: 2.5f,
                 attackRange: 1.5f,
                 isRanged: false,
@@ -617,8 +662,8 @@ namespace Game.Editor
                 tintColor: new Color(1f, 0.8f, 0.25f, 1f),
                 honorReward: 200,
                 sprite: bossSprite != null ? bossSprite : regularSprite,
-                minCoins: 20,
-                maxCoins: 35,
+                minCoins: 50,
+                maxCoins: 80,
                 coinDropChance: 1.0f,
                 diamondDropChance: 1.0f,
                 minDiamonds: 3,
@@ -638,13 +683,13 @@ namespace Game.Editor
             GetOrCreateWaveConfig(
                 path: "Assets/ScriptbleObjects/WaveConfig/Wave_01.asset",
                 waveNumber: 1,
-                durationSeconds: 45f,
-                buildingPhaseDuration: 15f,
+                durationSeconds: 50f,
+                buildingPhaseDuration: 25f,
                 isBossWave: false,
                 isFinalWave: false,
                 spawnGroups: new List<EnemySpawnGroup>
                 {
-                    new(regularEnemy, count: 12, startDelay: 0f, spawnInterval: 3.2f, batchSize: 1)
+                    new(regularEnemy, count: 14, startDelay: 1.5f, spawnInterval: 2.2f, batchSize: 1)
                 },
                 log: log);
 
@@ -652,14 +697,14 @@ namespace Game.Editor
             GetOrCreateWaveConfig(
                 path: "Assets/ScriptbleObjects/WaveConfig/Wave_02.asset",
                 waveNumber: 2,
-                durationSeconds: 55f,
-                buildingPhaseDuration: 20f,
+                durationSeconds: 60f,
+                buildingPhaseDuration: 25f,
                 isBossWave: false,
                 isFinalWave: false,
                 spawnGroups: new List<EnemySpawnGroup>
                 {
-                    new(regularEnemy, count: 14, startDelay: 0f, spawnInterval: 2.8f, batchSize: 1),
-                    new(fastEnemy, count: 8, startDelay: 12f, spawnInterval: 2.0f, batchSize: 1)
+                    new(regularEnemy, count: 14, startDelay: 0f, spawnInterval: 2.5f, batchSize: 1),
+                    new(fastEnemy, count: 8, startDelay: 10f, spawnInterval: 2.2f, batchSize: 1)
                 },
                 log: log);
 
@@ -668,14 +713,14 @@ namespace Game.Editor
                 path: "Assets/ScriptbleObjects/WaveConfig/Wave_03.asset",
                 waveNumber: 3,
                 durationSeconds: 65f,
-                buildingPhaseDuration: 20f,
+                buildingPhaseDuration: 25f,
                 isBossWave: false,
                 isFinalWave: false,
                 spawnGroups: new List<EnemySpawnGroup>
                 {
-                    new(regularEnemy, count: 16, startDelay: 0f, spawnInterval: 2.5f, batchSize: 1),
-                    new(fastEnemy, count: 10, startDelay: 10f, spawnInterval: 1.8f, batchSize: 1),
-                    new(tankEnemy, count: 4, startDelay: 20f, spawnInterval: 6.0f, batchSize: 1)
+                    new(regularEnemy, count: 16, startDelay: 0f, spawnInterval: 2.2f, batchSize: 1),
+                    new(fastEnemy, count: 10, startDelay: 10f, spawnInterval: 2.0f, batchSize: 1),
+                    new(tankEnemy, count: 4, startDelay: 18f, spawnInterval: 5.5f, batchSize: 1)
                 },
                 log: log);
 
@@ -684,15 +729,15 @@ namespace Game.Editor
                 path: "Assets/ScriptbleObjects/WaveConfig/Wave_04.asset",
                 waveNumber: 4,
                 durationSeconds: 75f,
-                buildingPhaseDuration: 20f,
+                buildingPhaseDuration: 25f,
                 isBossWave: false,
                 isFinalWave: false,
                 spawnGroups: new List<EnemySpawnGroup>
                 {
                     new(regularEnemy, count: 15, startDelay: 0f, spawnInterval: 2.2f, batchSize: 1),
-                    new(archerEnemy, count: 8, startDelay: 10f, spawnInterval: 4.0f, batchSize: 1),
-                    new(tankEnemy, count: 6, startDelay: 18f, spawnInterval: 5.0f, batchSize: 1),
-                    new(fastEnemy, count: 12, startDelay: 30f, spawnInterval: 1.5f, batchSize: 1)
+                    new(archerEnemy, count: 8, startDelay: 10f, spawnInterval: 3.5f, batchSize: 1),
+                    new(tankEnemy, count: 6, startDelay: 16f, spawnInterval: 4.5f, batchSize: 1),
+                    new(fastEnemy, count: 12, startDelay: 24f, spawnInterval: 1.6f, batchSize: 1)
                 },
                 log: log);
 
@@ -701,7 +746,7 @@ namespace Game.Editor
                 path: "Assets/ScriptbleObjects/WaveConfig/Wave_05_Boss.asset",
                 waveNumber: 5,
                 durationSeconds: 120f,
-                buildingPhaseDuration: 25f,
+                buildingPhaseDuration: 30f,
                 isBossWave: true,
                 isFinalWave: true,
                 spawnGroups: new List<EnemySpawnGroup>
@@ -1074,12 +1119,15 @@ namespace Game.Editor
                 if (rc != null)
                 {
                     var so = new SerializedObject(rc);
-                    so.FindProperty("_selectedKnight").objectReferenceValue = defaultKnight;
-                    so.FindProperty("_selectedArena").objectReferenceValue = defaultArena;
-                    so.FindProperty("_selectedWeapon").objectReferenceValue = defaultWeapon;
+                    var knightProp = so.FindProperty("_selectedKnight");
+                    var arenaProp = so.FindProperty("_selectedArena");
+                    var weaponProp = so.FindProperty("_selectedWeapon");
+                    if (knightProp.objectReferenceValue == null) knightProp.objectReferenceValue = defaultKnight;
+                    if (arenaProp.objectReferenceValue == null) arenaProp.objectReferenceValue = defaultArena;
+                    if (weaponProp.objectReferenceValue == null) weaponProp.objectReferenceValue = defaultWeapon;
                     so.ApplyModifiedPropertiesWithoutUndo();
                     EditorUtility.SetDirty(rc);
-                    log.AppendLine("Wired [RunConfig] in SampleScene");
+                    log.AppendLine("Verified/Wired [RunConfig] defaults in SampleScene (preserved existing non-null selections)");
                 }
             }
 
@@ -1107,6 +1155,8 @@ namespace Game.Editor
             var gridMap = UnityEngine.Object.FindFirstObjectByType<GridMap>();
             var wallet = UnityEngine.Object.FindFirstObjectByType<PlayerWallet>();
             var castle = UnityEngine.Object.FindFirstObjectByType<Castle>();
+            var spawner = UnityEngine.Object.FindFirstObjectByType<EnemySpawner>();
+            var ballista = UnityEngine.Object.FindFirstObjectByType<HeavyBallista>();
             var waveController = UnityEngine.Object.FindFirstObjectByType<WaveController>();
             var contextMenuUI = UnityEngine.Object.FindFirstObjectByType<BuildingContextMenuUI>(FindObjectsInactive.Include);
             var projectilePrefab = AssetDatabase.LoadAssetAtPath<Projectile>("Assets/Prefabs/Projectile.prefab");
@@ -1145,6 +1195,7 @@ namespace Game.Editor
                     so.FindProperty("_ghostView").objectReferenceValue = ghostView;
                     so.FindProperty("_wallet").objectReferenceValue = wallet;
                     so.FindProperty("_mainCamera").objectReferenceValue = mainCamera;
+                    if (ballista != null) so.FindProperty("_castleWeapon").objectReferenceValue = ballista;
                     if (contextMenuUI != null) so.FindProperty("_contextMenuUI").objectReferenceValue = contextMenuUI;
                     so.ApplyModifiedPropertiesWithoutUndo();
                     EditorUtility.SetDirty(bm);
@@ -1162,6 +1213,30 @@ namespace Game.Editor
                     log.AppendLine("Wired ProjectilePool on [GameSystems]");
                 }
 
+                // AllyUnitPool
+                var allyPool = gameSystemsGo.GetComponent<AllyUnitPool>();
+                if (allyPool == null)
+                {
+                    allyPool = gameSystemsGo.AddComponent<AllyUnitPool>();
+                    log.AppendLine("Added AllyUnitPool on [GameSystems]");
+                }
+                EditorUtility.SetDirty(allyPool);
+
+                // SpellScrollManager & SpellCaster
+                if (gameSystemsGo.GetComponent<SpellScrollManager>() == null)
+                {
+                    gameSystemsGo.AddComponent<SpellScrollManager>();
+                    log.AppendLine("Added SpellScrollManager on [GameSystems]");
+                }
+                var spellCaster = gameSystemsGo.GetComponent<SpellCaster>() ?? gameSystemsGo.AddComponent<SpellCaster>();
+                {
+                    var so = new SerializedObject(spellCaster);
+                    so.FindProperty("_mainCamera").objectReferenceValue = mainCamera;
+                    so.ApplyModifiedPropertiesWithoutUndo();
+                    EditorUtility.SetDirty(spellCaster);
+                    log.AppendLine("Wired SpellCaster on [GameSystems]");
+                }
+
                 // RunProgressionManager
                 var prog = gameSystemsGo.GetComponent<RunProgressionManager>();
                 if (prog != null)
@@ -1169,6 +1244,7 @@ namespace Game.Editor
                     var so = new SerializedObject(prog);
                     so.FindProperty("_castle").objectReferenceValue = castle;
                     so.FindProperty("_upgradeDatabase").objectReferenceValue = upgradeDb;
+                    if (ballista != null) so.FindProperty("_castleWeapon").objectReferenceValue = ballista;
                     so.ApplyModifiedPropertiesWithoutUndo();
                     EditorUtility.SetDirty(prog);
                     log.AppendLine("Wired RunProgressionManager on [GameSystems]");
@@ -1199,7 +1275,6 @@ namespace Game.Editor
             }
 
             // Wire HeavyBallista
-            var ballista = UnityEngine.Object.FindFirstObjectByType<HeavyBallista>();
             if (ballista != null)
             {
                 var so = new SerializedObject(ballista);
@@ -1376,6 +1451,8 @@ namespace Game.Editor
                 }
                 var wave1 = AssetDatabase.LoadAssetAtPath<WaveConfig>("Assets/ScriptbleObjects/WaveConfig/Wave_01.asset");
                 if (wave1 != null) so.FindProperty("_initialWaveConfig").objectReferenceValue = wave1;
+                if (castle != null) so.FindProperty("_castle").objectReferenceValue = castle;
+                if (spawner != null) so.FindProperty("_spawner").objectReferenceValue = spawner;
                 so.ApplyModifiedPropertiesWithoutUndo();
                 EditorUtility.SetDirty(waveController);
                 log.AppendLine("Wired WaveController with Waves 1-5");
@@ -1405,6 +1482,10 @@ namespace Game.Editor
                     }
                     var wave1 = AssetDatabase.LoadAssetAtPath<WaveConfig>("Assets/ScriptbleObjects/WaveConfig/Wave_01.asset");
                     if (wave1 != null) so.FindProperty("_initialWaveConfig").objectReferenceValue = wave1;
+                    var prefabCastle = mainGamePrefab.GetComponentInChildren<Castle>(true);
+                    var prefabSpawner = mainGamePrefab.GetComponentInChildren<EnemySpawner>(true);
+                    if (prefabCastle != null) so.FindProperty("_castle").objectReferenceValue = prefabCastle;
+                    if (prefabSpawner != null) so.FindProperty("_spawner").objectReferenceValue = prefabSpawner;
                     so.ApplyModifiedPropertiesWithoutUndo();
                     EditorUtility.SetDirty(mainGamePrefab);
                     PrefabUtility.SavePrefabAsset(mainGamePrefab);
@@ -1652,15 +1733,6 @@ namespace Game.Editor
             return (btn, tmp);
         }
 
-        [MenuItem("Tools/Update HUD Card Icons")]
-        public static void UpdateHudCardIconsMenu()
-        {
-            var log = new System.Text.StringBuilder();
-            UpdateHudPrefabCardIcons(log);
-            AssetDatabase.SaveAssets();
-            Debug.Log(log.ToString());
-        }
-
         private static void UpdateHudPrefabCardIcons(System.Text.StringBuilder log)
         {
             const string hudPath = "Assets/Prefabs/HUD.prefab";
@@ -1734,37 +1806,6 @@ namespace Game.Editor
             }
         }
 
-        [MenuItem("Tools/Apply Phase 0 Assets & UI")]
-        public static string ApplyPhase0AssetsAndUI()
-        {
-            var log = new System.Text.StringBuilder();
-            log.AppendLine("=== Applying Phase 0 Assets & UI ===");
-
-            EnsureDirectories();
-            CreateUpgradeDatabase(log);
-            CreateDefaultMetaData(log);
-            CreateEnemyAssetsAndSprites(log);
-            UpdateHudPrefabCardIcons(log);
-
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-
-            SetupMainMenu(log);
-            EditorSceneManager.OpenScene("Assets/Scenes/SampleScene.unity");
-
-            log.AppendLine("=== Phase 0 Assets & UI Applied ===");
-            Debug.Log(log.ToString());
-            return log.ToString();
-        }
-
-        [MenuItem("Tools/Strip Dangerous HierarchyHeaders")]
-        public static void StripDangerousHierarchyHeadersMenu()
-        {
-            var log = new System.Text.StringBuilder();
-            StripDangerousHierarchyHeaders(log);
-            Debug.Log(log.ToString());
-        }
-
         public static void StripDangerousHierarchyHeaders(System.Text.StringBuilder log)
         {
             log.AppendLine("=== Checking and Stripping Dangerous HierarchyHeaders ===");
@@ -1797,87 +1838,6 @@ namespace Game.Editor
                     log.AppendLine($"[CLEAN] No HierarchyObject on {path}");
                 }
             }
-        }
-
-        [MenuItem("Tools/Verify Wave and Enemies")]
-        public static string VerifyWaveAndEnemies()
-        {
-            var sb = new System.Text.StringBuilder();
-            sb.AppendLine("=== Verifying Enemies & Wave System ===");
-
-            // 1. Verify EnemyData assets
-            var enemyPaths = new[]
-            {
-                "Assets/ScriptbleObjects/Enemy/Enemy.asset",
-                "Assets/ScriptbleObjects/Enemy/Enemy_Fast.asset",
-                "Assets/ScriptbleObjects/Enemy/Enemy_Tank.asset",
-                "Assets/ScriptbleObjects/Enemy/Enemy_Archer.asset",
-                "Assets/ScriptbleObjects/Enemy/Enemy_Boss.asset"
-            };
-
-            foreach (var path in enemyPaths)
-            {
-                var ed = AssetDatabase.LoadAssetAtPath<EnemyData>(path);
-                if (ed == null)
-                {
-                    sb.AppendLine($"[FAIL] Missing EnemyData: {path}");
-                    continue;
-                }
-                sb.AppendLine($"[PASS] Enemy '{ed.DisplayName}' ({ed.Id}): HP={ed.MaxHP}, Spd={ed.MoveSpeed}, Dmg={ed.Damage}, Range={ed.AttackRange}, Boss={ed.IsBoss}, Sprite={(ed.Sprite != null ? ed.Sprite.name : "null")}, Scale={ed.VisualScale}, Coins={ed.LootTable.MinCoins}-{ed.LootTable.MaxCoins}, Dia={ed.LootTable.MinDiamonds}-{ed.LootTable.MaxDiamonds} (chance={ed.LootTable.DiamondDropChance:P0})");
-            }
-
-            // 2. Verify WaveConfigs
-            for (int i = 1; i <= 5; i++)
-            {
-                string path = i == 5 ? "Assets/ScriptbleObjects/WaveConfig/Wave_05_Boss.asset" : $"Assets/ScriptbleObjects/WaveConfig/Wave_0{i}.asset";
-                var wc = AssetDatabase.LoadAssetAtPath<WaveConfig>(path);
-                if (wc == null)
-                {
-                    sb.AppendLine($"[FAIL] Missing WaveConfig: {path}");
-                    continue;
-                }
-                sb.AppendLine($"[PASS] Wave {wc.WaveNumber}: Duration={wc.DurationSeconds}s, BuildPhase={wc.BuildingPhaseDuration}s, Groups={wc.SpawnGroups.Count}, TotalEnemies={wc.TotalEnemiesToSpawn}, BossWave={wc.IsBossWave}, FinalWave={wc.IsFinalWave}");
-                for (int g = 0; g < wc.SpawnGroups.Count; g++)
-                {
-                    var grp = wc.SpawnGroups[g];
-                    sb.AppendLine($"       - Group {g + 1}: {grp.Count}x {(grp.EnemyData != null ? grp.EnemyData.DisplayName : "null")} (Delay: {grp.StartDelay}s, Interval: {grp.SpawnInterval}s)");
-                }
-            }
-
-            // 3. Verify Scene WaveController
-            EditorSceneManager.OpenScene("Assets/Scenes/SampleScene.unity");
-            var waveCtrl = UnityEngine.Object.FindFirstObjectByType<WaveController>();
-            if (waveCtrl != null)
-            {
-                sb.AppendLine($"[PASS] Scene WaveController found. Configured waves: {waveCtrl.WaveConfigs.Count}");
-                sb.AppendLine($"[PASS] Current wave: {waveCtrl.CurrentWaveNumber}, Index: {waveCtrl.CurrentWaveIndex}");
-            }
-            else
-            {
-                sb.AppendLine("[FAIL] WaveController not found in SampleScene");
-            }
-
-            // 4. Test Enemy Runtime Initialization from Prefab
-            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Enemy_Regular.prefab");
-            var fastData = AssetDatabase.LoadAssetAtPath<EnemyData>("Assets/ScriptbleObjects/Enemy/Enemy_Fast.asset");
-            var bossData = AssetDatabase.LoadAssetAtPath<EnemyData>("Assets/ScriptbleObjects/Enemy/Enemy_Boss.asset");
-            if (prefab != null && fastData != null && bossData != null)
-            {
-                var testGo = UnityEngine.Object.Instantiate(prefab);
-                var enemyComp = testGo.GetComponent<Game.Enemies.Enemy>();
-
-                enemyComp.Initialize(fastData, null, null, null);
-                sb.AppendLine($"[PASS] Runtime Fast Enemy: HP={enemyComp.MaxHP}, Speed={enemyComp.CurrentSpeed}, Scale={testGo.transform.localScale}");
-
-                enemyComp.Initialize(bossData, null, null, null);
-                sb.AppendLine($"[PASS] Runtime Boss Enemy: HP={enemyComp.MaxHP}, Speed={enemyComp.CurrentSpeed}, Scale={testGo.transform.localScale}");
-
-                UnityEngine.Object.DestroyImmediate(testGo);
-            }
-
-            sb.AppendLine("=== Verification Complete ===");
-            Debug.Log(sb.ToString());
-            return sb.ToString();
         }
     }
 }

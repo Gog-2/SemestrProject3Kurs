@@ -46,7 +46,8 @@ namespace Game.Units
             float interval,
             float actionRange,
             float roamRadius,
-            Color tint)
+            Color tint,
+            Sprite unitSprite = null)
         {
             _kind = kind;
             _homeBuilding = homeBuilding;
@@ -64,11 +65,18 @@ namespace Game.Units
             _roamRadius = Mathf.Max(1f, roamRadius);
 
             _renderer = gameObject.AddComponent<SpriteRenderer>();
-            _renderer.sprite = HazardZone.GetOrCreateCircleSprite();
+            _renderer.sprite = unitSprite != null ? unitSprite : HazardZone.GetOrCreateCircleSprite();
             _renderer.color = tint;
             _renderer.sortingLayerName = "Enemies";
             _renderer.sortingOrder = 9;
-            transform.localScale = new Vector3(0.4f, 0.4f, 1f);
+            transform.localScale = unitSprite != null ? Vector3.one : new Vector3(0.4f, 0.4f, 1f);
+        }
+
+        private void UpdateFlip(float dx)
+        {
+            if (_renderer == null) return;
+            if (dx > 0.05f) _renderer.flipX = false;
+            else if (dx < -0.05f) _renderer.flipX = true;
         }
 
         public void TakeDamage(int amount)
@@ -142,6 +150,7 @@ namespace Game.Units
             float dist = Vector2.Distance(transform.position, lowestUnit.transform.position);
             if (dist > _actionRange)
             {
+                UpdateFlip(lowestUnit.transform.position.x - transform.position.x);
                 transform.position = Vector3.MoveTowards(transform.position, lowestUnit.transform.position, _moveSpeed * dt);
                 return;
             }
@@ -194,6 +203,7 @@ namespace Game.Units
             float dist = Vector2.Distance(transform.position, lowestBuilding.transform.position);
             if (dist > _actionRange + 0.5f)
             {
+                UpdateFlip(lowestBuilding.transform.position.x - transform.position.x);
                 transform.position = Vector3.MoveTowards(transform.position, lowestBuilding.transform.position, _moveSpeed * dt);
                 return;
             }
@@ -213,6 +223,7 @@ namespace Game.Units
         private void ReturnHome(float dt)
         {
             if (Vector2.Distance(transform.position, _homePosition) <= 0.35f) return;
+            UpdateFlip(_homePosition.x - transform.position.x);
             transform.position = Vector3.MoveTowards(transform.position, _homePosition, _moveSpeed * dt);
         }
     }

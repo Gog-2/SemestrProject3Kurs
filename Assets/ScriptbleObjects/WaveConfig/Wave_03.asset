@@ -14,26 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.WaveSystem.WaveConfig
   _waveNumber: 3
   _durationSeconds: 65
-  _buildingPhaseDuration: 20
+  _buildingPhaseDuration: 25
   _isBossWave: 0
   _isFinalWave: 0
   _spawnGroups:
   - _enemyData: {fileID: 11400000, guid: df034b4b754ea9b43bcc30a98f55b3e6, type: 2}
     _count: 16
     _startDelay: 0
-    _spawnInterval: 2.5
+    _spawnInterval: 2.2
     _spawnBatchSize: 1
   - _enemyData: {fileID: 11400000, guid: ad90164e5b9194240a9bd9d5b2089082, type: 2}
     _count: 10
     _startDelay: 10
-    _spawnInterval: 1.8
+    _spawnInterval: 2
     _spawnBatchSize: 1
   - _enemyData: {fileID: 11400000, guid: 26f59f7b351563140acd4f8ed3870aa0, type: 2}
     _count: 4
-    _startDelay: 20
-    _spawnInterval: 6
+    _startDelay: 18
+    _spawnInterval: 5.5
     _spawnBatchSize: 1
   _enemyData: {fileID: 11400000, guid: df034b4b754ea9b43bcc30a98f55b3e6, type: 2}
   _totalEnemiesToSpawn: 16
   _initialSpawnDelay: 0.2
-  _spawnInterval: 2.5
+  _spawnInterval: 2.2

@@ -22,6 +22,7 @@ namespace Game.Buildings
 
         [Title("Support Spawner Config")]
         [SerializeField] private SupportUnitKind _unitKind = SupportUnitKind.Priest;
+        [SerializeField] private Sprite _unitSprite;
         [SerializeField] private Color _unitTint = new(0.95f, 0.9f, 0.45f, 1f);
         [SerializeField] private SupportLevelConfig[] _levels = new SupportLevelConfig[4];
 
@@ -34,11 +35,12 @@ namespace Game.Buildings
 
         public SupportUnit ActiveUnit => _activeUnit;
 
-        public void ConfigureSupportSpawner(SupportUnitKind kind, Color tint, SupportLevelConfig[] levels)
+        public void ConfigureSupportSpawner(SupportUnitKind kind, Color tint, SupportLevelConfig[] levels, Sprite unitSprite = null)
         {
             _unitKind = kind;
             _unitTint = tint;
             _levels = levels;
+            if (unitSprite != null) _unitSprite = unitSprite;
         }
 
         protected override void OnPlaced()
@@ -107,7 +109,8 @@ namespace Game.Buildings
                 Mathf.Max(0.5f, cfg.actionInterval),
                 Mathf.Max(0.75f, cfg.actionRange),
                 Mathf.Max(1f, cfg.roamRadius),
-                _unitTint);
+                _unitTint,
+                _unitSprite);
         }
     }
 }

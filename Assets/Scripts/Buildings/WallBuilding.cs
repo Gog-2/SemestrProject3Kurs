@@ -11,6 +11,14 @@ namespace Game.Buildings
         [SerializeField] private Sprite _verticalSprite;
         [SerializeField] private Sprite _crossSprite;
 
+        public void SetWallSprites(Sprite single, Sprite horizontal, Sprite vertical, Sprite cross)
+        {
+            if (single != null) _singleSprite = single;
+            if (horizontal != null) _horizontalSprite = horizontal;
+            if (vertical != null) _verticalSprite = vertical;
+            if (cross != null) _crossSprite = cross;
+        }
+
         protected override void Awake()
         {
             base.Awake();

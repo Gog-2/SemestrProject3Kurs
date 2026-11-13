@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.92, y: 0.92, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -83,11 +83,11 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 10
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: f89f651266507ae4a87d56bf047f8e07, type: 3}
-  m_Color: {r: 0.32, g: 0.78, b: 0.35, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 2edefbb19b2093d54a09ca367d41285b, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 1
+  m_DrawMode: 0
   m_Size: {x: 0.92, y: 0.92}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
@@ -135,7 +135,7 @@ BoxCollider2D:
     oldSize: {x: 1, y: 1}
     newSize: {x: 0.92, y: 0.92}
     adaptiveTilingThreshold: 0.5
-    drawMode: 1
+    drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   m_Size: {x: 0.9, y: 0.9}
@@ -158,48 +158,21 @@ MonoBehaviour:
   _damageColor: {r: 1, g: 0.3, b: 0.3, a: 1}
   _punchStrength: {x: 0.12, y: 0.12, z: 0}
   _xpHighlightRenderer: {fileID: 0}
+  _unitSprite: {fileID: 21300000, guid: 805440a6da0c7d06ea8cbb49f1a1a3bf, type: 3}
   _isRanged: 1
   _isArcherUnit: 1
   _isBerserker: 0
   _usesStealth: 0
   _stealthSeconds: 0
-  _unitTint: {r: 0.4, g: 0.9, b: 0.45, a: 1}
+  _unitTint: {r: 1, g: 1, b: 1, a: 1}
   _levels:
   - unitCount: 2
-    unitMaxHP: 30
-    unitDamage: 5
-    attackInterval: 2.5
-    attackRange: 1.6
-    aggroLimit: 1
-    patrolRadius: 1.2
-    respawnSeconds: 12
-    knockbackCells: 0
-    pierceCount: 1
-    meleeDamage: 0
-    meleeInterval: 0
-    bleedDps: 0
-    bleedDuration: 0
-  - unitCount: 3
     unitMaxHP: 35
-    unitDamage: 5
-    attackInterval: 2.5
-    attackRange: 1.6
-    aggroLimit: 1
-    patrolRadius: 1.2
-    respawnSeconds: 10
-    knockbackCells: 0
-    pierceCount: 1
-    meleeDamage: 0
-    meleeInterval: 0
-    bleedDps: 0
-    bleedDuration: 0
-  - unitCount: 3
-    unitMaxHP: 40
     unitDamage: 8
-    attackInterval: 2
-    attackRange: 1.6
+    attackInterval: 1.4
+    attackRange: 3.5
     aggroLimit: 1
-    patrolRadius: 1.2
+    patrolRadius: 2.2
     respawnSeconds: 8
     knockbackCells: 0
     pierceCount: 1
@@ -208,13 +181,41 @@ MonoBehaviour:
     bleedDps: 0
     bleedDuration: 0
   - unitCount: 3
-    unitMaxHP: 50
-    unitDamage: 8
-    attackInterval: 1
-    attackRange: 2.5
+    unitMaxHP: 45
+    unitDamage: 10
+    attackInterval: 1.3
+    attackRange: 3.8
     aggroLimit: 1
-    patrolRadius: 1.5
-    respawnSeconds: 5
+    patrolRadius: 2.4
+    respawnSeconds: 7
+    knockbackCells: 0
+    pierceCount: 1
+    meleeDamage: 0
+    meleeInterval: 0
+    bleedDps: 0
+    bleedDuration: 0
+  - unitCount: 3
+    unitMaxHP: 55
+    unitDamage: 13
+    attackInterval: 1.1
+    attackRange: 4.2
+    aggroLimit: 1
+    patrolRadius: 2.6
+    respawnSeconds: 6
+    knockbackCells: 0
+    pierceCount: 1
+    meleeDamage: 0
+    meleeInterval: 0
+    bleedDps: 0
+    bleedDuration: 0
+  - unitCount: 4
+    unitMaxHP: 70
+    unitDamage: 16
+    attackInterval: 0.85
+    attackRange: 4.8
+    aggroLimit: 1
+    patrolRadius: 3
+    respawnSeconds: 4
     knockbackCells: 0
     pierceCount: 1
     meleeDamage: 0

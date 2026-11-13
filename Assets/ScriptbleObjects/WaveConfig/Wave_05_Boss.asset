@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.WaveSystem.WaveConfig
   _waveNumber: 5
   _durationSeconds: 120
-  _buildingPhaseDuration: 25
+  _buildingPhaseDuration: 30
   _isBossWave: 1
   _isFinalWave: 1
   _spawnGroups:

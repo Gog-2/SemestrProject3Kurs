@@ -79,5 +79,10 @@ namespace Game.Buildings
         {
             _isDestructible = isDestructible;
         }
+
+        public void SetIcon(Sprite icon)
+        {
+            _icon = icon;
+        }
     }
 }

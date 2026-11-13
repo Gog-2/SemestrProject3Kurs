@@ -22,23 +22,23 @@ MonoBehaviour:
   _icon: {fileID: 0}
   _projectileData: {fileID: 11400000, guid: 7c4343c50d2bdd24fbdcf077f9e0d170, type: 2}
   _levels:
-  - damage: 15
-    cooldown: 8
-    speed: 15
-    knockbackCells: 1
+  - damage: 24
+    cooldown: 4.2
+    speed: 18
+    knockbackCells: 1.2
     pierceCount: 999
-  - damage: 20
-    cooldown: 6
-    speed: 15
-    knockbackCells: 1
+  - damage: 34
+    cooldown: 3.4
+    speed: 18
+    knockbackCells: 1.2
     pierceCount: 999
-  - damage: 30
-    cooldown: 4
-    speed: 15
-    knockbackCells: 1
+  - damage: 48
+    cooldown: 2.6
+    speed: 20
+    knockbackCells: 1.5
     pierceCount: 999
-  - damage: 40
-    cooldown: 2
-    speed: 15
-    knockbackCells: 1
+  - damage: 65
+    cooldown: 1.8
+    speed: 22
+    knockbackCells: 1.5
     pierceCount: 999
